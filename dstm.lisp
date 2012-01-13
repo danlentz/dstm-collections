@@ -1,6 +1,6 @@
 ;;;;; -*- mode: common-lisp;   common-lisp-style: modern;    coding: utf-8; -*-
 ;;;;;
-;;;;; Lock Free DTSM -- Software Transactional Memory after Herlihy, et. al.
+;;;;; Lock Free DSTM -- Software Transactional Memory after Herlihy, et. al.
 ;;;;;
 ;;;;; based on:
 ;;;;;  http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.59.8787
