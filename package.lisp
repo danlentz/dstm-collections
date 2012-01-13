@@ -119,6 +119,7 @@
   (:use #:common-lisp)
   (:export
     #:var
+    #:*transaction*
     #:transaction
     #:create-var
     #:read-var
