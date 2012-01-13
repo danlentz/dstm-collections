@@ -18,3 +18,12 @@
   :components ((:file "test")))
 
 
+
+(defmethod asdf:perform ((o asdf:test-op) (c (eql (asdf:find-system :dstm-collections-test))))
+  (asdf:load-system :dstm-collections-test)
+  (funcall (intern (symbol-name :dstm-collections) (find-package :dstm-collections-test))))
+
+
+(defmethod asdf:operation-done-p ((o asdf:test-op)
+                                   (c (eql (asdf:find-system :dstm-collections-test))))
+  nil)

@@ -18,7 +18,15 @@
                 #+(or sbcl lispworks)
                 (:file "dstm")))
 
+
 (defmethod asdf:perform :after ((op asdf:load-op) (sys (eql (asdf:find-system :dstm-collections))))
   (pushnew :dstm *features*))
 
 
+(defmethod asdf:perform ((o asdf:test-op) (c (eql (asdf:find-system :dstm-collections))))
+  (asdf:load-system :dstm-collections-test)
+  (funcall (intern (symbol-name :dstm-collections) (find-package :dstm-collections-test))))
+
+
+(defmethod asdf:operation-done-p ((o asdf:test-op) (c (eql (asdf:find-system :dstm-collections))))
+  nil)
