@@ -1,0 +1,39 @@
+... Now the nice thing about ripping off the OCaml version of RB-Trees  
+is that the code is (mostly) purely functional code. That means that  
+anytime you make any kind of mutation to a tree, you get back a new  
+copy of the tree, sharing as much structure with the original as  
+possible, but leaving the original intact. That is important for the  
+HDSTM system to function properly.
+
+While my HDSTM code didn't show it, because I was using simple  
+integers for data items, the protocol actually requires that whenever  
+a writer wants to change a binding, it must do so on a clone of the  
+original value of the binding. That way, if the thread has to abort  
+the transaction, the original value still remains for other threads to  
+see as the current value of the binding.
+
+We won't have to do much to get a clone of a RB-Tree. Looks to me like  
+all we have to do is duplicate the original binding. Then, on any  
+add / remove from the tree a new substructure is automatically created  
+where necessary to avoid altering the contents of the original RB Tree.
+
+So, lesson #1 for us... to get convenience in applying HDSTM, use  
+purely functional data structures. The only places that use SETF in  
+the entire body of code is in some internal loops for mutation of  
+local bindings. The tree cells are *never* mutated. However, that may  
+or may not be the most efficient thing to do in terms of runtime and  
+memory consumption. It might actually be cheaper just to make an  
+initial deep copy of the tree skeleton, and then use direct mutation  
+on that copy. I dunno...
+
+In this style, you create an initial tree either as an empty tree with  
+(EMPTY), or as a singleton tree using (SINGLETON value). Thereafter,  
+you grow and trim the tree using ADD and REMOVE. You can perform all  
+manner of set theoretic operations on RB Trees -- union, intersection,  
+set-difference, comparing, subset testing, merging, splitting, testing  
+for set membership, iteration, folding, partitioning, filtering, etc.  
+Pretty neat stuff... but in truth I have hardly ever used this code  
+for any real work. The trusty hash table has been my mainstay.
+
+Dr. David McClain
+dbm <at> refined-audiometrics.com

@@ -1,0 +1,35 @@
+
+1. Fastest -- "dstm-no-locking.lisp" -- uses a restricted variant of  
+the Herlihy DST design, permitting only polite conflict resolution  
+(ie., transactions cannot abort each other over a conflict. Just spin  
+and wait, or else rollback.)
+	* It conses read lists during transactions, and commit goes back to  
+verify that none of them have changed.
+	* It preserves invariants only at transaction boundaries
+
+2. Second fastest -- "vstm-locking.lisp" -- uses shared locks and Time  
+Ordered (TO) transaction processing. Only offers polite conflict  
+resolution because the locking precludes anything more aggressive.
+	* It does *not* cons anything, and the commit stage is blazing fast  
+-- just flips the transaction state to :COMMITTED and you are done.
+	* It preserves transaction invariants during the transaction
+
+3. Third fastest -- "hdstm.lisp" -- the original Herlihy DST facsimile  
+in Lisp.
+	* It offers choices in conflict resolution -- just change the  
+conflict managers.
+		- Polite means you either spin or rollback but leave the other guy  
+alone
+		- Aggressive means you abort the other guy's transaction so you can  
+force your way through
+		- Or anything in between...
+	* It conses read lists during transactions, and commit goes back to  
+verify that none of them have changed.
+
+These all run fine in LWM 6.0.  Test code is in block comments at the  
+end of each file. But while the body of the code in each file is kept  
+to standard CL, the test routines are not. Those tests are bogus  
+anyway, so feel free to experiment and come up with meaningful tests.
+
+Dr. David McClain
+dbm <at> refined-audiometrics.com

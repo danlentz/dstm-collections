@@ -1,0 +1,44 @@
+
+I must say, however, that I'm still torn about the proper placement of  
+sys:ensure-memory-after-store, if it is actually needed at all. When  
+you look at the setup and tear-down code surrounding the sys:compare- 
+and-swap, I would be amazed if any pending flushes to memory still  
+exist by the time one enters and then exits the CAS from Lisp.
+
+But if it is necessary then there are two approaches -- and I'm using  
+both at the same time in the sample code. Probably major overkill...
+
+1. If you flush to memory after making a store then you potentially  
+reduce the number of VOLATILE calls (my macro for ensuring that the  
+flush happens just ahead of my memory reads), since loads probably  
+outnumber stores by at least 2:1. But that relies on programmers  
+following a protocol of flushing after storing into volatile objects.
+
+[ volatile in this context means a memory location stored by one  
+thread and possibly examined by other concurrent threads. Hence the  
+binding can change at any moment and is considered volatile.]
+
+2. Using the VOLATILE call ahead of all reads from volatile memory  
+locations is the defensive approach. So it won't matter if a  
+programmer is derelict. And at the same time, it is entirely possible  
+that when a writer changes a binding, no other threads will be  
+immediately interested in the new binding. So this too might actually  
+cut down on the number of MFENCE's in the execution stream.
+
+My understanding is that MFENCE is a potentially expensive operation  
+since it has to force all the MPU L1 caches to synchronize to memory,  
+or at least to L2 cache or higher. Hence you probably want to minimize  
+its use if possible. That might actually explain the lower CPU  
+utilization that we are seeing??
+
+As I say, my sample code goes both ways. And I highly doubt that there  
+is any need to do this at all from Lisp... but I could be wrong about  
+that. Perhaps the working sets of data are small enough to reside  
+entirely in L1 cache. Probably very dependent on coding style and what  
+your code is trying to accomplish.
+
+What we know right now is that doing both (1) and (2) works. Who  
+knows, perhaps doing only one or the other will produce a speedup.  
+I'll be checking that next.
+
+- DM

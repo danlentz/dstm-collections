@@ -1,0 +1,16 @@
+
+Yes... I find that if I place the sys:ensure-memory-after-store just  
+ahead of the reads (the defensive approach), my CPU utilization goes  
+upwards of 150-170%, and the code takes about 30 seconds for 5 million  
+iterations.
+
+Placing that MFENCE just after the rebindings drops the CPU  
+utilization a bit, and the same iterations take about 37 seconds.
+
+Interesting... at least for these highly preliminary results. I  
+wouldn't want to bet my life on these conclusions. But it is  
+interesting that the initial tests point toward doing the safer  
+approach and not relying on programmers to have flushed their bindings  
+to memory.
+
+- DM

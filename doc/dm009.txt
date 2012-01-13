@@ -1,0 +1,43 @@
+On Jan 15, 2010, at 15:00 PM, Raffael Cavallaro wrote:
+
+Just out of curiosity, what sort of performance improvement (if any) do you get using ordered mp:locks in your application as compared to simply having a single symbol-locking-macro  - for example:
+
+(eval-when (:compile-toplevel :load-toplevel :execute)
+ (sys:define-symbol-locking-macro atomically
+                                  #.(gensym "ATOMICALLY-SYBOL-LOCKING-GENSYM"))) 
+
+And then just using:
+(atomically (code-that-would-otherwise-take-locks-in-order-to-prevent-livelock...
+
+I ask because in my testing, even with up to 20 threads contending for a single sys:symbol-locking-macro it is still much faster than taking just 3 ordered locks. Taking more ordered locks is even slower.
+
+I looked for DEFINE-SYMBOL-LOCKING-MACRO, but it is not a documented feature in LW6. The expansion of the macro:
+
+(atomically form1 form2 form3) looks like this:
+
+(LET* ((#:SYMBOL27986 (LOAD-TIME-VALUE (SYSTEM::ENSURE-SYMBOL-FOR-LOCK '#:ATOMICALLY-SYMBOL-LOCKING-GENSYM27507))))
+  (PROGN
+    (PROGN (SYSTEM::CHECK-SYMBOL-FOR-LOCK #:SYMBOL27986))
+    (FLET ((SYSTEM::FORM-FUNC () (PROGN FORM1 FORM2 FORM3)) (SYSTEM::CLEANUPS-FUNC ()))
+      (SYSTEM::INVOKE-WITH-OBJECT-OFFSET-LOCKED #:SYMBOL27986 -1 #'SYSTEM::FORM-FUNC #'SYSTEM::CLEANUPS-FUNC))))
+
+So it appears to be some kind of (perhaps super-efficient) lock. I could not coax the expansion to produce anything in the CLEANUPS-FUNC. 
+
+But regardless, this is still some kind of locking, and allows only one thread in at a time. The same is true no matter what kind of lock is used.
+
+The question for us documented function users is: "Are locks in LW6 implemented more efficiently than in previous versions?". I have learned from discussions with Martin Simmons that you get better performance by avoiding interactions with the Lisp scheduler. And you do that by using things such as process-wait-local, use single-thread arrays and hash tables, and make use of condition variables and mailboxes which seem quite improved over previous implementations.
+
+And even more interesting, now that we all have multiple core machines, can we largely avoid exclusionary locking for much of the code? Can we permit multiple reader threads to venture into a region of shared memory and gain better performance than strictly serialized code? I suspect the answer is yes. And now there are new kinds of locks in LW6 that permit multiple readers and single writer access. 
+
+I had been looking to compare-and-swap for speedup, but now I think I just answered some of my own musings... 
+
+At any rate, I'd love to know more about symbol locking and such macros. But being undocumented makes me even more leery of using them. It is too easy to fall in love with a particular vendor's extensions, only to find that you dug yourself into a deep hole some months or years down the road when you have a machine for which LW is unavailable and you have to find an alternative. Much easier if you plane for portability from the outset.
+
+Up until LW6 I was able to take advantage of extensions by offering interface modules that could translate to equivalent functions found in other Lisp implementations. I called them MP-COMPATIBILITY packages: one for each flavor of Lisp -- LW, Allegro, SBCL, CCL...
+
+But now LW6 has raised the bar so high, that I doubt I can find or construct equivalent routines in any of these other platforms. Meh!
+
+[I love LW6! I really do... it is sooo tempting...]
+
+Dr. David McClain
+dbm <at> refined-audiometrics.com

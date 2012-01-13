@@ -1,0 +1,29 @@
+On Jan 15, 2010, at 11:36 PM, David McClain wrote:
+
+> The question for us documented function users is: "Are locks in LW6 implemented more efficiently than in
+previous versions?". I have learned from discussions with Martin Simmons that you get better
+performance by avoiding interactions with the Lisp scheduler. And you do that by using things such as
+process-wait-local, use single-thread arrays and hash tables, and make use of condition variables and
+mailboxes which seem quite improved over previous implementations.
+
+Right - this is the approach used by Apple's Grand Central Dispatch - instead of having a lock for a shared
+resource have a single serial queue for that shared resource. The LW equivalent would be to have an
+mp:process with a mailbox for the resource, and send it arbitrary messages for execution by that shared
+resource or mutation of the state of that shared resource.
+
+> At any rate, I'd love to know more about symbol locking and such macros. But being undocumented makes me
+even more leery of using them. It is too easy to fall in love with a particular vendor's extensions, only to
+find that you dug yourself into a deep hole some months or years down the road when you have a machine for
+which LW is unavailable and you have to find an alternative. Much easier if you plane for portability from
+the outset.
+
+True, and symbol-locking-macros do not come without cost - they are actually slower if held for too long -
+i.e., they are intended for situations where the task being executed while the symbol-lock is held are of
+short duration. If you're holding a symbol-lock for a significant amount of time and other threads are
+contending for it, it actually loses vs. an ordinary mp:lock.
+
+Thanks for including us in your thoughts on these things - it's always helpful to hear from others with lots
+of experience with LispWorks.
+
+Raffael Cavallaro
+raffaelcavallaro <at> me.com

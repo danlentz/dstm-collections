@@ -1,0 +1,18 @@
+
+Also... I'm not yet fully convinced that my little test routine  
+measures anything of importance. I just took out all the MFENCEs and  
+the code didn't give any indication of broken invariants. And the code  
+ran about the same speed (37 sec) as when placing MFENCE just after  
+rebindings of volatile slots.
+
+So it would be useful to have a discussion about valid test  
+approaches. This was just something I slapped together quickly. But  
+because the Herlihy DSTM allows data invariants to be violated in the  
+inside of atomic transactions, I had to quickly modify the code from  
+its original form and place the invariants query outside of the first  
+atomic transaction.
+
+But in so doing, have I compromised my tests? I still have to convince  
+myself that it really tests anything at all...
+
+- DM

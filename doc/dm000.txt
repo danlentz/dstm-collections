@@ -1,0 +1,24 @@
+Hi,
+
+I'm looking for a (portable) way to assign a total order to all Lisp  
+objects, regardless of type. The present context is in relation to  
+grabbing multiprocessing locks in a consistent order. But this problem  
+has reared its head numerous times in the past. The order need not be  
+consistent from one Lisp session to the next, but within one session  
+the order should be consistent and unambiguous.
+
+Hash tables seem to have some magic, in some implementations, so that  
+any Lisp object can be used as a key. Yet if you go by SXHASH, then  
+all the difficult types of objects get assigned to the same bucket.  
+There are implementations that do much better than this, but it is  
+implementation dependent, hence non-portable.
+
+In the past, I resorted to PRINC representations when all else failed.  
+But that is horribly slow. At other times I have used the network  
+serialization byte vector of objects -- but that only works for  
+portable objects, and it is even slower.
+
+Any ideas?
+
+Dr. David McClain
+dbm <at> refined-audiometrics.com

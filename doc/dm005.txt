@@ -1,0 +1,24 @@
+
+Hi Raffael,
+
+  (defmacro nlet (name bindings &body body)
+     (let ((args (mapcar #'first bindings))
+           (vals (mapcar #'second bindings)))
+       `(labels ((,name ,args ,@body))
+          (,name ,@vals))
+       ))
+
+And yes, you can easily substitute process-run-function for my  
+bfly:spawn, and some form of output logging, say to a window, for the  
+bfly:log-info calls. In fact, here is a simple window stream that I  
+like to use for debugging. The full Butterfly system does a lot of  
+plumbing when you launch a new process, with links, exit reporting,  
+and so on, and makes things like system services (:SYSTEM-LOG)  
+possible. But that isn't really needed for these simple kinds of  
+tests...  just a major convenience...
+
+I'm glad you are enjoying the code. It was just a quickie I threw  
+together last night to play with some honest-to-gosh non-locking MPU  
+code. And I have to say, I'm thinking pretty seriously about using  
+more of this kind of stuff for my other major systems. LW6 has  
+certainly raised the bar.

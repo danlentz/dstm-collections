@@ -1,0 +1,29 @@
+On Jan 16, 2010, at 12:22 PM, David McClain wrote:
+
+> Here is the code for the macros and a fresh copy of HDSTM without MPCOMPAT symbols. For LW6 they were almost
+all direct re-exports of imported MP symobls anyway. (Whew!, let me know if I left anything out...)
+
+1. collect-decls uses nlet (i.e., not nlet-tail) which I don't see in your code or in Doug Hoyte's LOL code. I
+assume this is just a macro for a scheme-like named-let, yes? I've rewritten collect-decls using loop,
+but I'd be happy to have your version of nlet.
+
+2. You appear to rely on some utilities from your butterfly package in your test code at the end. I appreciate
+that you may not want to publish butterfly, but could you let me know if my translation of the following into
+vanilla lispworks mp code is on the mark?
+
+bfly:log-info 
+(I assume this is just an ordinary logging function so this should be simple)
+
+bfly:spawn
+(I assume this is something like mp:process-run-function, but if there are significant differences, let
+me know)
+
+Anyway, using Doug Hoyte's LOL code (with some eval-whens added - apparently Doug Hoyte doesn't compile
+his code) and the modifications noted above I've gotten your HDSTM to compile and the test to run. FWIW, it
+consumes between ~125% - 175% cpu, I show no invariant violations while running, and when done, *nrolls*
+is 30458 and *ntrans* is 4030458. I'm running on a 2.53GHz Core2 Duo.
+
+Thanks again for sharing this - really interesting stuff!
+
+Raffael Cavallaro
+raffaelcavallaro <at> me.com

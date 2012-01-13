@@ -1,0 +1,30 @@
+
+Hello Raphael,
+
+Thanks for pointing out about the define-symbol-locking-macro. I was  
+completely unaware of it.
+
+I do have some initial observations about my haltingly forward  
+movement on DSTM... First off, I have yet to accomplish it without any  
+locks at all. But if I surround my read / write functions with spin- 
+locks, it works very well --- at least, that is to say, it never bombs  
+out, and CPU utilization goes all the way to the top - 200%.
+
+So much for getting the processors running together. However, I put in  
+an atomic-incf to count how many of the test cycles between two  
+(heavily) competing threads are being rolled back. And I find that  
+about half of the transactions are being rolled back. In other words,  
+I'm running 200% CPU to accomplish what could be done in 100%... Hmm...
+
+But the test code is clearly artificial. We know that reads outnumber  
+writes by at least 2:1. And in a system doing some real work (useful  
+work), it would not be hitting on shared memory items to such a heavy  
+extent. I find that with spin-locks in place of (non-spin?) locks, my  
+network distributed processing sees a small improvement, going from  
+about 1.49 ms per round-trip down to around 1.45 ms. What's that?  
+about 2-3%?
+
+I need to spend some time to see where this improvement arises from. I  
+think it has to do with grabbing pre-allocated buffers and putting  
+them back into the buffer pool. It can't be message passing, since  
+that is firmly fixed with MP:MAILBOX's.

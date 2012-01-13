@@ -1,0 +1,595 @@
+
+Here is the code for the macros and a fresh copy of HDSTM without  
+MPCOMPAT symbols. For LW6 they were almost all direct re-exports of  
+imported MP symobls anyway. (Whew!, let me know if I left anything  
+out...)
+
+I found that I could influence the number of rollbacks by varying the  
+placement of (read-var *a*) and (read-var *b*) in my little test  
+routines. Same with the placement of the write-var's. I'm seeing  
+anywhere from 0.04% to 16%, depending on those placements. Not too  
+surprising...
+
+But I am pleased that this works without any locking. The code I sent  
+earlier had some commented-out locking mechanisms. Uncommenting those  
+does not particularly change the rollback frequency, but it does shoot  
+the CPU to 200% solid. Without locks, we are gliding along for the  
+same work, over essentially the same clock duration, at CPU 50-100%.
+
+The likelihood of rollbacks is affected more by conflict policy than  
+anything else. My earlier versions of STM were based on traditional  
+transactional time-order (TO), and maintained invariants inside of  
+transactions. This new HDSTM is more efficient by far, but does not  
+maintain invariants inside of transactions. You might have to go all  
+the way to the end of a transaction to find out that your reads were  
+invalid.
+
+Cheers,
+
+- DM
+
+= 
+= 
+= 
+= 
+= 
+= 
+= 
+= 
+= 
+= 
+= 
+= 
+========================================================================
+(defmacro if-let ((var val) t-clause &optional f-clause)
+   `(let ((,var ,val))
+      (if ,var
+          ,t-clause
+        ,f-clause)))
+= 
+= 
+= 
+= 
+= 
+= 
+= 
+= 
+= 
+= 
+= 
+= 
+========================================================================
+;; -----------------------------------------------------------
+;; tools needed to support Doug Hoyte's DEFMACRO!
+
+(eval-when (:compile-toplevel :load-toplevel :execute)
+
+   ;; in ML these are referred to as sections
+   ;; these actually correspond to the Dylan operators
+   ;; secr ::= rcurry, secl ::= curry
+   (defun curry (fn &rest pref-args)
+     (lambda (&rest suf-args)
+       (apply fn (append pref-args suf-args))))
+
+   (defun rcurry (fn &rest suf-args)
+     (lambda (&rest pref-args)
+       (apply fn (append pref-args suf-args))))
+
+   (defun collect-if (predicate proseq &rest rest)
+     (apply 'remove-if-not predicate proseq rest))
+
+   ;; --------------------------------------------
+   ;; Bang-symbols
+   (defun bang-symbol-p (prefix s)
+     (and (symbolp s)
+          (> (length (symbol-name s)) 2)
+          (string= (symbol-name s) prefix
+                   :start1 0
+                   :end1   2)))
+
+   (defun get-bang-symbols (prefix body)
+     (remove-duplicates
+      (collect-if (curry #'bang-symbol-p prefix) (flatten body))))
+
+   (defun bang-symbol-name (s)
+     (subseq (symbol-name s) 2))
+
+   ;; --------------------------------------------
+
+   (defun raw-mkstr (&rest args)
+     (with-output-to-string (s)
+       (dolist (a args)
+         (princ a s))
+       ))
+
+   (defun mkstr (&rest args)
+     (with-standard-io-syntax
+       (apply #'raw-mkstr args)))
+
+   (defun correct-for-symbol-character-case (str)
+     ;; a portable way to make symbol strings
+     ;; Modern Mode vs ANSI
+     (if (eql #\a (char (string :a) 0))
+         (string-downcase (string str))
+       (string-upcase (string str))))
+
+   (defun intern-symbol (str &rest package)
+     (apply #'intern (correct-for-symbol-character-case str) package))
+
+   (defun symb (&rest args)
+     (values (intern-symbol (apply #'mkstr args))))
+
+   ;; --------------------------------------------
+   ;; Reader macro for #` for producing parameterized BQ lists
+   ;; Produces a function that can be applied to arguments
+
+   (defun |reader-for-#`| (stream sub-char numarg)
+     (declare (ignore sub-char))
+     (unless numarg (setq numarg 1))
+     (let ((a-args (loop for i from 1 to numarg
+                         collect (symb 'a i))))
+       `(lambda ,a-args
+          (declare (ignorable ,@a-args))
+          ,(funcall
+            (get-macro-character #\`) stream nil))))
+
+   (set-dispatch-macro-character
+    #\# #\` #'|reader-for-#`|)
+
+   ;; --------------------------------------------
+   ;; A-Bang symbols -- create anaphoric symbol names
+   ;; in package of macro expansion
+
+   (defmacro defmacro/a! (name args &body body)
+     (let ((syms (get-bang-symbols #.(symbol-name :A!) body)))
+       (if syms
+           `(defmacro ,name ,args
+              (let ,(mapcar #`(,a1 (intern ,(bang-symbol-name a1)))  
+syms)
+                ,@body))
+         `(defmacro ,name ,args ,@body))))
+
+   ;; --------------------------------------------
+   ;; G-Bang symbols -- auto generated gensyms
+
+   (defmacro defmacro/g! (name args &body body)
+     (let ((syms (get-bang-symbols #.(symbol-name :G!) body)))
+       (if syms
+           `(defmacro/a! ,name ,args
+              (let ,(mapcar #`(,a1 (gensym ,(bang-symbol-name a1)))  
+syms)
+                ,@body))
+         `(defmacro/a! ,name ,args ,@body))))
+
+   ;; --------------------------------------------
+   ;; O-Bang symbols -- once-only eval gensyms
+
+   (defun o!-symbol-to-g!-symbol (s)
+     (symb #.(symbol-name :G!)
+           (bang-symbol-name s)))
+
+   (defmacro defmacro! (name args &body body)
+     (let* ((os (get-bang-symbols #.(symbol-name :O!) args))
+            (gs (mapcar #'o!-symbol-to-g!-symbol os)))
+       ;; o-bang symbols can interfere with find-source
+       (if os
+           `(defmacro/g! ,name ,args
+              `(let ,(mapcar #'list (list ,@gs) (list ,@os))
+                 ,(progn
+                    ,@body)))
+         `(defmacro/g! ,name ,args ,@body)) ))
+
+   (defun collect-decls (forms)
+     (nlet iter ((forms forms)
+                 (decls nil))
+       (let ((form (car forms)))
+         (if (or (stringp form)
+                 (and (consp form)
+                      (eq (car form) 'declare)))
+             (iter (cdr forms) (cons form decls))
+           (values forms (nreverse decls))
+           ))))
+
+   (defmacro! nlet-tail (n letargs &rest body)
+     (let ((gs (mapcar (lambda (arg)
+                         (declare (ignore arg))
+                         (gensym))
+                       letargs))
+           (gsx (mapcar (lambda (arg)
+                          (declare (ignore arg))
+                          (gensym))
+                        letargs)))
+       (multiple-value-bind (body decls)
+           (collect-decls body)
+         `(macrolet
+              ((,n ,gs
+                 `(progn
+                    (psetq
+                     ,@(apply #'nconc
+                              (mapcar
+                               #'list
+                               ',gsx
+                               (list ,@gs))))
+                    (go ,',g!n))))
+            (block ,g!b
+              (let ,(mapcar #2`(,a1 ,(cadr a2)) gsx letargs)
+                (tagbody
+                 ,g!n
+                 (let ,(mapcar #2`(,(car a2) ,a1) gsx letargs)
+                   ,@decls
+                   (return-from
+                       ,g!b (progn ,@body))))))))))
+
+   ) ;; eval-when
+
+= 
+= 
+= 
+= 
+= 
+= 
+= 
+= 
+= 
+= 
+= 
+= 
+========================================================================
+
+;; herlihy-dstm.lisp -- Software Transactional Memory after Herlify,  
+et. al.
+;;
+;; See paper: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.59.8787&rep=rep1&type=pdf
+;;
+;; DM/RAL  01/10
+;;  
+-------------------------------------------------------------------------
+
+(defpackage :hdstm
+   (:use #:common-lisp)
+   (:export
+    ))
+
+(in-package :hdstm)
+
+(defclass dstm-ref ()
+   ((cell  :accessor dstm-ref-cell  :initform nil  :initarg :cell)
+    ))
+
+(defclass dstm-val ()
+   ((old   :reader   dstm-val-old   :initform nil  :initarg :old)
+    (new   :accessor dstm-val-new   :initform nil  :initarg :new)
+    (trans :reader   dstm-val-trans :initform nil  :initarg :trans)
+    ))
+
+(defclass transaction ()
+   ((state  :accessor transaction-state :initform :active)
+    (reads  :accessor transaction-reads :initform nil)
+    ))
+
+(defun create-var (&optional val)
+   (make-instance 'dstm-ref
+                  :cell (make-instance 'dstm-val
+                                       :new val)))
+;; ----------------------------------------------------
+
+(defmacro volatile (&body body)
+   `(progn
+      (sys:ensure-memory-after-store)
+      ,@body))
+
+(defmacro flush-volatile (&body body)
+   `(prog1
+        (progn
+          ,@body)
+      (sys:ensure-memory-after-store)))
+
+;; ----------------------------------------------------
+
+(defun current-transaction ()
+   (unless mp:*current-process*
+     (error "Multiprocessing not running") )
+   (mp:process-private-property 'transaction))
+
+(defun set-current-transaction (trans)
+   (setf (mp:process-private-property 'transaction) trans))
+
+;; ----------------------------------------------------
+
+(define-condition rollback-exn ()
+   ())
+
+(defun set-state (trans new-state)
+   (um:nlet-tail iter ()
+     (let ((old-state (volatile (transaction-state trans))))
+       (unless (or (eq old-state new-state)
+                   (flush-volatile
+                     (sys:compare-and-swap (slot-value trans 'state)
+                                           old-state new-state)))
+         (iter)) )) )
+
+(defun abort-transaction (trans)
+   (set-state trans :ABORTED)
+   (setf (transaction-reads trans) nil))
+
+(defvar *nrolls* 0)
+
+(defun rollback (trans)
+   (when trans
+     (sys:atomic-incf *nrolls*)
+     (abort-transaction trans)
+     (when (eq trans (current-transaction))
+       (error (make-condition 'rollback-exn)))))
+
+(defun check-reads (trans)
+   (dolist (pair (shiftf (transaction-reads trans) nil))
+     (destructuring-bind (var . vref) pair
+       (let ((vnow (volatile (dstm-ref-cell var))))
+         (unless (or (eq vref vnow)
+                     (eq trans (dstm-val-trans vnow)))
+           (rollback trans)) ))))
+
+(defun commit ()
+   (let ((trans (current-transaction)))
+     (unless (eq :ACTIVE (volatile (transaction-state trans)))
+       (rollback trans))
+     (check-reads trans)
+     (set-state trans :COMMITTED)))
+
+;; ----------------------------------------------------
+
+(defun current-value (vref)
+   (let ((vtrans (dstm-val-trans vref)))
+     (if (and vtrans
+              (eq :ABORTED (volatile (transaction-state vtrans))))
+         (dstm-val-old vref)
+       ;; else
+       (dstm-val-new vref))))
+
+;; ----------------------------------------------------
+
+(defun conflict-manager-for-read (trans1 trans2)
+   (declare (ignore trans1 trans2))
+   ;; either rollback trans1 - the reader and don't return
+   ;; or else rollback trans2 - the writer and do return
+   ;; or... just wait and return
+   ;; (sleep 0.01)
+   )
+
+(defun conflict-manager-for-write (trans1 trans2)
+   (declare (ignore trans2))
+   ;; either rollback trans1 - the new writer and don't return
+   ;; or else rollback trans2 - the old writer and do return
+   ;; or... just wait and return
+   (rollback trans1))
+
+;; ----------------------------------------------------
+
+(defun read-var (var)
+   (let ((trans (current-transaction)))
+     (um:nlet-tail iter ()
+       (let* ((vref   (volatile (dstm-ref-cell var)))
+              (vtrans (dstm-val-trans vref)))
+
+         (cond
+          ((null trans)
+           (current-value vref))
+
+          ((eq :ABORTED (volatile (transaction-state trans)))
+           (rollback trans)) ;; force a rollback exception
+
+          ((and vtrans
+                (not (eq trans vtrans))
+                (eq :ACTIVE (volatile (transaction-state vtrans))))
+           (conflict-manager-for-read trans vtrans)
+           (iter)) ;; spin-wait for writer to finish
+
+          (t
+           (push (cons var vref) (transaction-reads trans))
+           (current-value vref))
+          )))))
+
+(defun write-var (var val)
+   (let ((trans  (current-transaction)))
+     (um:nlet-tail iter ()
+       (let* ((vref   (volatile (dstm-ref-cell var)))
+              (vtrans (dstm-val-trans vref)))
+         (cond
+          ((and trans
+                (eq :ABORTED (volatile (transaction-state trans))))
+           ;; need this inside the loop in case other thread aborts my
+           ;; transaction
+           (rollback trans)) ;; force rollback exception
+
+          ((or (null trans)
+               (eq trans vtrans))
+           (flush-volatile (setf (dstm-val-new vref) val)))
+
+          ((and vtrans
+                (eq :ACTIVE (volatile (transaction-state vtrans))))
+           (conflict-manager-for-write trans vtrans)
+           (iter)) ;; default spin-wait for other owner to finish
+
+          (t
+           (let ((oldv (current-value vref)))
+             (unless (flush-volatile
+                       (volatile
+                         (sys:compare-and-swap (slot-value var 'cell)  
+vref
+                                               (make-instance 'dstm-val
+                                                              :old    
+oldv
+                                                              :new   val
+                                                              :trans  
+trans))))
+               (iter)
+               )))
+          )))))
+
+;; --------------------------------------------------
+
+(defvar *ntrans* 0)
+
+(defun do-atomic (fn)
+   ;; Perform the function fn under a transaction, allowing restart
+   ;; when needed
+   (if (current-transaction) ;; nested transaction?
+       (funcall fn)
+
+     ;; else - fresh transaction
+     (loop
+      (set-current-transaction (progn
+                                 (sys:atomic-incf *ntrans*)
+                                 (make-instance 'transaction)))
+      (handler-case
+          (return-from do-atomic
+            (prog1
+                (funcall fn)
+              (commit)
+              (set-current-transaction nil)))
+
+          (rollback-exn (exn)
+            (declare (ignore exn)))
+
+          #| |#
+          (error (exn)
+            (abort-transaction (current-transaction))
+            (set-current-transaction nil)
+            (error exn))
+          #| |#
+          ))))
+
+(defmacro atomic (&body body)
+   `(do-atomic (lambda () ,@body)))
+
+(defun show-rolls ()
+   (list *nrolls* *ntrans* (/ *nrolls* *ntrans* 0.01)))
+
+;; ---------------------------------------------------------------
+
+(defun do-orelse (&rest fns)
+   ;; Perform one of the functions in the list fns.  The list is
+   ;; examined in order, front to back.  The first one to succeed is
+   ;; the sub-transaction accepted.  If none succeed, or the overall
+   ;; transaction fails, the the whole thing is restarted.
+   (if (current-transaction)
+       (progn
+         (dolist (fn fns)
+           (handler-case
+               (return-from do-orelse
+                 (funcall fn))
+
+             (rollback-exn (exn)
+               (declare (ignore exn)))
+
+             (error (exn)
+               (abort-transaction (current-transaction))
+               (set-current-transaction nil)
+               (error exn))))
+
+         (rollback (current-transaction)))
+
+     ;; else - fresh transaction
+     (loop
+      (set-current-transaction (make-instance 'transaction))
+      (dolist (fn fns)
+        (handler-case
+            (return-from do-orelse
+              (prog1
+                  (funcall fn)
+                (commit)
+                (set-current-transaction nil)))
+
+            (rollback-exn (exn)
+              (declare (ignore exn)))
+
+            (error (exn)
+              (abort-transaction (current-transaction))
+              (set-current-transaction nil)
+              (error exn))
+            )) )) )
+
+(defmacro orelse (&rest clauses)
+   `(apply #'do-orelse
+     ,(mapcar (lambda (clause)
+                `(lambda ()
+                   ,clause))
+              clauses)))
+
+;; ---------------------------------------------------
+;; Test it out... hopefully lots of contention... yep!
+#|
+
+(defvar *a* (create-var 0))
+(defvar *b* (create-var 0))
+
+(defun check-invariant (&aux a b)
+   (atomic
+     (setf a (read-var *a*)
+           b (read-var *b*)
+           ))
+     (unless (= b (* 2 a))
+       (bfly:log-info :SYSTEM-LOG "Invariant broken: A = ~A, B = ~A" a  
+b)))
+
+(defun common-code (delta)
+   (atomic
+     (let ((a (+ delta (read-var *a*))))
+       (write-var *a* a)
+       (write-var *b* (* 2 a))
+       ))
+   (check-invariant))
+
+(defun count-up ()
+   (loop repeat 1000000 do (common-code 1)))
+
+(defun count-down ()
+   (loop repeat 1000000 do (common-code -1)))
+
+(progn
+   (bfly:log-info :SYSTEM-LOG "Start HDSTM Test...")
+   (setf *a* (create-var 0)
+         *b* (create-var 0))
+   (setf *nrolls* 0)
+   (setf *ntrans* 0)
+   (set-current-transaction nil)
+   ;; (common-code 1)
+   ;; (count-up)
+   (bfly:spawn #'count-up)
+   ;; (common-code 1)
+   (bfly:spawn #'count-down)
+   )
+
+|#
+
+On Jan 16, 2010, at 09:36 AM, Raffael Cavallaro wrote:
+
+>
+>
+> On Jan 16, 2010, at 10:21 AM, David McClain wrote:
+>
+>> If you are really interested in this, I'll make my version of  
+>> um:nlet-tail available -- it comes from Doug Hoyte's book, "Let  
+>> Over Lambda".]
+>
+> Yes, please post that as well as um:let-if.
+>
+> In addition, your code appears to use an mpcompat package of some  
+> sort. Do you have a pointer to that?
+>
+> warmest regards,
+>
+> Ralph
+>
+>
+> Raffael Cavallaro
+> raffaelcavallaro <at> me.com
+>
+>
+>
+>
+>
+>
+
+Dr. David McClain
+dbm <at> refined-audiometrics.com
