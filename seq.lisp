@@ -150,6 +150,12 @@
 
 
 (defun mapi (f seq)
+  "seq:mapi is functionally identical to map:mapi, with the exception that a new seq is
+   constructed and returned rather than a map.  seq:mapi, however, is not exported as part
+   of the public interface, as the keys of a seq are managed internally in order to
+   manipulate the lexical order of the elements of a seq, and are not user-visible.  That
+   said, it is extremely useful when implementing new types of sequence operations
+   that may themselves be exported in the public interface as an extension to this library"
   (cond
     ((null seq) nil)
     (t (let (new-seq)
@@ -161,6 +167,9 @@
 
 
 (defun concat (s0 &rest args)
+  "return a new sequence that consists of all elements of s0 followed by all elements of
+   each of the supplied additional sequences, in order, from left to right.  Any number
+   of sequences may be concatenated in a single call."
   (let ((max-key-s0 (max-key s0))
          (min-key-s1 (if args (min-key (car args)) 0)))        
     (cond
@@ -175,6 +184,9 @@
 
 
 (defun map (f seq)
+  "return a new seq that contains the result of applying f to each element of seq,
+   in the same lexical order.  The underlying structure of the collection rb-tree
+   is unaffected.  Operates in a manner analogous to cl:mapcar."
    (cond ((null seq) nil)
      (t (let (new-seq)
           (dolist (elem (set:elements seq))
@@ -186,6 +198,9 @@
 
 
 (defun make (&optional (from (seq:empty)))
+  "end-user api for construction of a new seq optionally initialized to contain
+   elements derived from various types of source data, with preservation of the
+   original order in such cases where the concept of lexical ordering applies."
   (etypecase from
     (null     (seq:empty))
     (cl:list  (let (seq)
@@ -200,10 +215,19 @@
 
 
 (defun elt (index seq)
+  "return the element of seq at position index, which should be a positive integer
+   as would apply in a manner analogous to using cl:elt on a built-in sequence type"
   (cl:elt (seq:list seq) index))
 
 
 (defun reduce (fn seq &key key from-end (start 0) end initial-value)
+  "combines the elements of seq according to function and returns the result.
+   for example, a sequence of numbers may be reduced using function #'+ which
+   would return the result of adding them all together.  reduction using #'cl:max
+   would return the largest.  In the simplest type of invocation, if the elements
+   of seq are #[a b c d] calling reduce is equivalent to (fn (fn (fn a b) c) d).
+   All options of #'cl:reduce are supported as it is what is used in the underlying
+   implementation of #'seq:reduce"
   (cl:reduce fn (seq:list seq)
     :key key
     :from-end from-end
