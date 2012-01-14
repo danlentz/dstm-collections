@@ -66,8 +66,8 @@
     t))
 
 
-(deftype tree:type (thing)
-  '(satisfies #'tree:typep thing))
+(deftype tree:type ()
+  `(satisfies tree:typep))
 
 
 (defun create (l v r &optional (hl (height l)) (hr (height r)))

@@ -8,6 +8,10 @@
    (import '(tree:cons-enum)))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; mapped pair
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defclass map-cell ()
    ((key  :accessor map-cell-key  :initform nil :initarg :key :documentation "domain constituent")
      (val  :accessor map-cell-val  :initform nil :initarg :val :documentation "range constituent"))
@@ -18,6 +22,24 @@
   "convenience api routine for map-cell initialization"
   (apply #'make-instance 'map-cell args))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; map:type
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun map:typep (thing)
+  (or
+    (null thing)
+    (and (tree:typep thing) (cl:typep (tree:rb-tree-v thing) 'map-cell))))
+
+
+(deftype map:type ()
+  `(satisfies map:typep))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; map related ordinality
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod ord:compare ((a map-cell) (b map-cell))
   "ordinal comparison of two map cells -- used by set:add"
