@@ -18,10 +18,10 @@
 
 
 (defvar *transaction* nil)
-(export '*transaction*)
+
 
 (defclass transaction ()
-  ((state   :accessor transaction-state  :initform :active  :initarg :state)
+  ((state   :accessor transaction-state  :initform :active :initarg :state)
     (root   :reader   transaction-root   :initform nil)
     (reads  :accessor transaction-reads  :initform nil)
     (subs   :accessor transaction-subs   :initform nil)
@@ -29,24 +29,21 @@
 
 
 (defun current-transaction ()
-  (unless
-    #+lispworks mp:*current-process*
-    #+sbcl      sb-thread:*current-thread*
-    (error "Multiprocessing not running"))
-  #+lispworks
-  (mp:process-private-property 'dstm:*transaction*)
-  #+sbcl
-  (sb-thread:symbol-value-in-thread 'dstm::*transaction* sb-thread:*current-thread* nil)
-  )
+  (unless (bt:current-thread) 
+    (warn "Starting Multiprocessing")
+    (bt:start-multiprocessing))
+  #+lispworks (mp:process-private-property 'dstm:*transaction*)
+  #+sbcl (sb-thread:symbol-value-in-thread 'dstm:*transaction* sb-thread:*current-thread* nil))
 
 
 (defun (setf current-transaction) (trans)
-  #+lispworks
-   (setf (mp:process-private-property 'dstm:*transaction*) trans)
-  #+sbcl
-  (setf (sb-thread:symbol-value-in-thread 'dstm::*transaction* sb-thread:*current-thread* nil)
-    trans)
-  )
+  (unless (bt:current-thread) 
+    (warn "Starting Multiprocessing")
+    (bt:start-multiprocessing))
+  (setf
+    #+lispworks (mp:process-private-property 'dstm:*transaction*) 
+    #+sbcl (sb-thread:symbol-value-in-thread 'dstm:*transaction* sb-thread:*current-thread* nil)
+    trans))
 
 
 (defmethod initialize-instance :after ((trans transaction) &key &allow-other-keys)
