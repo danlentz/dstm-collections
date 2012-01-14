@@ -843,6 +843,49 @@
       (is (eql (gethash (map::map-cell-key cell) hash-table) (map::map-cell-val cell))))))
       
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SEQ
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(def (suite* e) (seq :in dstm-collections))
+
+
+(def test check-collection-types-and-type-predicates ()
+  (is  (seq:typep  (set:singleton (seq::make-seq-cell))))
+  (is  (tree:typep (set:singleton (seq::make-seq-cell))))
+  (is  (set:typep  (set:singleton (seq::make-seq-cell))))
+  (is  (map:typep  (set:singleton (seq::make-seq-cell))))
+
+  (is  (cl:typep (set:singleton (seq::make-seq-cell))   'seq:type))
+  (is  (cl:typep (set:singleton (seq::make-seq-cell))   'tree:type))
+  (is  (cl:typep (set:singleton (seq::make-seq-cell))   'map:type))
+  (is  (cl:typep (set:singleton (seq::make-seq-cell))   'set:type))
+
+  (is  (not (seq:typep  (set:singleton (map::make-map-cell)))))
+  (is  (tree:typep (set:singleton (map::make-map-cell))))
+  (is  (set:typep  (set:singleton (map::make-map-cell))))
+  (is  (map:typep  (set:singleton (map::make-map-cell))))
+
+  (is  (not (cl:typep (set:singleton (map::make-map-cell))   'seq:type)))
+  (is  (cl:typep (set:singleton (map::make-map-cell))        'tree:type))
+  (is  (cl:typep (set:singleton (map::make-map-cell))        'map:type))
+  (is  (cl:typep (set:singleton (map::make-map-cell))        'set:type))
+
+  (is  (set:typep       nil))
+  (is  (map:typep       nil))
+  (is  (seq:typep       nil))
+  (is  (not (tree:typep nil)))
+
+  (is  (tree:typep      (set:singleton 0)))
+  (is  (set:typep       (set:singleton 0)))
+  (is  (not (map:typep  (set:singleton 0))))
+  (is  (not (seq:typep  (set:singleton 0))))
+
+  (is  (not (cl:typep (set:singleton 5)            'seq:type)))
+  (is  (not (cl:typep (set:singleton 5)            'map:type)))
+  (is  (cl:typep (set:singleton 5)                 'tree:type))
+  (is  (cl:typep (set:singleton 5)                 'set:type)))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
