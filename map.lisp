@@ -58,8 +58,8 @@
     (t                        (let ((a-elem (tree:rb-tree-v a))
                                      (b-elem (tree:rb-tree-v b)))
                                 (if (and
-                                      (typep a-elem 'map-cell)
-                                      (typep b-elem 'map-cell))
+                                      (cl:typep a-elem 'map-cell)
+                                      (cl:typep b-elem 'map-cell))
                                   (map:compare a b)
                                   (set:compare a b))))))
 
