@@ -100,14 +100,44 @@
   (is (not (ord:compare= greater lesser))))
   
 (def test check-compare-ordinality-types ()
-  (check-compare-ordinality #\a #\z)
-  (check-compare-ordinality 1 2)
-  (check-compare-ordinality "aardvark" "zebra")
-  (check-compare-ordinality :aardvark :zebra)
-  (check-compare-ordinality '#:aardvark '#:zebra)
-  (check-compare-ordinality 'aardvark 'zebra)
-  (check-compare-ordinality (find-package :common-lisp) (find-package :keyword))
-  (check-compare-ordinality #p"/tmp/aardvark" #p"/tmp/zebra"))
+  (progn 
+    (check-compare-ordinality #\a  #\z)
+    (check-compare-ordinality 1    2)
+    (check-compare-ordinality 10   20)
+    (check-compare-ordinality 10.0 20.0)
+    (check-compare-ordinality 10   20.0)
+    (check-compare-ordinality 10.0 20)
+    (check-compare-ordinality  0   :x)
+    (check-compare-ordinality 'x   :x)
+    (check-compare-ordinality 10.0 'x)
+    (check-compare-ordinality :x   10.0)
+    (check-compare-ordinality "aardvark" "zebra")
+    (check-compare-ordinality :aardvark :zebra)
+    (check-compare-ordinality '#:aardvark '#:zebra)
+    (check-compare-ordinality 'aardvark 'zebra)
+    (check-compare-ordinality
+      (make-instance 'standard-object)
+      (make-instance 'standard-object))
+    (check-compare-ordinality
+      (make-instance 'quad:abstract-quad)
+      (make-instance 'standard-object))
+    (check-compare-ordinality
+      (make-instance 'quad:abstract-quad :a 0)
+      (make-instance 'quad:abstract-quad :a 10))
+    (check-compare-ordinality
+      (make-instance 'quad:abstract-quad :a 10 :b 10 :c 0)
+      (make-instance 'quad:abstract-quad :a 10 :b 10 :c 10))
+    (check-compare-ordinality
+      (make-instance 'quad:abstract-quad :a 10 :b 10 :c 10 :d 0)
+      (make-instance 'quad:abstract-quad :a 10 :b 10 :c 10 :d 10))
+    (check-compare-ordinality
+      (make-instance 'quad:abstract-quad :a 10 :b 0  :c 10 :d 10)
+      (make-instance 'quad:abstract-quad :a 10 :b 10 :c 10 :d 10))  
+    (check-compare-ordinality
+      (make-instance 'quad:abstract-quad :a 1)
+      (make-instance 'quad:abstract-quad))
+    (check-compare-ordinality (find-package :common-lisp) (find-package :keyword))
+    (check-compare-ordinality #p"/tmp/aardvark" #p"/tmp/zebra")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TREE
@@ -677,7 +707,7 @@
             ))))
 
 
-(def test check-equality-randomly-constructed-sets ()
+(def test check-equal-randomly-constructed-sets ()
   (let (random-set0 random-set1 random-list)
     (loop
       :for i :from 1 :to 256
@@ -696,6 +726,33 @@
       (is (set:equal random-set0 random-set1)))
     (is (null (or random-set0 random-set1)))))
     
+
+(def test check-compare-set-ordinality ()
+  (let ((random-set (make-random-set 128))
+         (integer-set (make-integer-set 128)))
+    (is (eql  0 (set:compare random-set  random-set)))
+    (is (eql  0 (set:compare integer-set  integer-set)))
+    (is (eql  0 (set:compare nil         nil)))
+    (check-compare-ordinality (set:empty)                       random-set)
+    (check-compare-ordinality random-set  (set:remove-min-elt   random-set))
+    (check-compare-ordinality integer-set (set:remove-min-elt   integer-set))
+    (check-compare-ordinality (set:remove-max-elt random-set)   random-set)
+    (check-compare-ordinality (set:remove-max-elt integer-set)  integer-set)
+    (check-compare-ordinality (set:singleton 0) integer-set)
+    (check-compare-ordinality (set:singleton 1) integer-set)
+    (tree:lvrh (l v r h) integer-set
+      (is (eql  0 (set:compare l l)))
+      (is (eql  0 (set:compare r r)))
+      (check-compare-ordinality l r)
+      (check-compare-ordinality l integer-set)
+      (check-compare-ordinality integer-set r))
+    (tree:lvrh (l v r h) random-set
+      (is (eql  0 (set:compare l l)))
+      (is (eql  0 (set:compare r r)))
+      (check-compare-ordinality l r)
+      (check-compare-ordinality l random-set)
+      (check-compare-ordinality random-set r))))     
+  
 
 (def test check-elements-random-set ()
   (let (random-set random-list)
@@ -761,7 +818,7 @@
             (setf integer-map (map:add i (* 2 i) integer-map))))
     (loop
       :for i :from 1 :to 128
-      :do (is (eql (* 4 i) (map:find i (map:map #'(lambda (x) (* 2 x)) integer-map))))))
+      :do (is (eql (* 4 i) (map:find i (map:map #'(lambda (x) (* 2 x)) integer-map)))))))
 
   
 (def test check-mapi-integer-map ()
@@ -785,7 +842,8 @@
     (dolist (cell (set:elements integer-map))
       (is (eql (gethash (map::map-cell-key cell) hash-table) (map::map-cell-val cell))))))
       
-      
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; DSTM 
