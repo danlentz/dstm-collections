@@ -9,7 +9,7 @@
     :hu.dwim.stefil
     :hu.dwim.def
     :hu.dwim.defclass-star)
-  (:export :dstm-collections :quad :ord :tree :set :map :dstm))
+  (:export :dstm-collections :quad :ord :tree :set :map :seq :dstm))
 
 (in-package :dstm-collections-test)
 
@@ -165,12 +165,14 @@
     (is (eql (slot-value x 'quad:c) (slot-value y 'quad:c)))
     (is (eql (slot-value x 'quad:d) (slot-value y 'quad:d)))))
 
+
 (def test check-rb-tree-class-constituent-accessors ()
   (let ((x (tree:make-rb-tree :l :a :v :b :r :c :h :d)))
     (is (eql (tree:rb-tree-l x) :a))
     (is (eql (tree:rb-tree-v x) :b))
     (is (eql (tree:rb-tree-r x) :c))
     (is (eql (tree:rb-tree-h x) :d))))
+
 
 (def test check-height-create-tree-with-subtrees ()
   (is (eql 1 (tree:height (tree:create nil 0 nil))))
@@ -181,6 +183,7 @@
                             8
                             (tree:create nil 16
                               (tree:create nil 32 nil)))))))
+
 
 (def test check-destructuring-macro-lr ()
   (tree:lr (l r) (tree:create nil 1 nil)
@@ -405,8 +408,8 @@
       :for i :from 1 :to 64
       :do (progn
             (setf integer-set (set:add i integer-set))
-            (is (eql (set:min-elt  integer-set) 1))
-            (is (eql (set:max-elt  integer-set) i))
+            (is (eql (set:min  integer-set) 1))
+            (is (eql (set:max  integer-set) i))
             (is (eql (set:cardinal integer-set) i))))))
 
 
@@ -427,7 +430,7 @@
     (loop
       :for i :from 1 :to 64
       :do (progn
-            (setf integer-set (set:remove-min-elt integer-set))
+            (setf integer-set (set:remove-min integer-set))
             (is (eql (set:cardinal integer-set) (- 64 i)))
             (is (not (set:mem i integer-set)))))
     (is (null integer-set))))
@@ -734,10 +737,10 @@
     (is (eql  0 (set:compare integer-set  integer-set)))
     (is (eql  0 (set:compare nil         nil)))
     (check-compare-ordinality (set:empty)                       random-set)
-    (check-compare-ordinality random-set  (set:remove-min-elt   random-set))
-    (check-compare-ordinality integer-set (set:remove-min-elt   integer-set))
-    (check-compare-ordinality (set:remove-max-elt random-set)   random-set)
-    (check-compare-ordinality (set:remove-max-elt integer-set)  integer-set)
+    (check-compare-ordinality random-set  (set:remove-min   random-set))
+    (check-compare-ordinality integer-set (set:remove-min   integer-set))
+    (check-compare-ordinality (set:remove-max random-set)   random-set)
+    (check-compare-ordinality (set:remove-max integer-set)  integer-set)
     (check-compare-ordinality (set:singleton 0) integer-set)
     (check-compare-ordinality (set:singleton 1) integer-set)
     (tree:lr (l r) integer-set
@@ -889,13 +892,13 @@
 
 #|
 
-(seq:create)
-(seq:list (seq:create t))
-(seq:list (seq:create '(1 2 3 4 5)))
-(seq:list (seq:create (seq:create '(1 2 3 4 5))))
-(seq:list (seq:create (seq:create #(1 2 3 4 5))))
-(seq:list (seq:create (seq:create "bababooey")))
-(seq:list (seq:create (set:add 5 (set:add 9 nil))))
+(seq:make)
+(seq:list (seq:make t))
+(seq:list (seq:make '(1 2 3 4 5)))
+(seq:list (seq:make (seq:make '(1 2 3 4 5))))
+(seq:list (seq:make (seq:make #(1 2 3 4 5))))
+(seq:list (seq:make (seq:make "bababooey")))
+(seq:list (seq:make (set:add 5 (set:add 9 nil))))
 (seq:list (seq:concat
             (push 1 (push 2 (push 3)))
             (seq:map #'- (push 1 (push 2 (push 3))))
@@ -903,12 +906,12 @@
 
 
 
-(is (eql 0 (seq:compare (seq:create '(1 2 3 4 5)) (seq:create '(1 2 3 4 5)))))
-(is (seq:equal (seq:create '(1 2 3 4 5)) (seq:create '(1 2 3 4 5))))
-(is (eql 1 (seq:compare (seq:create '(2 3 4 5)) (seq:create '(1 2 3 4 5)))))
-(is (eql -1 (seq:compare (seq:create '(1 2 3 4 5)) (seq:create '(2 3 4 5)))))
-(is (eql 1 (seq:compare (seq:create '(10 20 30 40 50)) (seq:create '(1 2 3 4 5)))))
-(is (eql -1 (seq:compare  (seq:create '(1 2 3 4 5)) (seq:create '(10 20 30 40 50)))))
+(is (eql 0 (seq:compare (seq:make '(1 2 3 4 5)) (seq:make '(1 2 3 4 5)))))
+(is (seq:equal (seq:make '(1 2 3 4 5)) (seq:make '(1 2 3 4 5))))
+(is (eql 1 (seq:compare (seq:make '(2 3 4 5)) (seq:make '(1 2 3 4 5)))))
+(is (eql -1 (seq:compare (seq:make '(1 2 3 4 5)) (seq:make '(2 3 4 5)))))
+(is (eql 1 (seq:compare (seq:make '(10 20 30 40 50)) (seq:make '(1 2 3 4 5)))))
+(is (eql -1 (seq:compare  (seq:make '(1 2 3 4 5)) (seq:make '(10 20 30 40 50)))))
 
 
 |#
@@ -991,8 +994,12 @@
   (let ((start (local-time:now))
          (procs
            (list
-             (bt:make-thread (funcall #'count-down iterations) :name "down")
-             (bt:make-thread (funcall #'count-up   iterations) :name "up"))))
+             (bt:make-thread (funcall #'count-down iterations)
+               :name "down"
+               :initial-bindings '((*transaction* . nil)))
+             (bt:make-thread (funcall #'count-up   iterations)
+               :name "up"
+               :initial-bindings '((*transaction* . nil))))))
 
     (loop
       :while (some #'sb-thread:thread-alive-p procs)
