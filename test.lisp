@@ -887,6 +887,32 @@
   (is  (cl:typep (set:singleton 5)                 'set:type)))
 
 
+#|
+
+(seq:create)
+(seq:list (seq:create t))
+(seq:list (seq:create '(1 2 3 4 5)))
+(seq:list (seq:create (seq:create '(1 2 3 4 5))))
+(seq:list (seq:create (seq:create #(1 2 3 4 5))))
+(seq:list (seq:create (seq:create "bababooey")))
+(seq:list (seq:create (set:add 5 (set:add 9 nil))))
+(seq:list (seq:concat
+            (push 1 (push 2 (push 3)))
+            (seq:map #'- (push 1 (push 2 (push 3))))
+            (seq:dup (seq:map #'princ-to-string (push 1 (push 2 (push 3)))))))
+
+
+
+(is (eql 0 (seq:compare (seq:create '(1 2 3 4 5)) (seq:create '(1 2 3 4 5)))))
+(is (seq:equal (seq:create '(1 2 3 4 5)) (seq:create '(1 2 3 4 5))))
+(is (eql 1 (seq:compare (seq:create '(2 3 4 5)) (seq:create '(1 2 3 4 5)))))
+(is (eql -1 (seq:compare (seq:create '(1 2 3 4 5)) (seq:create '(2 3 4 5)))))
+(is (eql 1 (seq:compare (seq:create '(10 20 30 40 50)) (seq:create '(1 2 3 4 5)))))
+(is (eql -1 (seq:compare  (seq:create '(1 2 3 4 5)) (seq:create '(10 20 30 40 50)))))
+
+
+|#
+                
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; DSTM 

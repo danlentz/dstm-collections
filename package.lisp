@@ -34,7 +34,7 @@
 
 (defpackage :tree
   (:use #:common-lisp #:quad)
-  (:shadow #:merge #:typep #:type)
+  (:shadow #:merge #:typep #:type# #+() #:min #+() #:max)
   (:export
     #:rb-tree
     #:make-rb-tree
@@ -127,27 +127,28 @@
 (defpackage :seq
   (:shadow  #:push  #:pop    #:first    #:second    #:third    #:elt #:butlast
     #:last  #:rest  #:length    #:map    #:equal    #:dup      #:typep #:list
-    #:type)
+    #:type #:reduce)
   (:use #:common-lisp)
   (:export
     #:empty
     #:is-empty
+    #:create
     #:push
-    #:pushend
+    #:add
     #:first
     #:last
     #:rest
     #:list
     #:length
-    #:concat
-    #:elt
-    #:map
-    #:compare
-    #:equal
-    #:fold
     #:dup
     #:typep
-    #:type
+    #:type    
+    #:concat
+    #:map
+    #:elt
+    #:compare
+    #:equal
+    #:reduce
     ))
 
     
