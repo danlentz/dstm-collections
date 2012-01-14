@@ -4,12 +4,6 @@
 
 (in-package :tree)
 
-#+()
-(eval-when (:compile-toplevel :load-toplevel :execute)
-   (import '(set:height
-             set:add
-             set:min-elt
-             set:remove-min-elt)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Conditions
@@ -29,14 +23,34 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defclass rb-tree (abstract-quad)
-  ((quad:a   :accessor rb-tree-l  :initform nil  :initarg :l)
-    (quad:b   :accessor rb-tree-v  :initform nil  :initarg :v)
-    (quad:c   :accessor rb-tree-r  :initform nil  :initarg :r)
-    (quad:d   :accessor rb-tree-h  :initform 1    :initarg :h))
-  (:documentation "Sets are represented by balanced binary trees The
- heights of children differ by at most 2.  Tree nodes are
- quadruples (l v r h) where: - l = left child, - v = value, - r =
- right child, - h = height"))
+  ((quad:a
+     :accessor rb-tree-l
+     :initform nil
+     :initarg :l
+     :documentation "left child of this node containing all elements less than v")
+    (quad:b
+      :accessor rb-tree-v
+      :initform nil
+      :initarg :v
+      :documentation "the value or value-cell represented by this node")
+    (quad:c
+      :accessor rb-tree-r
+      :initform nil
+      :initarg :r
+      :documentation "right child of this node containing all elements greater than v")
+    (quad:d
+      :accessor rb-tree-h
+      :initform 1
+      :initarg :h
+      :documentation "the height of this node, as the distance in child links to the
+                      furthest leaf.  Rather than annotation using literal :red :black
+                      properties, this red-black tree implementation maintains balance
+                      based on the relative heights of left and right subtrees, which
+                      may never exceed 3."))
+  (:documentation
+    "Sets are represented by balanced binary trees The heights of
+     children differ by at most 2.  Tree nodes are quadruples (l v r h)
+     where: l = left child, v = value, r = right child, h = height"))
 
 
 (defmethod print-object ((tree rb-tree) stream)
@@ -74,7 +88,7 @@
   `(satisfies tree:typep))
 
 
-(defun create (l v r &optional (hl (height l)) (hr (height r)))
+(defun tree:create (l v r &optional (hl (height l)) (hr (height r)))
   "create a tree node with left son l, value v, and right son r.
    Must have all elements of l < v < all elements of r.
    l and r must be balanced and have a height difference =< 2"
@@ -88,7 +102,7 @@
 ;; destructuring macros
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmacro lr ((l r) tree &body body)
+(defmacro tree:lr ((l r) tree &body body)
   "destructure tree node: left right"
    (let ((gtree (gensym (symbol-name :tree-))))
      `(let ((,gtree ,tree))
@@ -97,7 +111,7 @@
           ,@body)) ))
 
 
-(defmacro lvr ((l v r) tree &body body)
+(defmacro tree:lvr ((l v r) tree &body body)
   "destructure tree node: left value right"
    (let ((gtree (gensym (symbol-name :tree-))))
      `(let ((,gtree ,tree))
@@ -107,7 +121,7 @@
           ,@body)) ))
 
 
-(defmacro lvrh ((l v r h) tree &body body)
+(defmacro tree:lvrh ((l v r h) tree &body body)
   "destructure tree node: left value right height"
    (let ((gtree (gensym (symbol-name :tree-))))
      `(let ((,gtree ,tree))
@@ -122,11 +136,10 @@
 ;; Tree Manipulations
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun bal (l v r)
+(defun tree:bal (l v r)
   "bal -- similar to create, but also performs one step of rebalancing, if necessary.
    assumes l and r balanced and height difference <= 3"
-  (flet ((invalid-arg ()
-           (invalid-argument "Set:bal")))
+  (flet ((invalid-arg ()   (invalid-argument "tree:bal")))
     (let ((hl (height l))
            (hr (height r)))
       (cond
@@ -134,32 +147,28 @@
                              ((rb-tree-p l) (lvr (ll lv lr) l
                                               (if (>= (height ll) (height lr))
                                                 (create ll lv (create lr v r))
-                                                ;; else
                                                 (cond ((rb-tree-p lr) (lvr (lrl lrv lrr) lr
                                                                         (create
                                                                           (create ll lv lrl)
                                                                           lrv
                                                                           (create lrr v r))))
-                                                  (t (invalid-arg)) )) ))
-                             (t (invalid-arg)) ))
-
+                                                  (t (invalid-arg))))))
+                             (t (invalid-arg))))
         ((> hr (+ 2 hl))  (cond
                             ((rb-tree-p r) (lvr (rl rv rr) r
                                              (if (>= (height rr) (height rl))
                                                (create (create l v rl) rv rr)
-                                               ;; else
-                                               (cond
-                                                 ((rb-tree-p rl) (lvr (rll rlv rlr) rl
-                                                                   (create
-                                                                     (create l v rll)
-                                                                     rlv
-                                                                     (create  rlr rv rr))))
-                                                 (t (invalid-arg)) )) ))
-                            (t (invalid-arg)) ))
-        (t (create l v r hl hr)) )) ))
+                                               (cond ((rb-tree-p rl) (lvr (rll rlv rlr) rl
+                                                                       (create
+                                                                         (create l v rll)
+                                                                         rlv
+                                                                         (create  rlr rv rr))))
+                                                 (t (invalid-arg))))))
+                            (t (invalid-arg))))
+        (t (create l v r hl hr))))))
 
 
-(defun join (l v r)
+(defun tree:join (l v r)
   "join -- same as create and bal, but no assumptions are made on the
    relative heights of l and r"
   (cond ((null l) (add v r))
@@ -172,7 +181,7 @@
              )))) ))
 
 
-(defun merge (t1 t2)
+(defun tree:merge (t1 t2)
   "merge -- merge two trees l and r into one.
    All elements of l must precede the elements of r
    Assume height difference <= 2"
@@ -181,7 +190,7 @@
          (t (bal t1 (tree:min t2) (remove-min t2)))))
 
 
-(defun concat (t1 t2)
+(defun tree:concat (t1 t2)
   "concat - merge two trees l and r into one.
    All elements of l must precede the elements of r.
    No assumptions on the heights of l and r."
@@ -190,7 +199,11 @@
     (t (join t1 (tree:min t2) (remove-min t2)))))
 
 
-(defun cons-enum (s e)
+(defun tree:cons-enum (s e)
+  "efficient mechanism to accomplish partial enumeration of tree-structure into
+   a consp representation without incurring the overhead of operating over the
+   entire tree.  Used internally for implementation of higher-level collection
+   api routines"
   (cond ((null s) e)
     (t (lvr (l v r) s
          (cons-enum l (list v r e))))))
