@@ -970,7 +970,7 @@
   (lambda ()
     (loop :for i :from 1 :to n
       :do (progn
-            (when (zerop (mod i 10000))
+            (when (zerop (mod i 100000))
               (princ "+" *trace-output*))
             (common-code 1)))))
 
@@ -979,7 +979,7 @@
   (lambda ()
     (loop :for i :from 1 :to n
       :do (progn
-            (when (zerop (mod i 10000))
+            (when (zerop (mod i 100000))
               (princ "-" *trace-output*))
             (common-code -1)))))
 
