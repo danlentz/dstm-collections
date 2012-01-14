@@ -15,6 +15,7 @@
                 (:file "tree")
                 (:file "set")
                 (:file "map")
+                (:file "seq")                               
                 #+(or sbcl lispworks)
                 (:file "dstm")))
 

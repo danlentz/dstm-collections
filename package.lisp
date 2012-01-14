@@ -34,7 +34,7 @@
 
 (defpackage :tree
   (:use #:common-lisp #:quad)
-  (:shadow #:merge)
+  (:shadow #:merge #:typep #:type)
   (:export
     #:rb-tree
     #:make-rb-tree
@@ -57,7 +57,10 @@
     #:invalid-argument
     #:lr
     #:lvr
-    #:lvrh))
+    #:lvrh
+    #:typep
+    #:type
+    ))
 
 
 (defpackage :set
@@ -66,7 +69,7 @@
     #:lr #:lvr #:lvrh #:make-rb-tree #:rb-tree-p #:rb-tree-l #:rb-tree-v #:rb-tree-r #:rb-tree-h
     #:height #:add #:min-elt #:remove-min-elt)
   (:shadowing-import-from #:tree #:merge)
-  (:shadow #:equal #:remove #:union)
+  (:shadow #:equal #:remove #:union #:typep #:type)
   (:export
     #:height
     #:empty
@@ -94,12 +97,14 @@
     #:elements
     #:min-elt
     #:max-elt
-    #:choose))
+    #:choose
+    #:typep
+    #:type))
 
 
 (defpackage :map
   (:use #:common-lisp)
-  (:shadow #:find #:equal #:map #:remove)
+  (:shadow #:find #:equal #:map #:remove #:typep #:type)
   (:import-from #:tree #:lr #:lvr #:lvrh)
   (:export
     #:empty
@@ -114,9 +119,42 @@
     #:fold
     #:compare
     #:equal
+    #:typep
+    #:type
     ))
 
 
+(defpackage :seq
+  (:shadow  #:push  #:pop    #:first    #:second    #:third    #:elt
+    #:last  #:rest  #:length    #:map    #:equal    #:dup      #:typep
+    #:type)
+  (:use #:common-lisp)
+  (:export
+    #:seq-cell
+    #:seq-cell-key
+    #:seq-cell-val    
+    #:empty
+    #:is-empty
+    #:push
+    #:pop
+    #:first
+    #:second
+    #:third
+    #:elt
+    #:last
+    #:rest
+    #:length
+    #:concat
+    #:map
+    #:compare
+    #:equal
+    #:fold
+    #:dup
+    #:typep
+    #:type
+    ))
+
+    
 (defpackage :dstm
   (:use #:common-lisp)
   (:export
