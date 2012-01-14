@@ -5,13 +5,13 @@
 (in-package :set)
 
 
-(defun height (node)
+(defun tree:height (node)
   "convenience api for returning rb-tree height of collection node"
    (cond ((null node) 0)
          (t           (rb-tree-h node))))
 
 
-(defun add (x node)
+(defun set:add (x node)
   "return a set the same as node with element 'x' added if not already present"
   (labels ((addx (node)
              (cond ((null node) (values (singleton x) t))
@@ -59,7 +59,7 @@
      (t (set:max (rb-tree-r node)))))
 
 
-(defun remove-min (node)
+(defun set:remove-min (node)
   "return a collection with the smallest element removed -- useful for priority-queues"
   (cond ((null node)              (invalid-argument "set:remove-min"))
          ((null (rb-tree-l node)) (rb-tree-r node))
@@ -67,7 +67,7 @@
                                     (bal (remove-min l) v r)))))
 
 
-(defun remove-max (node)
+(defun set:remove-max (node)
   "return a collection with the greatest element removed -- useful for priority-queues"
   (cond ((null node)              (invalid-argument "set:remove-max"))
          ((null (rb-tree-r node)) (rb-tree-l node))
@@ -75,7 +75,7 @@
                                     (bal l v (remove-max r))))))
 
 
-(defun split (x tree)
+(defun set:split (x tree)
   "returns a triple (l present r) where:
      l       - is the set of elements of s that are < x
      r       - is the set of elements of s that are > x
@@ -92,17 +92,17 @@
                   (list (join l v lr) pres rr) ))))))))
 
 
-(defun empty ()
+(defun set:empty ()
   "create empty set"
    nil)
 
 
-(defun is-empty (tree)
+(defun set:is-empty (tree)
   "return true if set contains no elements, otherwise false"
    (null tree))
 
 
-(defun mem (x tree)
+(defun set:mem (x tree)
   "return true if set contains element x"
   (cond
     ((null tree) nil)
@@ -112,12 +112,12 @@
                        (mem x (if (minusp c) l r))))))))
 
 
-(defun singleton (x)
+(defun set:singleton (x)
   "create set containing only the element x"
   (make-rb-tree :v x))
 
 
-(defun remove (x tree)
+(defun set:remove (x tree)
   "return a collection the same as tree with the element 'x' removed if present" 
   (cond
     ((null tree) nil)
@@ -129,7 +129,7 @@
                        (t          (bal l v (remove x r)))))))))
 
 
-(defun union (s1 s2)
+(defun set:union (s1 s2)
   "return a collection containing all the elements (without duplicates) of s1 and s2"
   (cond
     ((null s1) s2)
@@ -149,7 +149,7 @@
                             (join (union l1 l2) v2 (union r1 r2)))))))))))
 
 
-(defun inter (s1 s2)
+(defun set:inter (s1 s2)
   "return a collection containing all elements that are present in both s1 and s2"
   (cond
     ((null s1) nil)
@@ -161,7 +161,7 @@
                      (concat (inter l1 l2) (inter r1 r2))))))))
 
 
-(defun diff (s1 s2)
+(defun set:diff (s1 s2)
    (cond ((null s1) nil)
          ((null s2) nil)
          (t (lvr (l1 v1 r1) s1
@@ -172,7 +172,7 @@
                 )))))
 
 
-(defun compare (s1 s2 &optional (cmp #'ord:compare)) 
+(defun set:compare (s1 s2 &optional (cmp #'ord:compare)) 
   "return 3-way ordinal comparison of sets s1 and s2 with the following return-value semantics:
     0  -> set0 is EQAL-TO      set1
    -1  -> set0 is LESS-THAN    set1
@@ -196,13 +196,13 @@
                                              c))))))))))
 
 
-(defun equal (s1 s2)
+(defun set:equal (s1 s2)
   "return true if both hold:  s1 is a subset of s2, and s2 is a subset of s1"
   (zerop (compare s1 s2)))
 
 
 
-(defun subset (s1 s2)
+(defun set:subset (s1 s2)
   "return true if all elements of s1 are present in s2"
   (cond
     ((null s1)   t)
@@ -216,7 +216,7 @@
                     (t          (and (subset (make-rb-tree :v v1 :r r1) r2) (subset l1 s2))))))))))
 
 
-(defun iter (fn s)
+(defun set:iter (fn s)
   "funcall fn on each element of set s"
   (cond
     ((null s) nil)
@@ -227,14 +227,16 @@
 
 
 
-(defun fold (fn s accu)
+(defun set:fold (fn s accu)
+  "similar to reduce, takes three argument function f as in: (f key value accumulator)"
    (cond ((null s) accu)
          (t       (lvr (l v r) s
                     (fold fn r (funcall fn v (fold fn l accu)))))))
 
 
 
-(defun for-all (pred s fn)
+(defun set:for-all (pred s fn)
+  "funcall fn on all elements of set s satisfying pred"
    (cond ((null s) t)
          (t        (lvr (l v r) s
                      (and (funcall pred v)
@@ -244,7 +246,8 @@
                        ))))
 
 
-(defun exists (pred s)
+(defun set:exists (pred s)
+  "return true if any element of s satisfies pred"
    (cond ((null s) nil)
          (t        (lvr (l v r) s
                      (or (funcall pred v)
@@ -252,7 +255,8 @@
                        (exists pred r))))))
 
 
-(defun filter (pred s)
+(defun set:filter (pred s)
+  "return a new set containing all elements of s which satisfy pred"
    (labels ((filt (accu s)
               (cond ((null s)  accu)
                     (t         (lvr (l v r) s
@@ -265,7 +269,9 @@
      (filt nil s)))
 
 
-(defun partition (pred s)
+(defun set:partition (pred s)
+  "return a list containing two new sets: the first containing those elements
+   of s which satisfy pred, and the second containing those which do not"
    (labels ((part (pair s)
               (destructuring-bind (tp fp) pair
                 (cond ((null s) pair)
@@ -279,14 +285,16 @@
      (part (list nil nil) s)))
 
 
-(defun cardinal (s)
+(defun set:cardinal (s)
+  "return the number of elements contained in set s"
    (cond ((null s) 0)
          (t     (lr (l r) s
                   (+ (cardinal l) 1 (cardinal r))))
          ))
 
 
-(defun elements (s)
+(defun set:elements (s)
+  "return a list containing all elements of s"
    (labels ((iter (accu s)
               (cond ((null s)  accu)
                     (t         (lvr (l v r) s
@@ -295,5 +303,24 @@
      (iter nil s)))
 
 
-(defun choose (s)
-   (min s))
+(defun set:dup (s)
+  "return a new set which is set:equal the original s"
+  (let (new-set)
+    (dolist (elem (set:elements s))
+      (setq new-set (set:add elem new-set)))
+    new-set))
+
+  
+(defun set:make (&optional (from (set:empty)))
+  "end-user api for construction of a new set optionally initialized to contain
+   elements derived from various types of source data"
+  (etypecase from
+    (null     (set:empty))
+    (cl:list  (let (set)
+                (dolist (elem from)
+                  (setq set (set:add elem set)))
+                set))
+    (set:type (set:dup from))
+    (sequence (set:make (coerce from 'cl:list)))
+    (atom     (set:singleton from))))
+

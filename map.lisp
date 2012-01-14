@@ -187,6 +187,8 @@
 
 
 (defun map (f map)
+  "return a newly created map where the keys of 'map' are associated with function f applied
+   to the corresponding map values"
    (cond ((null map) nil)
      (t (let (new-map)
           (dolist (elem (set:elements map))
@@ -195,6 +197,8 @@
                 
 
 (defun mapi (f map)
+  "return a newly created map where f is applied to the keys of 'map' and associated with
+   the original corresponding map values"
    (cond ((null map) nil)
      (t (let (new-map)
           (dolist (elem (set:elements map))
@@ -203,6 +207,7 @@
 
 
 (defun iter (f map)
+  "funcall a function f as (funcall #'f k v) on each key-value pair contained in map"
    (cond ((null map) nil)
          (t  (lvr (l v r) map
                (iter f l)

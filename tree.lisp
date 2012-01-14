@@ -47,6 +47,7 @@
 
 
 (defun make-rb-tree (&rest args)
+  "convenience api routine for rb-tree initialization"
   (apply #'make-instance 'rb-tree args))
 
 
@@ -63,11 +64,13 @@
 
 
 (defun tree:typep (thing)
+  "generic rb-tree type-predicate"
   (if (rb-tree-p thing)
     t))
 
 
 (deftype tree:type ()
+  "self-balancing binary tree used as a basis for higher-level collection types"
   `(satisfies tree:typep))
 
 

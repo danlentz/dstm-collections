@@ -94,44 +94,52 @@
 
 
 (defun min-key (s)
+  "return the key of the first element of seq"
   (if (null s)
     0
     (seq-cell-key (set:min s))))
 
 
 (defun max-key (s)
+  "return the key of the last element of seq"
   (if (null s)
     0
     (seq-cell-key (set:max s))))
 
 
 (defun rest (s)
+  "return a new seq containing all but the first element of s"
   (if (null s)
     nil
     (set:remove-min s)))
 
 
 (defun butlast (s)
+  "return a new seq containing all but the last element of s"
   (if (null s)
     nil
     (set:remove-max s)))
 
 
 (defun push (elem &optional seq)
+  "return a new seq identical to seq but with elem prepended"
   (set:add
     (make-seq-cell :key (- (min-key seq) 1) :val elem) seq))
 
 
 (defun add (elem &optional seq)
+  "return a new seq identical to seq but with elem appended"
   (set:add
     (make-seq-cell :key (+ (max-key seq) 1) :val elem) seq))
 
 
 (defun list (s)
+  "return the list-based equivalent to seq s, containing all elements of s in the same order"
   (mapcar #'seq-cell-val (set:elements s)))
 
 
 (defun dup (s)
+  "return a new seq that is seq:equal to the original seq s"
   (cond
     ((null s)  nil)
     (t         (let* ((min-cell (set:min s))
