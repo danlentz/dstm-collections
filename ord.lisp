@@ -97,8 +97,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(defgeneric slots-to-compare (thing)
-  "return list of slot-definition-names indicating ")
+(defgeneric slots-to-compare (thing))
 
 
 (defmethod  slots-to-compare ((thing standard-class))
