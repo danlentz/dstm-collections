@@ -78,6 +78,7 @@
     #:empty
     #:is-empty
     #:make
+    #:dup
     #:mem
     #:add
     #:singleton
@@ -101,7 +102,6 @@
     #:partition
     #:cardinal
     #:elements
-    #:choose
     #:typep
     #:type))
 
