@@ -10,7 +10,6 @@
              set:min-elt
              set:remove-min-elt)))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Conditions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -38,11 +37,13 @@
  quadruples (l v r h) where: - l = left child, - v = value, - r =
  right child, - h = height"))
 
+
 (defmethod print-object ((tree rb-tree) stream)
   (print-unreadable-object (tree stream :type t :identity t)
     (format stream "{| V: ~A H: ~A |}"
       (qbr tree)
       (qdr tree))))
+
 
 (defun make-rb-tree (&rest args)
   (apply #'make-instance 'rb-tree args))
@@ -50,12 +51,15 @@
 
 (defgeneric rb-tree-p (x))
 
+
 (defmethod  rb-tree-p (x)
    (declare (ignore x))
    nil)
 
+
 (defmethod  rb-tree-p ((tree rb-tree))
    tree)
+
 
 (defun create (l v r &optional (hl (height l)) (hr (height r)))
   "create a tree node with left son l, value v, and right son r.
@@ -106,7 +110,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun bal (l v r)
-  "bal - same as create, but performs one step of rebalancing if  necessary
+  "same as create, but performs one step of rebalancing if  necessary
    assumes l and r balanced and height difference <= 3"
   (flet ((invalid-arg ()
            (invalid-argument "Set:bal")))
