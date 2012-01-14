@@ -21,6 +21,7 @@
 (defpackage :ord
   (:use #:common-lisp)
   (:export
+    #:|SLOTS-TO-COMPARE|
     #:|COMPARE|
     #:|COMPARE<|
     #:|COMPARE<=|
@@ -75,6 +76,7 @@
     #:singleton
     #:remove
     #:remove-min-elt
+    #:remove-max-elt
     #:union
     #:inter
     #:diff
