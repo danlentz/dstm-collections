@@ -61,6 +61,15 @@
    tree)
 
 
+(defun tree:typep (thing)
+  (if (rb-tree-p thing)
+    t))
+
+
+(deftype tree:type (thing)
+  '(satisfies #'tree:typep thing))
+
+
 (defun create (l v r &optional (hl (height l)) (hr (height r)))
   "create a tree node with left son l, value v, and right son r.
    Must have all elements of l < v < all elements of r.
