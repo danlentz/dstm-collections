@@ -740,13 +740,13 @@
     (check-compare-ordinality (set:remove-max-elt integer-set)  integer-set)
     (check-compare-ordinality (set:singleton 0) integer-set)
     (check-compare-ordinality (set:singleton 1) integer-set)
-    (tree:lvrh (l v r h) integer-set
+    (tree:lr (l r) integer-set
       (is (eql  0 (set:compare l l)))
       (is (eql  0 (set:compare r r)))
       (check-compare-ordinality l r)
       (check-compare-ordinality l integer-set)
       (check-compare-ordinality integer-set r))
-    (tree:lvrh (l v r h) random-set
+    (tree:lr (l r) random-set
       (is (eql  0 (set:compare l l)))
       (is (eql  0 (set:compare r r)))
       (check-compare-ordinality l r)
@@ -896,27 +896,23 @@
 
 (defun count-up (n)
   (lambda ()
-    (loop repeat n do (common-code 1))))
+    (loop :for i :from 1 :to n
+      :do (progn
+            (when (zerop (mod i 10000))
+              (princ "+" *trace-output*))
+            (common-code 1)))))
 
 
 (defun count-down (n)
   (lambda ()
-    (loop repeat n do (common-code -1))))
+    (loop :for i :from 1 :to n
+      :do (progn
+            (when (zerop (mod i 10000))
+              (princ "-" *trace-output*))
+            (common-code -1)))))
 
-#+()
-(defun checker (&rest procs)
-  (let ((start (local-time:now)))
-     (loop while (some #'sb-thread:thread-alive-p procs)
-           do (check-invariant))
-    (let ((stop (local-time:now)))    ;;usec:get-time-usec)))
-      (princ (show-rolls (* 1e-6 (local-time:timestamp-difference  stop start))))) ))
-
-;; (defvar transaction nil)
 
 (defun test-dstm-contention (iterations)
- ;; #-sbcl
- ;; (error "currently sbcl only")
-  
   (format *trace-output* "~%Start DSTM Test/~A...~%" iterations)
 
   (setf *a* (create-var 0))
@@ -926,16 +922,18 @@
   (let ((start (local-time:now))
          (procs
            (list
-             (bt:make-thread (count-down iterations)
-               :name "down"
-               :initial-bindings '((dstm::*transaction* . nil)))
-             (bt:make-thread (count-up iterations)
-               :name "up"
-               :initial-bindings '((dstm::*transaction* . nil))))))
-    (loop while (some #'sb-thread:thread-alive-p procs) do (check-invariant))
+             (bt:make-thread (funcall #'count-down iterations) :name "down")
+             (bt:make-thread (funcall #'count-up   iterations) :name "up"))))
+
+    (loop
+      :while (some #'sb-thread:thread-alive-p procs)
+      :do    (check-invariant))
+
+    
     (let ((stop (local-time:now)))
       (princ (show-rolls (* 1e-6 (local-time:timestamp-difference stop start)))
         *trace-output*)))
+
   (values))
 
 
