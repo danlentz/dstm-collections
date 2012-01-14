@@ -11,13 +11,13 @@
   :long-description "Red-Black Trees / Dynamic Software Transactional Memory after Herlihy, et. al."
   :components ((:file "package") 
                 (:file "quad")
+                (:file "dstm")
                 (:file "ord")
                 (:file "tree")
                 (:file "set")
                 (:file "map")
                 (:file "seq")                               
-                #+(or sbcl lispworks)
-                (:file "dstm")))
+                ))
 
 
 (defmethod asdf:perform :after ((op asdf:load-op) (sys (eql (asdf:find-system :dstm-collections))))
