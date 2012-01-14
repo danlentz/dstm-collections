@@ -6,12 +6,13 @@
 
 
 (defun height (node)
+  "convenience api for returning rb-tree height of collection node"
    (cond ((null node) 0)
-         (t           (rb-tree-h node)) ))
+         (t           (rb-tree-h node))))
 
 
-;; add - insertion of one element
 (defun add (x node)
+  "return a set the same as node with element 'x' added if not already present"
   (labels ((addx (node)
              (cond ((null node) (values (singleton x) t))
                (t (lvrh (l v r h) node
@@ -45,34 +46,41 @@
 
 
 (defun min-elt (node)
+  "return the smallest element present in the collection"
    (cond ((null node) (not-found))
          ((null (rb-tree-l node)) (rb-tree-v node))
          (t     (min-elt (rb-tree-l node)))))
 
 
 (defun max-elt (node)
+  "return the greatest element present in the collection"
    (cond ((null node) (not-found))
          ((null (rb-tree-r node)) (rb-tree-v node))
      (t (max-elt (rb-tree-r node)))))
 
 
-;; remove-min-elt - remove the smallest element of the set
-;; also useful for priority-queues
-
 (defun remove-min-elt (node)
-   (cond ((null node) (invalid-argument "Sets-internal::remove-min-elt"))
+  "return a collection with the smallest element removed -- useful for priority-queues"
+  (cond ((null node)              (invalid-argument "set:remove-min-elt"))
          ((null (rb-tree-l node)) (rb-tree-r node))
-         (t (lvr (l v r) node
-              (bal (remove-min-elt l) v r)))
-         ))
+         (t                       (lvr (l v r) node
+                                    (bal (remove-min-elt l) v r)))))
+
+
+(defun remove-max-elt (node)
+  "return a collection with the greatest element removed -- useful for priority-queues"
+  (cond ((null node)              (invalid-argument "set:remove-max-elt"))
+         ((null (rb-tree-r node)) (rb-tree-l node))
+         (t                       (lvr (l v r) node
+                                    (bal l v (remove-max-elt r))))))
 
 
 (defun split (x tree)
-  "split - split x s returns a triple (l present r) where
- l is the set of elements of s that are < x
- r is the set of elements of s that are > x
- present is false if s contains no element equal to x
- or true if s contains an element equal to x"
+  "returns a triple (l present r) where:
+     l       - is the set of elements of s that are < x
+     r       - is the set of elements of s that are > x
+     present - is false if s contains no element equal to x
+               or true if s contains an element equal to x"
   (cond ((null tree) (list nil nil nil))
     (t (lvr (l v r) tree
          (let ((c (ord:compare x v)))
@@ -85,66 +93,73 @@
 
 
 (defun empty ()
+  "create empty set"
    nil)
 
 
 (defun is-empty (tree)
+  "return true if set contains no elements, otherwise false"
    (null tree))
 
 
 (defun mem (x tree)
-   (cond ((null tree) nil)
-         (t (lvr (l v r) tree
-              (let ((c (ord:compare x v)))
-                (or (zerop c)
-                    (mem x (if (minusp c) l r)))
-                )))
-         ))
+  "return true if set contains element x"
+  (cond
+    ((null tree) nil)
+    (t           (lvr (l v r) tree
+                   (let ((c (ord:compare x v)))
+                     (or (zerop c)
+                       (mem x (if (minusp c) l r))))))))
 
 
 (defun singleton (x)
-   (make-rb-tree
-    :v x))
+  "create set containing only the element x"
+  (make-rb-tree :v x))
 
 
 (defun remove (x tree)
-  (cond ((null tree) nil)
-    (t (lvr (l v r) tree
-         (let ((c (ord:compare x v)))
-           (cond ((zerop c) (merge l r))
-             ((minusp c) (bal (remove x l) v r))
-             (t (bal l v (remove x r)))
-             ))))))
+  "return a collection the same as tree with the element 'x' removed if present" 
+  (cond
+    ((null tree) nil)
+    (t           (lvr (l v r) tree
+                   (let ((c (ord:compare x v)))
+                     (cond
+                       ((zerop  c) (merge l r))
+                       ((minusp c) (bal (remove x l) v r))
+                       (t          (bal l v (remove x r)))))))))
 
 
 (defun union (s1 s2)
-  (cond ((null s1) s2)
+  "return a collection containing all the elements (without duplicates) of s1 and s2"
+  (cond
+    ((null s1) s2)
     ((null s2) s1)
-    (t (lvrh (l1 v1 r1 h1) s1
-         (lvrh (l2 v2 r2 h2) s2
-           (cond ((>= h1 h2)
-                   (if (= h2 1)
-                     (add v2 s1)
-                     (destructuring-bind (l2 _ r2) (split v1 s2)
-                       (declare (ignore _))
-                       (join (union l1 l2) v1 (union r1 r2)) )))
-             (t (if (= h1 1)
-                  (add v1 s2)
-                  (destructuring-bind (l1 _ r1) (split v2 s1)
-                    (declare (ignore _))
-                    (join (union l1 l2) v2 (union r1 r2)))))))))))
+    (t         (lvrh (l1 v1 r1 h1) s1
+                 (lvrh (l2 v2 r2 h2) s2
+                   (cond ((>= h1 h2)
+                           (if (= h2 1)
+                             (add v2 s1)
+                             (destructuring-bind (l2 _ r2) (split v1 s2)
+                               (declare (ignore _))
+                               (join (union l1 l2) v1 (union r1 r2)) )))
+                     (t (if (= h1 1)
+                          (add v1 s2)
+                          (destructuring-bind (l1 _ r1) (split v2 s1)
+                            (declare (ignore _))
+                            (join (union l1 l2) v2 (union r1 r2)))))))))))
 
 
 (defun inter (s1 s2)
-   (cond ((null s1) nil)
-         ((null s2) nil)
-         (t (lvr (l1 v1 r1) s1
-              (destructuring-bind (l2 ans r2) (split v1 s2)
-                (if ans
-                    (join (inter l1 l2) v1 (inter r1 r2))
-                  (concat (inter l1 l2) (inter r1 r2)) )
-                )))
-         ))
+  "return a collection containing all elements that are present in both s1 and s2"
+  (cond
+    ((null s1) nil)
+    ((null s2) nil)
+    (t         (lvr (l1 v1 r1) s1
+                 (destructuring-bind (l2 ans r2) (split v1 s2)
+                   (if ans
+                     (join (inter l1 l2) v1 (inter r1 r2))
+                     (concat (inter l1 l2) (inter r1 r2))))))))
+
 
 (defun diff (s1 s2)
    (cond ((null s1) nil)
@@ -154,65 +169,61 @@
                 (if ans
                     (concat (diff l1 l2) (diff r1 r2))
                   (join (diff l1 l2) v1 (diff r1 r2)) )
-                )))
-         ))
+                )))))
 
-(defun compare (s1 s2)
-   (tagbody
-    again
-    (let ((e1 (cons-enum s1 nil))
-          (e2 (cons-enum s2 nil)))
+
+(defun compare (s1 s2 &optional (cmp #'ord:compare)) 
+  "return 3-way ordinal comparison of sets s1 and s2 with the following return-value semantics:
+    0  -> set0 is EQAL-TO      set1
+   -1  -> set0 is LESS-THAN    set1
+    1  -> set0 is GREATER-THAN set1"
+  (let ((e1 (cons-enum s1 nil))
+         (e2 (cons-enum s2 nil)))
+    (tagbody again
       (return-from compare
-        (cond ((and (null e1) (null e2)) 0)
-              ((null e1)      -1)
-              ((null e2)       1)
-              (t (destructuring-bind (v1 r1 ee1) e1
-                   (destructuring-bind (v2 r2 ee2) e2
-                     (let ((c (ord:compare v1 v2)))
-                       (if (zerop c)
-                           (progn
-                             (setf e1 (cons-enum r1 ee1)
-                                   e2 (cons-enum r2 ee2))
-                             (go again))
-                         ;; else
-                         c)) )))
-              )) )))
+        (cond
+          ((and (null e1) (null e2)) 0)
+          ((null e1)                -1)
+          ((null e2)                 1)
+          (t                         (destructuring-bind (v1 r1 ee1) e1
+                                       (destructuring-bind (v2 r2 ee2) e2
+                                         (let ((c (funcall cmp v1 v2)))
+                                           (if (zerop c)
+                                             (progn
+                                               (setf e1 (cons-enum r1 ee1)
+                                                     e2 (cons-enum r2 ee2))
+                                               (go again))
+                                             c))))))))))
+
 
 (defun equal (s1 s2)
-  (and
-    (set:subset s1 s2)
-    (set:subset s2 s1)))
+  "return true if both hold:  s1 is a subset of s2, and s2 is a subset of s1"
+  (zerop (compare s1 s2)))
 
-;; TODO: faster but does not work?
-;;  (zerop (compare s1 s2)))
 
 
 (defun subset (s1 s2)
-   (cond ((null s1) t)
-         ((null s2) nil)
-         (t (lvr (l1 v1 r1) s1
+  "return true if all elements of s1 are present in s2"
+  (cond
+    ((null s1)   t)
+    ((null s2) nil)
+    (t      (lvr (l1 v1 r1) s1
               (lvr (l2 v2 r2) s2
                 (let ((c (ord:compare v1 v2)))
-                  (cond ((zerop c) (and (subset l1 l2)
-                                        (subset r1 r2)))
-                        ((minusp c) (and (subset (make-rb-tree
-                                                  :l l1
-                                                  :v v1)
-                                                 l2)
-                                         (subset r1 s2)))
-                        (t (and (subset (make-rb-tree
-                                         :v v1
-                                         :r r1)
-                                        r2)
-                                (subset l1 s2))))))))))
+                  (cond
+                    ((zerop c)  (and (subset l1 l2) (subset r1 r2)))
+                    ((minusp c) (and (subset (make-rb-tree :l l1 :v v1) l2) (subset r1 s2)))
+                    (t          (and (subset (make-rb-tree :v v1 :r r1) r2) (subset l1 s2))))))))))
 
 
 (defun iter (fn s)
-   (cond ((null s) nil)
-         (t        (lvr (l v r) s
-                     (iter fn l)
-                     (funcall fn v)
-                     (iter fn r)))))
+  "funcall fn on each element of set s"
+  (cond
+    ((null s) nil)
+    (t        (lvr (l v r) s
+                (iter fn l)
+                (funcall fn v)
+                (iter fn r)))))
 
 
 
