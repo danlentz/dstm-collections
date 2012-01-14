@@ -57,9 +57,81 @@
   `(satisfies set:typep))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; seq api
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun empty ()
   "create empty seq"
   (set:empty))
 
+
+(defun is-empty (s)
+    "return true if seq contains no elements, otherwise false"
+  (map:is-empty s))
+  
+
+(defun length (s)
+  (set:cardinal s))
+
+
+(defun first (s)
+  (if (null s)
+    nil
+    (seq-cell-val (set:min-elt s))))
+
+
+(defun last (s)
+  (if (null s)
+    nil
+    (seq-cell-val (set:max-elt s))))
+
+
+(defun min-key (s)
+  (if (null s)
+    0
+    (seq-cell-key (set:min-elt s))))
+
+
+(defun max-key (s)
+  (if (null s)
+    0
+    (seq-cell-key (set:max-elt s))))
+
+
+(defun rest (s)
+  (if (null s)
+    nil
+    (set:remove-min-elt s)))
+
+
+(defun butlast (s)
+  (if (null s)
+    nil
+    (set:remove-max-elt s)))
+
+
+(defun push (elem seq)
+  (set:add
+    (make-seq-cell :key (- (min-key seq) 1) :val elem) seq))
+
+
+(defun pushend (elem seq)
+  (set:add
+    (make-seq-cell :key (+ (max-key seq) 1) :val elem) seq))
+
+
+(defun list (s)
+  (mapcar #'seq-cell-val (set:elements s)))
+
+
+(defun dup (s)
+  (cond
+    ((null s)  nil)
+    (t         (let* ((min-cell (set:min-elt s))
+                       (new-cell (make-seq-cell
+                                   :key (seq-cell-key min-cell)
+                                   :val (seq-cell-val min-cell))))
+                 (set:add new-cell (dup (set:remove-min-elt s)))))))
 
 

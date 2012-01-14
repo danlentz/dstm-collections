@@ -125,26 +125,22 @@
 
 
 (defpackage :seq
-  (:shadow  #:push  #:pop    #:first    #:second    #:third    #:elt
-    #:last  #:rest  #:length    #:map    #:equal    #:dup      #:typep
+  (:shadow  #:push  #:pop    #:first    #:second    #:third    #:elt #:butlast
+    #:last  #:rest  #:length    #:map    #:equal    #:dup      #:typep #:list
     #:type)
   (:use #:common-lisp)
   (:export
-    #:seq-cell
-    #:seq-cell-key
-    #:seq-cell-val    
     #:empty
     #:is-empty
     #:push
-    #:pop
+    #:pushend
     #:first
-    #:second
-    #:third
-    #:elt
     #:last
     #:rest
+    #:list
     #:length
     #:concat
+    #:elt
     #:map
     #:compare
     #:equal
