@@ -4,90 +4,155 @@
 
 (in-package :map)
 
-
 (eval-when (:compile-toplevel :load-toplevel :execute)
    (import '(tree:cons-enum)))
 
-;; --------------------------------------------
 
 (defclass map-cell ()
-   ((key  :accessor map-cell-key  :initform nil :initarg :key)
-    (val  :accessor map-cell-val  :initform nil :initarg :val)))
+   ((key  :accessor map-cell-key  :initform nil :initarg :key :documentation "domain constituent")
+     (val  :accessor map-cell-val  :initform nil :initarg :val :documentation "range constituent"))
+  (:documentation "storage cell for implementation of tree:rb-tree based key-value maps"))
+
 
 (defun make-map-cell (&rest args)
-   (apply #'make-instance 'map-cell args))
+  "convenience api routine for map-cell initialization"
+  (apply #'make-instance 'map-cell args))
+
 
 (defmethod ord:compare ((a map-cell) (b map-cell))
-   ;; for comparing two map cells
-   ;; used by set:add
-   (ord:compare (map-cell-key a) (map-cell-key b)))
+  "ordinal comparison of two map cells -- used by set:add"
+  (ord:compare (map-cell-key a) (map-cell-key b)))
+
 
 (defmethod ord:compare (a (b map-cell))
-   ;; for comparing keys against map-cells
-   (ord:compare a (map-cell-key b)))
+  "ordinal comparison of keys against map-cells"
+  (ord:compare a (map-cell-key b)))
+
+
+(defmethod ord:compare ((a map-cell) b)
+  "ordinal comparison of map-cells against keys"
+  (ord:compare (map-cell-key a) b))
+
+
+(defmethod ord:compare ((a null) (b tree:rb-tree))
+  "ordinal comparison of null against set elements and map cells"
+  -1)
+
+
+(defmethod ord:compare ((a tree:rb-tree) (b null))
+  "ordinal comparison of null against set elements and map cells"
+  1)
+
+
+(defmethod ord:compare ((a null) (b null))
+  "ordinal comparison of null values"
+  0)
+
+
+(defmethod ord:compare ((a tree:rb-tree) (b tree:rb-tree))
+  "ordinal comparison of two collections of indeterminant type"
+  (cond
+    ((and (null a) (null b))  0)
+    ((null a)                -1)
+    ((null b)                 1)
+    (t                        (let ((a-elem (tree:rb-tree-v a))
+                                     (b-elem (tree:rb-tree-v b)))
+                                (if (and
+                                      (typep a-elem 'map-cell)
+                                      (typep b-elem 'map-cell))
+                                  (map:compare a b)
+                                  (set:compare a b))))))
+
 
 (defun empty ()
-   (set:empty))
+  "create empty map"
+  (set:empty))
+
 
 (defun is-empty (map)
-   (set:is-empty map))
+  "return true if map contains no elements, otherwise false"
+  (set:is-empty map))
 
-(defun mem (x map)
-   (set:mem x map))
-
-(defun remove (x map)
-   (set:remove x map))
 
 (defun add (key val map)
-   (set:add (make-map-cell
-              :key key
-              :val val)
-             map))
+  "retun map with key-val association added or replaced if already present"
+  (set:add (make-map-cell :key key :val val)
+    map))
+
+
+(defun find-cell (key map &optional default)
+  "return key-value cell with key in map, or default if not present"
+  (cond ((null map) (values default nil))
+    (t  (lvr (l v r) map
+          (let ((c (ord:compare key (map-cell-key v))))
+            (cond ((zerop c) (values  v t))
+              (t         (find key (if (minusp c) l r)))
+              ))))))
+
+
+(defun mem (x map)
+  "return true if map contains mapping 'x' -- x may be key or key-value cell"
+  (typecase x
+    (map-cell (set:mem x map))
+    (t        (if (find-cell (map-cell-key x) map) t nil))))
+
+
+(defun remove (x map)
+  "return map with mapping 'x' removed  -- x may be key or key-value cell"
+  (typecase x
+    (map-cell (set:remove x map))
+    (t        (set:remove (find-cell x map) map))))
+
 
 (defun find (key map &optional default)
-   (cond ((null map) (values default nil))
-         (t  (lvr (l v r) map
-               (let ((c (ord:compare key (map-cell-key v))))
-                 (cond ((zerop c) (values (map-cell-val v) t))
-                       (t         (find key (if (minusp c) l r)))
-                       ))))
-         ))
+  "return value mapped to key in map, or default if not present"
+  (cond
+    ((null map) (values default nil))
+    (t           (lvr (l v r) map
+                   (let ((c (ord:compare key (map-cell-key v))))
+                     (cond ((zerop c) (values (map-cell-val v) t))
+                       (t         (find key (if (minusp c) l r)))))))))
 
-(defun compare (cmp map1 map2)
-   (tagbody
-    again
-    (let ((e1 (cons-enum map1 nil))
-          (e2 (cons-enum map2 nil)))
 
+(defun compare (map1 map2 &optional (cmp #'ord:compare))
+  "ordinal comparison of two maps"
+  (let ((e1 (cons-enum map1 nil))
+         (e2 (cons-enum map2 nil)))
+    (tagbody again
       (return-from compare
-        (cond ((and (null e1)
-                    (null e2))
-               0)
+        (cond
+          ((and (null e1) (null e2))   0)
+          ((null e1)                  -1)
+          ((null e2)                   1)
+          (t (destructuring-bind (v1 r1 ee1) e1
+               (destructuring-bind (v2 r2 ee2) e2
+                 (let ((c (funcall cmp (map-cell-key v1) (map-cell-key v2))))
+                   (cond
+                     ((not (zerop c)) c)
+                     (t              (let ((c (funcall cmp (map-cell-val v1) (map-cell-val v2))))
+                                       (cond
+                                         ((not (zerop c)) c)
+                                         (t               (progn
+                                                            (setf e1 (cons-enum r1 ee1)
+                                                                  e2 (cons-enum r2 ee2))
+                                                            (go again)) ))) ))))) ))))))
 
-              ((null e1) -1)
-              ((null e2)  1)
-              (t (destructuring-bind (v1 r1 ee1) e1
-                   (destructuring-bind (v2 r2 ee2) e2
-                     (let ((c (ord:compare (map-cell-key v1) (map-cell-key v2))))
-                       (cond ((not (zerop c)) c)
-                         (t (let ((c (funcall cmp (map-cell-val v1) (map-cell-val v2)) ))
-                               (cond ((not (zerop c)) c)
-                                     (t (setf e1 (cons-enum r1 ee1)
-                                              e2 (cons-enum r2 ee2))
-                                        (go again)) ))) ))))) )))))
 
-(defun equal (cmp map1 map2)
-   (zerop (compare cmp map1 map2)))
+(defun equal (map1 map2 &optional (cmp #'ord:compare))
+  "compare two maps for equality using cmp"
+   (zerop (compare map1 map2 cmp)))
+
 
 (defun fold (f map accu)
-   (cond ((null map) accu)
-         (t   (lvr (l v r) map
-                (fold f r
-                      (funcall f
-                               (map-cell-key v)
-                               (map-cell-val v)
-                               (fold f l accu))) ))
-         ))
+  "similar to reduce, takes three argument function f as in: (f key value accumulator)"
+  (cond
+    ((null map) accu)
+    (t          (lvr (l v r) map
+                  (fold f r
+                    (funcall f
+                      (map-cell-key v)
+                      (map-cell-val v)
+                      (fold f l accu)))))))
 
 
 (defun map (f map)
