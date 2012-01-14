@@ -4,6 +4,7 @@
 
 (in-package :tree)
 
+#+()
 (eval-when (:compile-toplevel :load-toplevel :execute)
    (import '(set:height
              set:add
@@ -78,7 +79,7 @@
     :l l
     :v v
     :r r
-    :h (1+ (max hl hr))))
+    :h (1+ (cl:max hl hr))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; destructuring macros
@@ -119,39 +120,39 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun bal (l v r)
-  "same as create, but performs one step of rebalancing if  necessary
+  "bal -- similar to create, but also performs one step of rebalancing, if necessary.
    assumes l and r balanced and height difference <= 3"
   (flet ((invalid-arg ()
            (invalid-argument "Set:bal")))
     (let ((hl (height l))
            (hr (height r)))
-      (cond ((> hl (+ 2 hr))
-              (cond ((rb-tree-p l)
-                      (lvr (ll lv lr) l
-                        (if (>= (height ll) (height lr))
-                          (create ll lv (create lr v r))
-                          ;; else
-                          (cond ((rb-tree-p lr)
-                                  (lvr (lrl lrv lrr) lr
-                                    (create (create ll lv lrl) lrv  (create lrr v r))))
+      (cond
+        ((> hl (+ 2 hr))   (cond
+                             ((rb-tree-p l) (lvr (ll lv lr) l
+                                              (if (>= (height ll) (height lr))
+                                                (create ll lv (create lr v r))
+                                                ;; else
+                                                (cond ((rb-tree-p lr) (lvr (lrl lrv lrr) lr
+                                                                        (create
+                                                                          (create ll lv lrl)
+                                                                          lrv
+                                                                          (create lrr v r))))
+                                                  (t (invalid-arg)) )) ))
+                             (t (invalid-arg)) ))
 
-                            (t (invalid-arg)) )) ))
-                (t (invalid-arg)) ))
-
-        ((> hr (+ 2 hl))
-          (cond ((rb-tree-p r)
-                  (lvr (rl rv rr) r
-                    (if (>= (height rr) (height rl))
-                      (create (create l v rl) rv rr)
-                      ;; else
-                      (cond ((rb-tree-p rl)
-                              (lvr (rll rlv rlr) rl
-                                (create (create l v rll) rlv (create  rlr rv rr))))
-
-                        (t (invalid-arg)) )) ))
-
-            (t (invalid-arg)) ))
-
+        ((> hr (+ 2 hl))  (cond
+                            ((rb-tree-p r) (lvr (rl rv rr) r
+                                             (if (>= (height rr) (height rl))
+                                               (create (create l v rl) rv rr)
+                                               ;; else
+                                               (cond
+                                                 ((rb-tree-p rl) (lvr (rll rlv rlr) rl
+                                                                   (create
+                                                                     (create l v rll)
+                                                                     rlv
+                                                                     (create  rlr rv rr))))
+                                                 (t (invalid-arg)) )) ))
+                            (t (invalid-arg)) ))
         (t (create l v r hl hr)) )) ))
 
 
@@ -174,7 +175,7 @@
    Assume height difference <= 2"
    (cond ((null t1) t2)
          ((null t2) t1)
-         (t (bal t1 (min-elt t2) (remove-min-elt t2)))))
+         (t (bal t1 (tree:min t2) (remove-min t2)))))
 
 
 (defun concat (t1 t2)
@@ -183,7 +184,7 @@
    No assumptions on the heights of l and r."
   (cond ((null t1) t2)
     ((null t2) t1)
-    (t (join t1 (min-elt t2) (remove-min-elt t2)))))
+    (t (join t1 (tree:min t2) (remove-min t2)))))
 
 
 (defun cons-enum (s e)

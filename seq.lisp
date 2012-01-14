@@ -33,12 +33,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun seq:typep (thing)
+  "seq collection type-predicate"
   (or
     (null thing)
     (and (tree:typep thing) (cl:typep (tree:rb-tree-v thing) 'seq-cell))))
 
-
 (deftype seq:type ()
+  "collection of arbitrary, possibly non-unique, elements in some specific lexical order"
   `(satisfies seq:typep))
 
 
@@ -48,12 +49,14 @@
 
 
 (defun set:typep (thing)
+  "set collection type-predicate"
   (or
     (null thing)
     (tree:typep thing)))
 
-
 (deftype set:type ()
+  "collection of arbitrary, unique, elements in order determined by defined ordinal
+   comparison relations on element types and content values"
   `(satisfies set:typep))
 
 
@@ -67,48 +70,51 @@
 
 
 (defun is-empty (s)
-    "return true if seq contains no elements, otherwise false"
+  "return true if seq contains no elements, otherwise false"
   (map:is-empty s))
   
 
 (defun length (s)
+  "return the number of elements in seq, similar to (cl:length list)"
   (set:cardinal s))
 
 
 (defun first (s)
+  "return the first element in seq, similar to (cl:first list)"
   (if (null s)
     nil
-    (seq-cell-val (set:min-elt s))))
+    (seq-cell-val (set:min s))))
 
 
 (defun last (s)
+  "return the last element in seq, similar to (cl:car (cl:last list))"
   (if (null s)
     nil
-    (seq-cell-val (set:max-elt s))))
+    (seq-cell-val (set:max s))))
 
 
 (defun min-key (s)
   (if (null s)
     0
-    (seq-cell-key (set:min-elt s))))
+    (seq-cell-key (set:min s))))
 
 
 (defun max-key (s)
   (if (null s)
     0
-    (seq-cell-key (set:max-elt s))))
+    (seq-cell-key (set:max s))))
 
 
 (defun rest (s)
   (if (null s)
     nil
-    (set:remove-min-elt s)))
+    (set:remove-min s)))
 
 
 (defun butlast (s)
   (if (null s)
     nil
-    (set:remove-max-elt s)))
+    (set:remove-max s)))
 
 
 (defun push (elem &optional seq)
@@ -128,11 +134,11 @@
 (defun dup (s)
   (cond
     ((null s)  nil)
-    (t         (let* ((min-cell (set:min-elt s))
+    (t         (let* ((min-cell (set:min s))
                        (new-cell (make-seq-cell
                                    :key (seq-cell-key min-cell)
                                    :val (seq-cell-val min-cell))))
-                 (set:add new-cell (dup (set:remove-min-elt s)))))))
+                 (set:add new-cell (dup (set:remove-min s)))))))
 
 
 (defun mapi (f seq)
@@ -171,7 +177,7 @@
           new-seq))))
 
 
-(defun create (&optional (from (seq:empty)))
+(defun make (&optional (from (seq:empty)))
   (etypecase from
     (null     (seq:empty))
     (cl:list  (let (seq)
@@ -180,8 +186,8 @@
                 seq))
     (seq:type (seq:dup from))
     (map:type (error "seqs cannot be created from ordinary maps"))
-    (set:type (seq:create (set:elements from)))
-    (sequence (seq:create (coerce from 'cl:list)))
+    (set:type (seq:make (set:elements from)))
+    (sequence (seq:make (coerce from 'cl:list)))
     (atom     (seq:add from))))
 
 

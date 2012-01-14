@@ -4,6 +4,7 @@
 
 (in-package :map)
 
+#+()
 (eval-when (:compile-toplevel :load-toplevel :execute)
    (import '(tree:cons-enum)))
 
@@ -13,8 +14,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defclass map-cell ()
-   ((key  :accessor map-cell-key  :initform nil :initarg :key :documentation "domain constituent")
-     (val  :accessor map-cell-val  :initform nil :initarg :val :documentation "range constituent"))
+  ((key
+     :accessor map-cell-key
+     :initform nil
+     :initarg :key
+     :documentation "domain constituent")
+    (val
+      :accessor map-cell-val
+      :initform nil
+      :initarg :val
+      :documentation "range constituent"))
   (:documentation "storage cell for implementation of tree:rb-tree based key-value maps"))
 
 

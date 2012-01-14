@@ -17,7 +17,8 @@
     #:b
     #:c
     #:d))
-   
+
+
 (defpackage :ord
   (:use #:common-lisp)
   (:export
@@ -34,7 +35,7 @@
 
 (defpackage :tree
   (:use #:common-lisp #:quad)
-  (:shadow #:merge #:typep #:type# #+() #:min #+() #:max)
+  (:shadow #:merge #:typep #:type  #:min  #:max)
   (:export
     #:rb-tree
     #:make-rb-tree
@@ -46,8 +47,10 @@
     #:create
     #:height
     #:add
-    #:min-elt
-    #:remove-min-elt
+    #:min
+    #:max
+    #:remove-min
+    #:remove-max    
     #:bal
     #:join
     #:merge
@@ -67,19 +70,22 @@
   (:use #:common-lisp)
   (:import-from #:tree #:create #:bal #:join #:concat #:cons-enum #:not-found #:invalid-argument
     #:lr #:lvr #:lvrh #:make-rb-tree #:rb-tree-p #:rb-tree-l #:rb-tree-v #:rb-tree-r #:rb-tree-h
-    #:height #:add #:min-elt #:remove-min-elt)
-  (:shadowing-import-from #:tree #:merge)
+    #:height #:add #:remove-min #:remove-max)
+  (:shadowing-import-from #:tree #:merge  #:max #:min)
   (:shadow #:equal #:remove #:union #:typep #:type)
   (:export
     #:height
     #:empty
     #:is-empty
+    #:make
     #:mem
     #:add
     #:singleton
     #:remove
-    #:remove-min-elt
-    #:remove-max-elt
+    #:remove-min
+    #:remove-max
+    #:min
+    #:max
     #:union
     #:inter
     #:diff
@@ -95,8 +101,6 @@
     #:partition
     #:cardinal
     #:elements
-    #:min-elt
-    #:max-elt
     #:choose
     #:typep
     #:type))
@@ -105,10 +109,11 @@
 (defpackage :map
   (:use #:common-lisp)
   (:shadow #:find #:equal #:map #:remove #:typep #:type)
-  (:import-from #:tree #:lr #:lvr #:lvrh)
+  (:import-from #:tree #:lr #:lvr #:lvrh  #:cons-enum)
   (:export
     #:empty
     #:is-empty
+    #:make
     #:add
     #:find
     #:remove
@@ -132,7 +137,7 @@
   (:export
     #:empty
     #:is-empty
-    #:create
+    #:make
     #:push
     #:add
     #:first

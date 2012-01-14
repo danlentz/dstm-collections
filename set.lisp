@@ -45,34 +45,34 @@
     (addx node)))
 
 
-(defun min-elt (node)
+(defun set:min (node)
   "return the smallest element present in the collection"
    (cond ((null node) (not-found))
          ((null (rb-tree-l node)) (rb-tree-v node))
-         (t     (min-elt (rb-tree-l node)))))
+         (t     (set:min (rb-tree-l node)))))
 
 
-(defun max-elt (node)
+(defun set:max (node)
   "return the greatest element present in the collection"
    (cond ((null node) (not-found))
          ((null (rb-tree-r node)) (rb-tree-v node))
-     (t (max-elt (rb-tree-r node)))))
+     (t (set:max (rb-tree-r node)))))
 
 
-(defun remove-min-elt (node)
+(defun remove-min (node)
   "return a collection with the smallest element removed -- useful for priority-queues"
-  (cond ((null node)              (invalid-argument "set:remove-min-elt"))
+  (cond ((null node)              (invalid-argument "set:remove-min"))
          ((null (rb-tree-l node)) (rb-tree-r node))
          (t                       (lvr (l v r) node
-                                    (bal (remove-min-elt l) v r)))))
+                                    (bal (remove-min l) v r)))))
 
 
-(defun remove-max-elt (node)
+(defun remove-max (node)
   "return a collection with the greatest element removed -- useful for priority-queues"
-  (cond ((null node)              (invalid-argument "set:remove-max-elt"))
+  (cond ((null node)              (invalid-argument "set:remove-max"))
          ((null (rb-tree-r node)) (rb-tree-l node))
          (t                       (lvr (l v r) node
-                                    (bal l v (remove-max-elt r))))))
+                                    (bal l v (remove-max r))))))
 
 
 (defun split (x tree)
@@ -296,4 +296,4 @@
 
 
 (defun choose (s)
-   (min-elt s))
+   (min s))
