@@ -40,7 +40,7 @@
 
 (defmethod print-object ((tree rb-tree) stream)
   (print-unreadable-object (tree stream :type t :identity t)
-    (format stream "{| V=~A H=~A |}" ;; (qar tree)
+    (format stream "{| V: ~A H: ~A |}"
       (qbr tree)
       (qdr tree))))
 
@@ -58,9 +58,9 @@
    tree)
 
 (defun create (l v r &optional (hl (height l)) (hr (height r)))
-  "create - create a tree node with left son l, value v, and right son  r.
-We must have all elements of l < v < all elements of r.
-l and r must be balanced and have a height difference <= 2"
+  "create a tree node with left son l, value v, and right son r.
+   Must have all elements of l < v < all elements of r.
+   l and r must be balanced and have a height difference =< 2"
   (make-rb-tree
     :l l
     :v v
@@ -72,6 +72,7 @@ l and r must be balanced and have a height difference <= 2"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmacro lr ((l r) tree &body body)
+  "destructure tree node: left right"
    (let ((gtree (gensym (symbol-name :tree-))))
      `(let ((,gtree ,tree))
         (let ((,l  (rb-tree-l ,gtree))
@@ -80,6 +81,7 @@ l and r must be balanced and have a height difference <= 2"
 
 
 (defmacro lvr ((l v r) tree &body body)
+  "destructure tree node: left value right"
    (let ((gtree (gensym (symbol-name :tree-))))
      `(let ((,gtree ,tree))
         (let ((,l  (rb-tree-l ,gtree))
@@ -89,6 +91,7 @@ l and r must be balanced and have a height difference <= 2"
 
 
 (defmacro lvrh ((l v r h) tree &body body)
+  "destructure tree node: left value right height"
    (let ((gtree (gensym (symbol-name :tree-))))
      `(let ((,gtree ,tree))
         (let ((,l  (rb-tree-l ,gtree))
