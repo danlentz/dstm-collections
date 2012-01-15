@@ -166,3 +166,73 @@
 
 (defun |COMPARE>| (a b)
    (plusp (compare a b)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Useful bits
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defmacro writing-readably (&rest forms)
+  "Macro to wrap around some forms, causing their writing to suitable for
+reading back in."
+  `(let ((*print-escape* t)
+          (*print-level* nil)
+          (*print-length* nil)
+          (*print-array* t)
+          (*package* (find-package :common-lisp)))     
+     ,@forms))
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; the following are taken from CL-TRIVIAL-TYPES by Tomohiro Matsuyama
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defmacro %proper-list-p (var &optional (element-type '*))
+  `(loop
+     (typecase ,var
+       (null (return t))
+       (cons (if (or ,(eq element-type '*)
+                     (typep (car ,var) ,element-type))
+                 (setq ,var (cdr ,var))
+                 (return)))
+       (t    (return)))))
+
+
+(defun proper-list-p (object)
+  "Returns true if OBJECT is a proper list.
+   Examples:
+    (proper-list-p 1) => NIL
+    (proper-list-p '(1 . 2)) => NIL
+    (proper-list-p nil) => T
+    (proper-list-p '(1 2 3)) => T"
+  (%proper-list-p object))
+
+
+(deftype proper-list (&optional (element-type '*))
+  "Equivalent to `(and list (satisfies proper-list-p))`. ELEMENT-TYPE
+   is just ignored. Examples:
+    (typep '(1 2 3) '(proper-list integer)) => T
+    (typep '(1 2 3) '(proper-list string)) => T"
+  (declare (ignore element-type))
+  '(and list (satisfies proper-list-p)))
+
+
+(defun association-list-p (var)
+  "Returns true if OBJECT is an association list. Examples:
+    (association-list-p 1) => NIL
+    (association-list-p '(1 2 3)) => NIL
+    (association-list-p nil) => T
+    (association-list-p '((foo))) => T
+    (association-list-p '((:a . 1) (:b . 2))) => T"
+  (%proper-list-p var 'cons))
+
+
+(deftype association-list (&optional (key-type '*) (value-type '*))
+  "Equivalent to `(proper-list (cons KEY-TYPE VALUE-TYPE))`. KEY-TYPE
+   and VALUE-TYPE are just ignored. Examples:
+    (typep '((:a . 1) (:b . 2)) '(association-list integer)) => T
+    (typep '((:a . 1) (:b . 2)) '(association-list string)) => T"
+  `(proper-list (cons ,key-type ,value-type)))
