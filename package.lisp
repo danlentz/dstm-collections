@@ -56,8 +56,6 @@
     #:merge
     #:concat
     #:cons-enum
-    #:not-found
-    #:invalid-argument
     #:lr
     #:lvr
     #:lvrh

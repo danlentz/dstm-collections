@@ -22,24 +22,24 @@
 ;; RB-Tree Class
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defclass rb-tree (abstract-quad)
+(defclass tree:rb-tree (abstract-quad)
   ((quad:a
-     :accessor rb-tree-l
+     :accessor tree:rb-tree-l
      :initform nil
      :initarg :l
      :documentation "left child of this node containing all elements less than v")
     (quad:b
-      :accessor rb-tree-v
+      :accessor tree:rb-tree-v
       :initform nil
       :initarg :v
       :documentation "the value or value-cell represented by this node")
     (quad:c
-      :accessor rb-tree-r
+      :accessor tree:rb-tree-r
       :initform nil
       :initarg :r
       :documentation "right child of this node containing all elements greater than v")
     (quad:d
-      :accessor rb-tree-h
+      :accessor tree:rb-tree-h
       :initform 1
       :initarg :h
       :documentation "the height of this node, as the distance in child links to the
@@ -60,20 +60,20 @@
       (qdr tree))))
 
 
-(defun make-rb-tree (&rest args)
+(defun tree:make-rb-tree (&rest args)
   "convenience api routine for rb-tree initialization"
   (apply #'make-instance 'rb-tree args))
 
 
-(defgeneric rb-tree-p (x))
+(defgeneric tree:rb-tree-p (x))
 
 
-(defmethod  rb-tree-p (x)
+(defmethod  tree:rb-tree-p (x)
    (declare (ignore x))
    nil)
 
 
-(defmethod  rb-tree-p ((tree rb-tree))
+(defmethod  tree:rb-tree-p ((tree rb-tree))
    tree)
 
 
