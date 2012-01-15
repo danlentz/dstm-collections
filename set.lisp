@@ -5,6 +5,23 @@
 (in-package :set)
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; class set*
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defclass set* (dstm:dstm-var)
+  ())
+
+(defmethod print-object ((s set*) stream)
+  (let ((val (dstm:atomic (dstm:read s))))
+    (ord:writing-readably 
+      (format stream "#{ ~{~s ~}}" (set:elements val)))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; set api
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun tree:height (node)
   "convenience api for returning rb-tree height of collection node"
    (cond ((null node) 0)
@@ -45,31 +62,31 @@
     (addx node)))
 
 
-(defun set:min (node)
+(defun tree:min (node)
   "return the smallest element present in the collection"
-   (cond ((null node) (not-found))
+   (cond ((null node) (tree::not-found))
          ((null (rb-tree-l node)) (rb-tree-v node))
-         (t     (set:min (rb-tree-l node)))))
+         (t     (tree:min (rb-tree-l node)))))
 
 
-(defun set:max (node)
+(defun tree:max (node)
   "return the greatest element present in the collection"
-   (cond ((null node) (not-found))
+   (cond ((null node) (tree::not-found))
          ((null (rb-tree-r node)) (rb-tree-v node))
-     (t (set:max (rb-tree-r node)))))
+     (t (tree:max (rb-tree-r node)))))
 
 
-(defun set:remove-min (node)
+(defun tree:remove-min (node)
   "return a collection with the smallest element removed -- useful for priority-queues"
-  (cond ((null node)              (invalid-argument "set:remove-min"))
+  (cond ((null node)              (tree::invalid-argument "tree:remove-min"))
          ((null (rb-tree-l node)) (rb-tree-r node))
          (t                       (lvr (l v r) node
                                     (bal (remove-min l) v r)))))
 
 
-(defun set:remove-max (node)
+(defun tree:remove-max (node)
   "return a collection with the greatest element removed -- useful for priority-queues"
-  (cond ((null node)              (invalid-argument "set:remove-max"))
+  (cond ((null node)              (tree::invalid-argument "tree:remove-max"))
          ((null (rb-tree-r node)) (rb-tree-l node))
          (t                       (lvr (l v r) node
                                     (bal l v (remove-max r))))))
@@ -316,11 +333,17 @@
    elements derived from various types of source data"
   (etypecase from
     (null     (set:empty))
+    (dstm:var (set:make (dstm:atomic (dstm:read from))))
     (cl:list  (let (set)
                 (dolist (elem from)
                   (setq set (set:add elem set)))
-                set))
+                set))  
+    (seq:type (set:make (seq:list from)))
+    (map:type (error "at this point seqs cannot be created from ordinary maps"))
     (set:type (set:dup from))
     (sequence (set:make (coerce from 'cl:list)))
     (atom     (set:singleton from))))
 
+
+(defun set:make* (&optional (from (set:empty)))
+  (dstm:create-var (set:make from) 'set*))

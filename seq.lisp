@@ -6,6 +6,19 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; class seq*
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defclass seq* (map:map*)
+  ())
+
+(defmethod print-object ((s seq*) stream)
+  (let ((val (dstm:atomic (dstm:read s))))
+    (ord:writing-readably 
+      (format stream "#[ ~{~s ~}]" (seq:list val)))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; seq element
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -36,7 +49,9 @@
   "seq collection type-predicate"
   (or
     (null thing)
+    (cl:typep thing 'seq*) 
     (and (tree:typep thing) (cl:typep (tree:rb-tree-v thing) 'seq-cell))))
+
 
 (deftype seq:type ()
   "collection of arbitrary, possibly non-unique, elements in some specific lexical order"
@@ -52,7 +67,9 @@
   "set collection type-predicate"
   (or
     (null thing)
+    (cl:typep thing 'set:set*) 
     (tree:typep thing)))
+
 
 (deftype set:type ()
   "collection of arbitrary, unique, elements in order determined by defined ordinal
@@ -203,16 +220,20 @@
    original order in such cases where the concept of lexical ordering applies."
   (etypecase from
     (null     (seq:empty))
+    (dstm:var (seq:make (dstm:atomic (dstm:read from))))
     (cl:list  (let (seq)
                 (dolist (elem from)
                   (setq seq (seq:add elem seq)))
                 seq))
     (seq:type (seq:dup from))
-    (map:type (error "seqs cannot be created from ordinary maps"))
+    (map:type (error "at this point seqs cannot be created from ordinary maps"))
     (set:type (seq:make (set:elements from)))
     (sequence (seq:make (coerce from 'cl:list)))
     (atom     (seq:add from))))
 
+
+(defun make* (&optional (from (seq:empty)))
+  (dstm:create-var (seq:make from) 'seq:seq*))
 
 (defun elt (index seq)
   "return the element of seq at position index, which should be a positive integer
