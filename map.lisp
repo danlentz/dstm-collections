@@ -4,10 +4,18 @@
 
 (in-package :map)
 
-#+()
-(eval-when (:compile-toplevel :load-toplevel :execute)
-   (import '(tree:cons-enum)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; class map*
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defclass map* (set:set*)
+  ())
+
+#+()
+(defmethod print-object ((s set*) stream)
+  (let ((val (dstm:atomic (dstm:read-var s)))
+         (*package* (find-package :cl))))
+    (format stream "#{ ~{~s ~}}" (set:elements val)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; mapped pair
