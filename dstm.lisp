@@ -28,6 +28,13 @@
     (parent :accessor transaction-parent :initform (current-transaction))))
 
 
+(defmethod print-object ((tx transaction) stream)
+  (print-unreadable-object (tx stream :type t :identity t)
+    (with-slots (state root reads subs) tx
+      (format stream "[~S] / ~A (~d subtx, ~d reads)" state (if root :ROOT-TX :sub-tx)
+        (cl:length subs) (cl:length reads))))) 
+
+
 (defun current-transaction ()
   (unless (bt:current-thread) 
     (warn "Starting Multiprocessing")
@@ -60,7 +67,7 @@
 
 (defclass var ()
   ()
-  (:documentation "a consistent top-level export representing STM vars"))
+  (:documentation "a consistent top-level export representing transactional variables"))
 
 
 (defclass dstm-var (var)
@@ -73,12 +80,12 @@
       :initform nil)
     (trans
       :accessor dstm-var-trans
-      :initform (load-time-value
-                  (make-instance 'transaction :state :committed)))))
+      :initform (load-time-value (make-instance 'transaction :state :committed)))))
 
 
-(defun create-var (&optional val)
-   (make-instance 'dstm-var :new val))
+(defun create-var (&optional val (class-name 'dstm-var))
+   (make-instance class-name :new val))
+
 
 
 (define-condition rollback-exn ()
@@ -91,19 +98,13 @@
 
 
 (defparameter *nrolls*
-  #+sbcl
-  (make-array '(1) :element-type 'sb-ext:word :initial-element #x0)
-  #+lispworks
-  (make-array '(1) :initial-element 0)
-  )
+  #+sbcl      (make-array '(1) :element-type 'sb-ext:word :initial-element #x0)
+  #+lispworks (make-array '(1) :initial-element 0))
 
 
 (defparameter *ntrans*
-  #+sbcl
-  (make-array '(1) :element-type 'sb-ext:word :initial-element #x0)
-  #+lispworks
-  (make-array '(1) :initial-element 0)  
-  )
+  #+sbcl      (make-array '(1) :element-type 'sb-ext:word :initial-element #x0)
+  #+lispworks (make-array '(1) :initial-element 0))
 
 
 (defun rollback-trans-and-subs (trans)
@@ -117,19 +118,14 @@
   (let ((trans (current-transaction)))
     ;; rollbacks outside of transactions are permitted but meaningless
     (when trans
-      #+sbcl
-      (sb-ext:atomic-incf (aref *nrolls* 0))
-      #+lispworks
-      (sys:atomic-incf (aref *nrolls* 0))
+      #+sbcl      (sb-ext:atomic-incf (aref *nrolls* 0))
+      #+lispworks (sys:atomic-incf (aref *nrolls* 0))
       (rollback-trans-and-subs trans)
-      (error (load-time-value
-               (make-condition 'rollback-exn)
-               t)))))
+      (error (load-time-value (make-condition 'rollback-exn) t)))))
 
 
 (defun check-reads (trans)
-  #+lispworks
-  (sys:ensure-memory-after-store)
+  #+lispworks  (sys:ensure-memory-after-store)
   (dolist (pair (transaction-reads trans))
     (destructuring-bind (var . vtrans) pair
       (let ((vnow (dstm-var-trans var)))
@@ -157,10 +153,14 @@
 
 
 (defun read-var (var)
+  (warn "read-var deprecated")
+  (dstm:read var))
+
+
+(defun read (var)
   (let ((trans (current-transaction)))
     (loop
-      #+lispworks
-      (sys:ensure-memory-after-store)
+      #+lispworks  (sys:ensure-memory-after-store)
       (let* ((vtrans (dstm-var-trans var))
               (vstate (transaction-state vtrans)))
         (when (or (not (eq :ACTIVE vstate))
@@ -169,11 +169,15 @@
             (push (cons var vtrans) (transaction-reads trans)))
           (return (if (eq :ABORTED vstate)
                     (dstm-var-old var)
-                    (dstm-var-new var))))
-        ))))
+                    (dstm-var-new var))))))))
 
 
 (defun write-var (var val)
+  (warn "write-var deprecated")
+  (dstm:write var val))
+
+
+(defun write (var val)
    (let* ((trans   (current-transaction))
           (wtrans  (or trans (make-instance 'transaction))))
      (prog1
@@ -185,27 +189,25 @@
 (defun write-vars (&rest pairs)
    (do ((pairs pairs (cddr pairs)))
        ((null pairs))
-     (write-var (car pairs) (cdar pairs))))
+     (dstm:write (car pairs) (cdar pairs))))
 
 
 (defun write-var-with-transaction (trans var val)
   "trans is the current transaction for a thread"
   (loop
-    #+lispworks
-    (sys:ensure-memory-after-store)
+    #+lispworks  (sys:ensure-memory-after-store)
     (let* ((vtrans (dstm-var-trans var))
             (vstate (transaction-state vtrans)))
       (cond
         ((not (eq :ACTIVE vstate))
-          (when (#+sbcl sb-ext:compare-and-swap
+          (when (#+sbcl       sb-ext:compare-and-swap
                   #+lispworks sys:compare-and-swap
                   (slot-value var 'trans) vtrans trans)
             (when (eq :COMMITTED vstate)
               (setf (dstm-var-old var) (dstm-var-new var)))
             (return (setf (dstm-var-new var) val)) ))
         ((equivalentp trans vtrans)
-          (return (setf (dstm-var-new var) val)))
-        ))))
+          (return (setf (dstm-var-new var) val)))))))
 
 
 (defun do-orelse (&rest fns)
@@ -261,12 +263,13 @@
 
 (defun do-rmw (place fn)
   "RMW = read / modify / write"
-  (atomic (write-var place (funcall fn (read-var place)))))
+  (atomic (dstm:write place (funcall fn (dstm:read place)))))
 
 
 (defmacro rmw ((var-name place) &body body)
    `(do-rmw ,place (lambda (,var-name)
                      ,@body)))
+
 
 (defun reset ()
    (setf (current-transaction) nil)

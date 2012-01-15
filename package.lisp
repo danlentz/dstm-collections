@@ -19,18 +19,42 @@
     #:d))
 
 
+    
+(defpackage :dstm
+  (:use #:common-lisp)
+  (:shadow #:read #:write)
+  (:export
+    #:var
+    #:dstm-var
+    #:*transaction*
+    #:transaction
+    #:create-var
+    #:read
+    #:write
+    #:write-vars
+    #:atomic
+    #:orelse
+    #:rollback
+    #:rmw
+    #:check
+    #:reset))
+
+
 (defpackage :ord
   (:use #:common-lisp)
   (:export
-    #:|SLOTS-TO-COMPARE|
-    #:|COMPARE|
-    #:|COMPARE<|
-    #:|COMPARE<=|
-    #:|COMPARE=|
-    #:|COMPARE>=|
     #:|COMPARE>|
-    #:|MAKE-CI-CHAR|
-    #:|MAKE-CI-STRING|))
+    #:compare<
+    #:compare<=
+    #:compare=
+    #:compare>=
+    #:compare
+    #:make-ci-char
+    #:make-ci-string
+    #:slots-to-compare
+    #:writing-readably
+    #:association-list
+    ))
 
 
 (defpackage :tree
@@ -66,16 +90,18 @@
 
 (defpackage :set
   (:use #:common-lisp)
-  (:import-from #:tree #:create #:bal #:join #:concat #:cons-enum #:not-found #:invalid-argument
+  (:import-from #:tree #:create #:bal #:join #:concat #:cons-enum ;;#:not-found #:invalid-argument
     #:lr #:lvr #:lvrh #:make-rb-tree #:rb-tree-p #:rb-tree-l #:rb-tree-v #:rb-tree-r #:rb-tree-h
     #:height #:add #:remove-min #:remove-max)
   (:shadowing-import-from #:tree #:merge  #:max #:min)
   (:shadow #:equal #:remove #:union #:typep #:type)
   (:export
+    #:set*
     #:height
     #:empty
     #:is-empty
     #:make
+    #:make*
     #:dup
     #:mem
     #:add
@@ -109,9 +135,11 @@
   (:shadow #:find #:equal #:map #:remove #:typep #:type)
   (:import-from #:tree #:lr #:lvr #:lvrh  #:cons-enum)
   (:export
+    #:map*
     #:empty
     #:is-empty
     #:make
+    #:make*
     #:add
     #:find
     #:remove
@@ -133,9 +161,11 @@
     #:type #:reduce)
   (:use #:common-lisp)
   (:export
+    #:seq*
     #:empty
     #:is-empty
     #:make
+    #:make*
     #:push
     #:add
     #:first
@@ -153,22 +183,3 @@
     #:equal
     #:reduce
     ))
-
-    
-(defpackage :dstm
-  (:use #:common-lisp)
-  (:export
-    #:var
-    #:*transaction*
-    #:transaction
-    #:create-var
-    #:read-var
-    #:write-var
-    #:write-vars
-    #:atomic
-    #:orelse
-    #:rollback
-    #:rmw
-    #:check
-    #:reset))
-

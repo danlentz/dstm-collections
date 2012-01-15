@@ -4,7 +4,7 @@
 (defpackage :dstm-collections-test
   (:shadow :set :map)
   (:use :common-lisp
-    :dstm
+  ;;  :dstm
     :bordeaux-threads
     :hu.dwim.stefil
     :hu.dwim.def
@@ -937,22 +937,11 @@
 (defvar *a* nil)
 (defvar *b* nil)
 
-
-#+()
-(defixture tx-var-a
-  (let ((*a* (create-var 0)))
-    (-body-)))
-#+()
-(defixture tx-var-b
-  (let ((*b* (create-var 0)))
-    (-body-)))
-
-
 (defun check-invariant (&aux a b)
-  (atomic
+  (dstm:atomic
     (setf
-      a (read-var *a*)
-      b (read-var *b*)))
+      a (dstm:read *a*)
+      b (dstm:read *b*)))
   (let ((result (= b (* 2 a))))
     (unless result
       (error  "Invariant broken: A = ~A, B = ~A" a b))))
@@ -960,10 +949,10 @@
 
 
 (defun common-code (delta)
-  (atomic
-    (let ((a (+ delta (read-var *a*))))
-      (write-var *a* a)
-      (write-var *b* (* 2 a)))))
+  (dstm:atomic
+    (let ((a (+ delta (dstm:read *a*))))
+      (dstm:write *a* a)
+      (dstm:write *b* (* 2 a)))))
 
 
 (defun count-up (n)
@@ -987,19 +976,19 @@
 (defun test-dstm-contention (iterations)
   (format *trace-output* "~%Start DSTM Test/~A...~%" iterations)
 
-  (setf *a* (create-var 0))
-  (setf *b* (create-var 0))
-  (reset)
+  (setf *a* (dstm:create-var 0))
+  (setf *b* (dstm:create-var 0))
+  (dstm:reset)
 
   (let ((start (local-time:now))
          (procs
            (list
              (bt:make-thread (funcall #'count-down iterations)
                :name "down"
-               :initial-bindings '((*transaction* . nil)))
+               :initial-bindings '((dstm:*transaction* . nil)))
              (bt:make-thread (funcall #'count-up   iterations)
                :name "up"
-               :initial-bindings '((*transaction* . nil))))))
+               :initial-bindings '((dstm:*transaction* . nil))))))
 
     (loop
       :while (some #'sb-thread:thread-alive-p procs)
