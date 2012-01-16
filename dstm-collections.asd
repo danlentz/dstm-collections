@@ -6,7 +6,7 @@
 
 (asdf:defsystem :dstm-collections
   :serial t
-  :depends-on (:closer-mop :bordeaux-threads)
+  :depends-on (:closer-mop :bordeaux-threads :named-readtables)
   :description "Functional Collections and Lock Free DSTM"
   :long-description "Red-Black Trees / Dynamic Software Transactional Memory after Herlihy, et. al."
   :components ((:file "package") 
@@ -16,7 +16,8 @@
                 (:file "tree")
                 (:file "set")
                 (:file "map")
-                (:file "seq")                               
+                (:file "seq")
+                (:file "readtable")
                 ))
 
 
