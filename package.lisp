@@ -96,6 +96,7 @@
   (:shadowing-import-from #:tree #:merge  #:max #:min)
   (:shadow #:equal #:remove #:union #:typep #:type)
   (:export
+    #:syntax
     #:set*
     #:height
     #:empty
@@ -135,6 +136,7 @@
   (:shadow #:find #:equal #:map #:remove #:typep #:type)
   (:import-from #:tree #:lr #:lvr #:lvrh  #:cons-enum)
   (:export
+    #:syntax
     #:map*
     #:empty
     #:is-empty
@@ -161,6 +163,7 @@
     #:type #:reduce)
   (:use #:common-lisp)
   (:export
+    #:syntax
     #:seq*
     #:empty
     #:is-empty

@@ -96,6 +96,10 @@
   (set:cardinal s))
 
 
+(defmethod sequence:length ((s tree:rb-tree))
+  (set:cardinal s))
+
+
 (defun first (s)
   "return the first element in seq, similar to (cl:first list)"
   (if (null s)

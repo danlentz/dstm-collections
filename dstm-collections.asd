@@ -5,10 +5,13 @@
 
 
 (asdf:defsystem :dstm-collections
-  :serial t
-  :depends-on (:closer-mop :bordeaux-threads :named-readtables)
   :description "Functional Collections and Lock Free DSTM"
   :long-description "Red-Black Trees / Dynamic Software Transactional Memory after Herlihy, et. al."
+  :version "0.2.0"
+  :author "Dr David McClain"
+  :maintainer "Dan Lentz"
+  :serial t
+  :depends-on (:closer-mop :bordeaux-threads :named-readtables)
   :components ((:file "package") 
                 (:file "quad")
                 (:file "dstm")

@@ -186,7 +186,7 @@ reading back in."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; the following are taken from CL-TRIVIAL-TYPES by Tomohiro Matsuyama
+;; the following are adopted from CL-TRIVIAL-TYPES by Tomohiro Matsuyama
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
