@@ -11,7 +11,7 @@
   :author "Dr David McClain"
   :maintainer "Dan Lentz"
   :serial t
-  :depends-on (:closer-mop :bordeaux-threads :named-readtables)
+  :depends-on (:closer-mop :eager-future2 :named-readtables)
   :components ((:file "package") 
                 (:file "quad")
                 (:file "dstm")
@@ -20,7 +20,7 @@
                 (:file "set")
                 (:file "map")
                 (:file "seq")
-                (:file "readtable")
+         ;;;       (:file "readtable")
                 ))
 
 
