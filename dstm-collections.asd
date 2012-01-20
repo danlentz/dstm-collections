@@ -11,8 +11,9 @@
   :author "Dr David McClain"
   :maintainer "Dan Lentz"
   :serial t
-  :depends-on (:closer-mop :eager-future2 :named-readtables)
-  :components ((:file "package") 
+  :depends-on (:closer-mop  :eager-future2 :named-readtables :cl-store :local-time)
+  :components ((:file "package")
+                (:file "dstm-collections")
                 (:file "quad")
                 (:file "dstm")
                 (:file "ord")
@@ -20,18 +21,22 @@
                 (:file "set")
                 (:file "map")
                 (:file "seq")
-         ;;;       (:file "readtable")
+                (:file "printer")
+                (:file "reader")
                 ))
 
 
 (defmethod asdf:perform :after ((op asdf:load-op) (sys (eql (asdf:find-system :dstm-collections))))
-  (pushnew :dstm *features*))
+  (pushnew :dstm *features*)
+  (if (symbol-value (intern (symbol-name :*default-syntax-startup-enabled*)
+                      (find-package :dstm-collections)))
+    (funcall (intern (symbol-name :enable-syntax)
+                      (find-package :dstm-collections)))))
+  
 
 
 (defmethod asdf:perform ((o asdf:test-op) (c (eql (asdf:find-system :dstm-collections))))
   (asdf:load-system :dstm-collections-test)
-  (funcall (intern (symbol-name :dstm-collections) (find-package :dstm-collections-test))))
-
-
-(defmethod asdf:operation-done-p ((o asdf:test-op) (c (eql (asdf:find-system :dstm-collections))))
-  nil)
+  (funcall (intern (symbol-name :funcall-test-with-feedback-message)
+             (find-package :hu.dwim.stefil)) 'dstm-collections-test::dstm-collections))
+ 
