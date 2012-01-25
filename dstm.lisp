@@ -28,13 +28,6 @@
     (parent :accessor transaction-parent :initform (current-transaction))))
 
 
-(defmethod print-object ((tx transaction) stream)
-  (print-unreadable-object (tx stream :type t :identity t)
-    (with-slots (state root reads subs) tx
-      (format stream "[~S] / ~A (~d subtx, ~d reads)" state (if root :ROOT-TX :sub-tx)
-        (cl:length subs) (cl:length reads))))) 
-
-
 (defun current-transaction ()
   (unless (bt:current-thread) 
     (warn "Starting Multiprocessing")
@@ -81,6 +74,7 @@
     (trans
       :accessor dstm-var-trans
       :initform (load-time-value (make-instance 'transaction :state :committed)))))
+
 
 
 (defun create-var (&optional val (class-name 'dstm-var))
@@ -263,16 +257,83 @@
 
 (defun do-rmw (place fn)
   "RMW = read / modify / write"
+  (warn "do-rmw is deprecated, use execute-transaction instead")
   (atomic (dstm:write place (funcall fn (dstm:read place)))))
 
 
 (defmacro rmw ((var-name place) &body body)
+  (warn "rmw is deprecated, use with--update instead")
    `(do-rmw ,place (lambda (,var-name)
                      ,@body)))
 
 
-(defun reset ()
-   (setf (current-transaction) nil)
-   (setf (aref  *nrolls* 0) 0)
-   (setf (aref  *ntrans* 0) 0))
+(defun execute-transaction (place fn)
+  "read / if modify, then write"
+  (atomic
+    (let* ((original-value (dstm:read place))
+            (updated-value (funcall fn original-value)))
+      (if (eq updated-value :secret-unchanged-value-flag)
+        original-value
+        (dstm:write place updated-value)))))
 
+
+(defmacro with-update ((var-name place) &body body)
+  `(let ((place ,place))
+     (if (cl:typep place 'dstm:var)
+       (execute-transaction ,place (lambda (,var-name) (declare (ignorable ,var-name))
+                                     :secret-unchanged-value-flag ,@body))
+       (error "~S is not a transactional variable" place))))
+     
+
+(defgeneric value (var)
+  (:documentation "Atomically read the value of a DSTM transactional variable"))
+
+(defmethod  value ((var t))
+  (error "Attempt to read the VALUE of the NON-TRANSACTIONAL place ~S. Try safe-value instead."
+    var))
+
+(defmethod  value ((var dstm-var))
+  (atomic (dstm:read var)))
+
+
+(defun safe-value (thing)
+  "If thing is a DSTM variable, read and return its value within an atomic transaction.
+   If thing is not a DSTM variable, simply return its value."
+  (if (cl:typep thing 'dstm:var)
+    (value thing)
+    thing))
+
+(defgeneric (setf value) (new-value var))
+
+(defmethod (setf value) (new-value (var t))
+  (error "Attempt to write the VALUE of the NON-TRANSACTIONAL place ~S" var))
+
+(defmethod (setf value) (new-value (var dstm-var))
+  (atomic (dstm:write var new-value)))
+
+(defmethod (setf value) ((new-value var) (var dstm-var))
+  (error "The VALUE of a transactional place should not, itself, be a transactional variable."))
+
+
+(define-modify-macro updatef (new-value)
+  "Execute an atomic DSTM transaction to update the VALUE of a DSTM variable to NEW-VALUE."
+  (lambda (place new-value)
+    (setf (value place) new-value)))
+
+
+(defun reset ()
+  (setf (current-transaction) nil)
+  (setf (aref  *nrolls* 0) 0)
+  (setf (aref  *ntrans* 0) 0))
+
+
+
+
+
+;; (let ((x #{1 2 3}))
+;;   (setf (value x) {0})
+;;   x)
+
+;; (let ((x #{1 2 3}))
+;;   (updatef x {0})
+;;   x)

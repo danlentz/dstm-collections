@@ -53,16 +53,10 @@
      where: l = left child, v = value, r = right child, h = height"))
 
 
-(defmethod print-object ((tree rb-tree) stream)
-  (print-unreadable-object (tree stream :type t :identity t)
-    (format stream "{| V: ~A H: ~A |}"
-      (qbr tree)
-      (qdr tree))))
-
 
 (defun tree:make-rb-tree (&rest args)
   "convenience api routine for rb-tree initialization"
-  (apply #'make-instance 'rb-tree args))
+  (apply #'make-instance 'tree:rb-tree args))
 
 
 (defgeneric tree:rb-tree-p (x))
@@ -88,11 +82,11 @@
   `(satisfies tree:typep))
 
 
-(defun tree:create (l v r &optional (hl (height l)) (hr (height r)))
+(defun tree:create (l v r &optional  (hl (height l)) (hr (height r)))
   "create a tree node with left son l, value v, and right son r.
    Must have all elements of l < v < all elements of r.
    l and r must be balanced and have a height difference =< 2"
-  (make-rb-tree
+  (make-instance 'tree:rb-tree
     :l l
     :v v
     :r r
