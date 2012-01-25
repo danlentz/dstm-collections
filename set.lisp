@@ -81,7 +81,14 @@
     (addx (dstm:safe-value collection))))
 
 
-(defun tree:min (collection)
+(defun set:add* (element collection)
+  ""
+  (check-type collection dstm::var)
+  (setf (dstm:value collection) (set:add element collection))
+  collection)
+
+
+(defun set:min (collection)
   "return the smallest element present in the collection"
   (let ((node (dstm:safe-value collection)))
     (cond ((null node) (tree::not-found))
@@ -89,30 +96,44 @@
       (t     (tree:min (rb-tree-l node))))))
 
 
-(defun tree:max (node)
+(defun set:max (collection)
   "return the greatest element present in the collection"
-  (let ((node (dstm:safe-value node)))
+  (let ((node (dstm:safe-value collection)))
     (cond ((null node) (tree::not-found))
       ((null (rb-tree-r node)) (rb-tree-v node))
       (t (tree:max (rb-tree-r node))))))
 
 
-(defun tree:remove-min (node)
+(defun set:remove-min (collection)
   "return a collection with the smallest element removed -- useful for priority-queues"
-  (let ((node (dstm:safe-value node))) 
+  (let ((node (dstm:safe-value collection))) 
     (cond ((null node)         (tree::invalid-argument "tree:remove-min"))
       ((null (rb-tree-l node)) (rb-tree-r node))
       (t                       (lvr (l v r) node
                                  (bal (remove-min l) v r))))))
 
 
-(defun tree:remove-max (node)
+(defun set:remove-min* (collection)
+  ""
+  (check-type collection dstm::var)
+  (setf (dstm:value collection) (set:remove-min collection))
+  collection)
+
+
+(defun set:remove-max (collection)
   "return a collection with the greatest element removed -- useful for priority-queues"
   (let ((node (dstm:safe-value node)))
     (cond ((null node)         (tree::invalid-argument "set:remove-max"))
       ((null (rb-tree-r node)) (rb-tree-l node))
       (t                       (lvr (l v r) node
                                  (bal l v (remove-max r)))))))
+
+
+(defun set:remove-max* (collection)
+  ""
+  (check-type collection dstm::var)
+  (setf (dstm:value collection) (set:remove-max collection))
+  collection)
 
 
 (defun set:split (x tree)
@@ -138,15 +159,20 @@
    nil)
 
 
-(defun set:is-empty (tree)
+(defun set:empty* ()
+  "create a transactional empty set"
+   (set:make* nil))
+
+
+(defun set:is-empty (collection)
   "return true if set contains no elements, otherwise false"
-  (let ((tree (dstm:safe-value tree)))
+  (let ((tree (dstm:safe-value collection)))
     (null tree)))
 
 
-(defun set:mem (x tree)
+(defun set:mem (x collection)
   "return true if set contains element x"
-  (let ((tree (dstm:safe-value tree)))
+  (let ((tree (dstm:safe-value collection)))
     (cond
       ((null tree) nil)
       (t           (lvr (l v r) tree
@@ -159,10 +185,14 @@
   "create set containing only the element x"
   (make-rb-tree :v x))
 
+(defun set:singleton* (x)
+  "create transactional collection containing only the element x"
+  (set:make* (make-rb-tree :v x)))
+  
 
-(defun set:remove (x tree)
-  "return a collection the same as tree with the element 'x' removed if present"
-  (let ((tree (dstm:safe-value tree)))
+(defun set:remove (x collection)
+  "return a collection the same as argument with the element 'x' removed if present"
+  (let ((tree (dstm:safe-value collection)))
     (cond
       ((null tree) nil)
       (t           (lvr (l v r) tree
@@ -171,6 +201,13 @@
                          ((zerop  c) (merge l r))
                          ((minusp c) (bal (remove x l) v r))
                          (t          (bal l v (remove x r))))))))))
+
+
+(defun set:remove* (x collection)
+  ""
+  (check-type collection dstm::var)
+  (setf (dstm:value collection) (set:remove x collection))
+  collection)
 
 
 (defun parallel-union (s1 s2)
@@ -187,15 +224,15 @@
                                (add v2 s1)
                                (destructuring-bind (l2 _ r2) (split v1 s2)
                                  (declare (ignore _))
-                                 (lparallel:plet ((lunion (union l1 l2))
-                                                   (runion (union r1 r2)))
+                                 (lparallel:plet ((lunion (parallel-union l1 l2))
+                                                   (runion (parallel-union r1 r2)))
                                    (join lunion v1 runion) ))))
                        (t (if (= h1 1)
                             (add v1 s2)
                             (destructuring-bind (l1 _ r1) (split v2 s1)
                               (declare (ignore _))
-                              (lparallel:plet ((lunion (union l1 l2))
-                                                (runion (union r1 r2)))
+                              (lparallel:plet ((lunion (parallel-union l1 l2))
+                                                (runion (parallel-union r1 r2)))
                                 (join lunion v2 runion))))))))))))
 
 
@@ -219,6 +256,14 @@
                             (destructuring-bind (l1 _ r1) (split v2 s1)
                               (declare (ignore _))
                               (funcall #'join (union l1 l2) v2 (union r1 r2))))))))))))
+
+
+(defun set:union* (tx-collection tx-or-non-tx-collection)
+  ""
+  (check-type tx-collection dstm::var)
+  (check-type tx-or-non-tx-collection set:type)
+  (setf (dstm:value tx-collection) (set:union tx-collection tx-or-non-tx-collection))
+  tx-collection)
 
 
 (defun set:diff (s1 s2)
@@ -248,6 +293,14 @@
                        (concat (inter l1 l2) (inter r1 r2)))))))))
 
 
+(defun set:inter* (tx-collection tx-or-non-tx-collection)
+  ""
+  (check-type tx-collection dstm::var)
+  (check-type tx-or-non-tx-collection set:type)
+  (setf (dstm:value tx-collection) (set:inter tx-collection tx-or-non-tx-collection))
+  tx-collection)
+
+
 (defun parallel-inter (s1 s2)
   "return a collection containing all elements that are present in both s1 and s2"
   (let ((s1 (dstm:safe-value s1))
@@ -257,9 +310,10 @@
       ((null s2) nil)
       (t         (lvr (l1 v1 r1) s1
                    (destructuring-bind (l2 ans r2) (split v1 s2)
-                     (if ans
-                       (pfuncall #'join (inter l1 l2) v1 (inter r1 r2))
-                       (pfuncall #'concat (inter l1 l2) (inter r1 r2)))))))))
+                     (plet ((linter (parallel-inter l1 l2)) (rinter (parallel-inter r1 r2)))
+                       (if ans
+                         (join linter v1 rinter)
+                         (concat linter rinter)))))))))
 
 
 
@@ -283,7 +337,8 @@
                                          (let ((c (funcall cmp v1 v2)))
                                            (if (zerop c)
                                              (progn
-                                               (setf e1 (cons-enum r1 ee1)
+                                               (setf
+                                                 e1 (cons-enum r1 ee1)
                                                  e2 (cons-enum r2 ee2))
                                                (go again))
                                              c))))))))))
@@ -294,7 +349,6 @@
   (let ((s1 (dstm:safe-value s1))
          (s2 (dstm:safe-value s2)))
     (zerop (compare s1 s2))))
-
 
 
 (defun set:subset (s1 s2)
@@ -308,10 +362,14 @@
                 (lvr (l2 v2 r2) s2
                   (let ((c (ord:compare v1 v2)))
                     (cond
-                      ((zerop c)  (and (subset l1 l2) (subset r1 r2)))
-                      ((minusp c) (and (subset (make-rb-tree :l l1 :v v1) l2)
+                      ((zerop c)  (and
+                                    (subset l1 l2)
+                                    (subset r1 r2)))
+                      ((minusp c) (and
+                                    (subset (make-rb-tree :l l1 :v v1) l2)
                                     (subset r1 s2)))
-                      (t          (and (subset (make-rb-tree :v v1 :r r1) r2)
+                      (t          (and
+                                    (subset (make-rb-tree :v v1 :r r1) r2)
                                     (subset l1 s2)))))))))))
 
 
@@ -326,7 +384,6 @@
                   (iter fn r))))))
 
 
-
 (defun set:fold (fn s accu)
   "similar to reduce, takes three argument function f as in: (f key value accumulator)"
   (let ((s (dstm:safe-value s)))
@@ -335,14 +392,12 @@
                  (fold fn r (funcall fn v (fold fn l accu))))))))
 
 
-
 (defun set:for-all (pred s fn)
   "funcall fn on all elements of set s satisfying pred"
   (let ((s (dstm:safe-value s)))
     (cond ((null s) t)
       (t        (lvr (l v r) s
-                  (and (funcall pred v)
-                    (funcall fn v))
+                  (when (funcall pred v) (funcall fn v))
                   (for-all pred l fn)
                   (for-all pred r fn))))))
 
@@ -370,6 +425,13 @@
                                 r)))
                  )))
       (filt nil s))))
+
+
+(defun set:filter* (pred s)
+  ""
+  (check-type s dstm::var)
+  (setf (dstm:value s) (set:filter pred s))
+  s)
 
 
 (defun set:partition (pred s)
@@ -409,6 +471,15 @@
 
 
 (defun set:dup (s)
+  "return a new set which is set:equal the original s"
+  (let ((s (dstm:safe-value s)))
+    (cond
+      ((null s) nil)
+      (t (lvr (l v r) s
+           (set:add v (set:union (set:dup l) (set:dup r))))))))
+
+
+(defun dup-alt (s)
   "return a new set which is set:equal the original s"
   (let ((s (dstm:safe-value s)))
     (let (new-set)

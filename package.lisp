@@ -100,7 +100,7 @@
   (:use :common-lisp :lparallel :named-readtables)
   (:import-from :tree :create :bal :join :concat :cons-enum ;;:not-found :invalid-argument
     :lr :lvr :lvrh :make-rb-tree :rb-tree-p :rb-tree-l :rb-tree-v :rb-tree-r :rb-tree-h
-    :height :add :remove-min :remove-max :make-cursor: :with-cursor)
+    :height :add :remove-min :remove-max :make-cursor :with-cursor)
   (:shadowing-import-from :tree :merge  :max :min)
   (:shadow :equal :remove :union :typep :type :set)
   (:export
@@ -109,6 +109,7 @@
     :set*
     :height
     :empty
+    :empty*
     :is-empty
     :make
     :make*
@@ -117,14 +118,21 @@
     :dup
     :mem
     :add
+    :add*
     :singleton
+    :singleton*
     :remove
+    :remove*
     :remove-min
+    :remove-min*
     :remove-max
+    :remove-max*
     :min
     :max
     :union
+    :union*
     :inter
+    :inter*
     :diff
     :compare
     :equal
@@ -134,6 +142,7 @@
     :for-all
     :exists
     :filter
+    :filter*
     :split
     :partition
     :cardinal
@@ -159,6 +168,7 @@
     :make-cursor
     :with-cursor
     :add
+    :add*
     :find
     :remove
     :mem
