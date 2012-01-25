@@ -4,8 +4,9 @@
 (in-package :cl-user)
 
 
+    
 (defpackage :quad
-  (:use :common-lisp :eager-future2 :named-readtables)
+  (:use :common-lisp :lparallel :named-readtables)
   (:export
     :tuple
     :abstract-quad
@@ -21,7 +22,7 @@
 
     
 (defpackage :dstm
-  (:use :common-lisp :eager-future2 :named-readtables)
+  (:use :common-lisp :lparallel :named-readtables)
   (:shadow :read :write)
   (:export
     :var
@@ -30,18 +31,20 @@
     :transaction
     :create-var
     :read
-    :write
-    :write-vars
+    :write    
     :atomic
     :orelse
     :rollback
-    :rmw
+    :with-update
+    :updatef
+    :safe-value
+    :value
     :check
     :reset))
 
 
 (defpackage :ord
-  (:use :common-lisp :eager-future2 :named-readtables)
+  (:use :common-lisp :lparallel :named-readtables)
   (:export
     :|COMPARE>|
     :compare<
@@ -53,16 +56,21 @@
     :make-ci-string
     :slots-to-compare
     :writing-readably
+    :proper-list
+    :proper-list-p
     :association-list
+    :association-list-p
     ))
 
 
 (defpackage :tree
-  (:use :common-lisp :quad :eager-future2 :named-readtables)
+  (:use :common-lisp :quad :lparallel :named-readtables)
   (:shadow :merge :typep :type  :min  :max)
   (:export
     :rb-tree
     :make-rb-tree
+    :make-cursor
+    :with-cursor
     :rb-tree-p
     :rb-tree-l
     :rb-tree-v
@@ -89,20 +97,23 @@
 
 
 (defpackage :set
-  (:use :common-lisp :eager-future2 :named-readtables)
+  (:use :common-lisp :lparallel :named-readtables)
   (:import-from :tree :create :bal :join :concat :cons-enum ;;:not-found :invalid-argument
     :lr :lvr :lvrh :make-rb-tree :rb-tree-p :rb-tree-l :rb-tree-v :rb-tree-r :rb-tree-h
-    :height :add :remove-min :remove-max)
+    :height :add :remove-min :remove-max :make-cursor: :with-cursor)
   (:shadowing-import-from :tree :merge  :max :min)
-  (:shadow :equal :remove :union :typep :type)
+  (:shadow :equal :remove :union :typep :type :set)
   (:export
     :syntax
+    :set
     :set*
     :height
     :empty
     :is-empty
     :make
     :make*
+    :make-cursor
+    :with-cursor
     :dup
     :mem
     :add
@@ -132,16 +143,21 @@
 
 
 (defpackage :map
-  (:use :common-lisp :eager-future2 :named-readtables)
+  (:use :common-lisp :lparallel :named-readtables)
   (:shadow :find :equal :map :remove :typep :type)
-  (:import-from :tree :lr :lvr :lvrh  :cons-enum)
+  (:import-from :set :dup)                                                    
+  (:import-from :tree :lr :lvr :lvrh :cons-enum :make-cursor :with-cursor)
   (:export
     :syntax
+    :map
     :map*
     :empty
+    :empty*
     :is-empty
     :make
     :make*
+    :make-cursor
+    :with-cursor
     :add
     :find
     :remove
@@ -154,6 +170,7 @@
     :equal
     :typep
     :type
+    :dup
     ))
 
 
@@ -161,21 +178,18 @@
   (:shadow  :push  :pop    :first    :second    :third    :elt :butlast
     :last  :rest  :length    :map    :equal    :dup      :typep :list
     :type :reduce)
-  (:use :common-lisp :eager-future2 :named-readtables)
+  (:import-from :tree :make-cursor :with-cursor)
+  (:use :common-lisp :lparallel :named-readtables)
   (:export
     :syntax
+    :seq
     :seq*
     :empty
     :is-empty
     :make
     :make*
-    :cursor
-    :cursor-p
-    :cursor-for
-    :cursor-back
-    :cursor-forward
-    :cursor-up
-    :cursor-at
+    :make-cursor
+    :with-cursor
     :push
     :add
     :first
@@ -193,3 +207,31 @@
     :equal
     :reduce
     ))
+
+
+(defpackage :dstm-collections
+  (:nicknames :dclx)
+  (:use :common-lisp :named-readtables)
+  (:shadowing-import-from :set :set :set*)
+  (:shadowing-import-from :map :map :map*)
+  (:shadowing-import-from :seq :seq :seq*)
+  (:export
+    :set
+    :set*
+    :map
+    :map*
+    :seq
+    :seq*
+    :ensure-kernel
+    :standard-syntax
+    :*default-syntax*
+    :enable-syntax
+    :disable-syntax
+    :*set-reader-macro-char*
+    :*seq-reader-macro-char*
+    :*value-reader-macro-char*
+    :*parallel-execution-enabled*
+    :*default-syntax-startup-enabled*
+    :*print-collections-readably*
+   ))
+
