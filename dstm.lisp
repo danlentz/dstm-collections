@@ -146,9 +146,9 @@
      (reclaim-lists trans)))
 
 
-(defun read-var (var)
-  (warn "read-var deprecated")
-  (dstm:read var))
+;; (defun read-var (var)
+;;   (warn "read-var deprecated")
+;;   (dstm:read var))
 
 
 (defun read (var)
@@ -166,9 +166,9 @@
                     (dstm-var-new var))))))))
 
 
-(defun write-var (var val)
-  (warn "write-var deprecated")
-  (dstm:write var val))
+;; (defun write-var (var val)
+;;   (warn "write-var deprecated")
+;;   (dstm:write var val))
 
 
 (defun write (var val)
@@ -255,16 +255,16 @@
       (rollback)))
 
 
-(defun do-rmw (place fn)
-  "RMW = read / modify / write"
-  (warn "do-rmw is deprecated, use execute-transaction instead")
-  (atomic (dstm:write place (funcall fn (dstm:read place)))))
+;; (defun do-rmw (place fn)
+;;   "RMW = read / modify / write"
+;;   (warn "do-rmw is deprecated, use execute-transaction instead")
+;;   (atomic (dstm:write place (funcall fn (dstm:read place)))))
 
 
-(defmacro rmw ((var-name place) &body body)
-  (warn "rmw is deprecated, use with--update instead")
-   `(do-rmw ,place (lambda (,var-name)
-                     ,@body)))
+;; (defmacro rmw ((var-name place) &body body)
+;;   (warn "rmw is deprecated, use with--update instead")
+;;    `(do-rmw ,place (lambda (,var-name)
+;;                      ,@body)))
 
 
 (defun execute-transaction (place fn)
