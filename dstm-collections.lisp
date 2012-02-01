@@ -12,7 +12,7 @@
 (defvar *value-reader-macro-char*        #\$)
 (defvar *prior-readtable*                nil)
 (defvar *parallel-execution-enabled*     t)
-(defvar *default-kernel-parallelism*     10)
+(defvar *default-kernel-parallelism*     16)
 (defvar *default-kernel-startup-enabled* t)
 (defvar *kernel*                         nil)
 
@@ -21,10 +21,10 @@
   (find-readtable *default-syntax*))
 
 
-(defun enable-syntax (&optional (which-syntax (default-syntax)))
+(defun enable-syntax ()
   (unless (eq *readtable* (find-readtable which-syntax))
     (setf *prior-readtable* *readtable*)
-    (in-readtable which-syntax)))
+    (in-readtable dclx:standard-syntax)))
 
 
 (defun disable-syntax ()
@@ -47,3 +47,16 @@
     (warn "lparallel:*kernel* already running. dclx:*kernel* started but is not global default"))
   :kernel-started)
     
+
+(defclass   var ()())
+
+(defgeneric value (thing)
+  (:documentation "Atomically read the value of a transactional variable"))
+
+(defgeneric (setf value) (new-value var))
+
+(defmethod  value ((thing t))
+  thing)
+
+(defmethod (setf value) (new-value (var t))
+  (error "Attempt to write the VALUE of the NON-TRANSACTIONAL place ~S" var))

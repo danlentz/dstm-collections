@@ -21,10 +21,35 @@
     :d))
 
 
-    
+(defpackage :cstm
+  (:shadowing-import-from :closer-mop :standard-generic-function :defgeneric :defmethod)
+  (:use :common-lisp :contextl :closer-mop :lparallel :named-readtables)
+  (:import-from :dclx :? :?+ :printv :var :value)
+  (:export
+    :*tries*
+    :*timeout*
+    :*current-transaction*
+    :deferred-update-mode
+    :direct-update-mode
+    :transaction
+    :define-transactional-class
+    :transactional-class
+    :transactional-variable
+    :value
+    :var
+    :create-var
+    :call-atomic
+    :atomic
+    :roll-back
+    :commit-transaction
+    :retry-transaction
+    :most-recent-transaction
+    :transaction-status))
+
+
 (defpackage :dstm
   (:use :common-lisp :lparallel :named-readtables)
-  (:import-from :dclx :? :?+ :printv)
+  (:import-from :dclx :? :?+ :printv :var :value)
   (:shadow :read :write)
   (:export
     :var
@@ -102,7 +127,7 @@
 
 (defpackage :set
   (:use :common-lisp :lparallel :named-readtables)
-  (:import-from :dclx :? :?+ :printv)
+  (:import-from :dclx :? :?+ :printv :value :var)
   (:import-from :tree :create :bal :join :concat :cons-enum ;;:not-found :invalid-argument
     :lr :lvr :lvrh :make-rb-tree :rb-tree-p :rb-tree-l :rb-tree-v :rb-tree-r :rb-tree-h
     :height :add :remove-min :remove-max :make-cursor :with-cursor)
@@ -110,34 +135,25 @@
   (:shadow :equal :remove :union :typep :type :set)
   (:export
     :syntax
-    :set
-    :set*
+    :set           :set*
+    :empty         :empty*
+    :make          :make*    
+    :add           :add*
+    :singleton     :singleton*
+    :remove        :remove*
+    :remove-min    :remove-min*
+    :remove-max    :remove-max*
+    :union         :union*
+    :inter         :inter*
+    :filter        :filter*    
     :height
-    :empty
-    :empty*
-    :is-empty
-    :make
-    :make*
+    :emptyp
     :make-cursor
     :with-cursor
     :dup
     :mem
-    :add
-    :add*
-    :singleton
-    :singleton*
-    :remove
-    :remove*
-    :remove-min
-    :remove-min*
-    :remove-max
-    :remove-max*
     :min
     :max
-    :union
-    :union*
-    :inter
-    :inter*
     :diff
     :compare
     :equal
@@ -146,8 +162,6 @@
     :fold
     :for-all
     :exists
-    :filter
-    :filter*
     :split
     :partition
     :cardinal
@@ -164,21 +178,17 @@
  (:import-from :tree :lr :lvr :lvrh :cons-enum :make-cursor :with-cursor)
   (:export
     :syntax
-    :map
-    :map*
-    :empty
-    :empty*
-    :is-empty
-    :make
-    :make*
+    :map   :map*
+    :empty :empty*
+    :emptyp
+    :make  :make*
     :make-cursor
     :with-cursor
     :add
     :add*
     :find
-    :ensure-find
-    :ensure-find*      
-    :remove
+    :ensure-find :ensure-find*      
+    :remove  :remove*
     :mem
     :iter
     :map

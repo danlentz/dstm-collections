@@ -12,11 +12,12 @@
   :author "Dr David McClain"
   :author "Dan Lentz"
   :serial t
-  :depends-on (:closer-mop :lparallel :named-readtables :cl-store :local-time)
+  :depends-on (:closer-mop :lparallel :named-readtables :cl-store :local-time :contextl)
   :components ((:file "package")
                 (:file "dstm-collections")
                 (:file "printv")
                 (:file "quad")
+                (:file "cstm")
                 (:file "dstm")
                 (:file "ord")
                 (:file "tree")
@@ -35,7 +36,7 @@
     (when (symbol-value (intern (symbol-name :*default-syntax-startup-enabled*) dclx-package))
       (funcall (intern (symbol-name :enable-syntax) dclx-package)))
     (when (symbol-value (intern (symbol-name :*default-kernel-startup-enabled*) dclx-package))
-      (funcall (intern (symbol-name :enable-kernel) dclx-package)))))
+      (funcall (intern (symbol-name :ensure-kernel) dclx-package)))))
 
 
 (defmethod asdf:perform ((o asdf:test-op) (c (eql (asdf:find-system :dstm-collections))))
