@@ -12,21 +12,28 @@
         (cl:length dstm::subs) (cl:length dstm::reads))))) 
 
 
-(defun print-unreadable-var (thing stream)
-  (check-type thing dstm::dstm-var)
+(defgeneric print-unreadable-var (thing stream))
+
+(defmethod print-unreadable-var ((thing set::mutable-set/dstm) stream)
   (print-unreadable-object (thing stream :type t :identity t)
     (format stream "~%  New: ~S~%  Old: ~S~%  Txn: ~S"
       (dstm::dstm-var-new thing)
       (dstm::dstm-var-old thing)
       (dstm::dstm-var-trans thing))))
 
+(defmethod print-unreadable-var ((thing set::mutable-set/cstm) stream)
+  (print-unreadable-object (thing stream :type t :identity t)
+    (format stream "value: ~S"
+      (if (slot-boundp thing 'cstm:value) (value thing) cstm::%unbound%))))
 
-(defmethod print-object ((thing dstm::dstm-var) stream)
+(defmethod print-object ((thing set::mutable-set/cstm) stream)
   (print-unreadable-var thing stream))
 
+(defmethod print-object ((thing set::mutable-set/dstm) stream)
+  (print-unreadable-var thing stream))
 
 (defmethod print-object ((thing tree:rb-tree) stream)
-  (if (and dclx:*print-collections-readably* (set:typep thing))
+  (if (and dclx:*print-collections-readably* (set:typep thing) (< (tree:rb-tree-h thing) 11))
     (typecase thing
       (seq:type (prog1 thing
                   (ord:writing-readably 
@@ -45,9 +52,11 @@
 
 (defmethod print-object ((s dclx:set*) stream)
   (if dclx:*print-collections-readably*
-    (let ((val (dstm:value s)))
+    (let ((val (value s)))
       (princ "#" stream)
-      (print-object val stream))
+      (if val
+        (print-object val stream)
+        (princ "{ }" stream)))
     (print-unreadable-var s stream)))
     
 
