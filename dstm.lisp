@@ -58,9 +58,10 @@
    (eq (transaction-root trans1) (transaction-root trans2)))
 
 
-(defclass var ()
-  ()
-  (:documentation "a consistent top-level export representing transactional variables"))
+(when (not (find-class 'var nil))
+  (defclass var ()
+    ()
+    (:documentation "a consistent top-level export representing transactional variables")))
 
 
 (defclass dstm-var (var)
@@ -284,10 +285,10 @@
                                      :secret-unchanged-value-flag ,@body))
        (error "~S is not a transactional variable" place))))
      
-
+#+()
 (defgeneric value (var)
   (:documentation "Atomically read the value of a DSTM transactional variable"))
-
+#+()
 (defmethod  value ((var t))
   (error "Attempt to read the VALUE of the NON-TRANSACTIONAL place ~S. Try safe-value instead."
     var))
@@ -303,14 +304,16 @@
     (value thing)
     thing))
 
+#+()
 (defgeneric (setf value) (new-value var))
-
+#+()
 (defmethod (setf value) (new-value (var t))
   (error "Attempt to write the VALUE of the NON-TRANSACTIONAL place ~S" var))
 
 (defmethod (setf value) (new-value (var dstm-var))
   (atomic (dstm:write var new-value)))
 
+#+()
 (defmethod (setf value) ((new-value var) (var dstm-var))
   (error "The VALUE of a transactional place should not, itself, be a transactional variable."))
 
