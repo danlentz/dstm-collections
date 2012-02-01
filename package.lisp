@@ -7,6 +7,7 @@
     
 (defpackage :quad
   (:use :common-lisp :lparallel :named-readtables)
+  (:import-from :dclx :? :?+ :printv)
   (:export
     :tuple
     :abstract-quad
@@ -23,6 +24,7 @@
     
 (defpackage :dstm
   (:use :common-lisp :lparallel :named-readtables)
+  (:import-from :dclx :? :?+ :printv)
   (:shadow :read :write)
   (:export
     :var
@@ -45,12 +47,13 @@
 
 (defpackage :ord
   (:use :common-lisp :lparallel :named-readtables)
+  (:import-from :dclx :? :?+ :printv)
   (:export
-    :|COMPARE>|
-    :compare<
-    :compare<=
-    :compare=
-    :compare>=
+    :compare|>|
+    :compare|<|
+    :compare|<=|
+    :compare|=|
+    :compare|>=|
     :compare
     :make-ci-char
     :make-ci-string
@@ -65,6 +68,7 @@
 
 (defpackage :tree
   (:use :common-lisp :quad :lparallel :named-readtables)
+  (:import-from :dclx :? :?+ :printv)
   (:shadow :merge :typep :type  :min  :max)
   (:export
     :rb-tree
@@ -98,6 +102,7 @@
 
 (defpackage :set
   (:use :common-lisp :lparallel :named-readtables)
+  (:import-from :dclx :? :?+ :printv)
   (:import-from :tree :create :bal :join :concat :cons-enum ;;:not-found :invalid-argument
     :lr :lvr :lvrh :make-rb-tree :rb-tree-p :rb-tree-l :rb-tree-v :rb-tree-r :rb-tree-h
     :height :add :remove-min :remove-max :make-cursor :with-cursor)
@@ -154,8 +159,9 @@
 (defpackage :map
   (:use :common-lisp :lparallel :named-readtables)
   (:shadow :find :equal :map :remove :typep :type)
-  (:import-from :set :dup)                                                    
-  (:import-from :tree :lr :lvr :lvrh :cons-enum :make-cursor :with-cursor)
+  (:import-from :set :dup)
+  (:import-from :dclx :?)
+ (:import-from :tree :lr :lvr :lvrh :cons-enum :make-cursor :with-cursor)
   (:export
     :syntax
     :map
@@ -170,6 +176,8 @@
     :add
     :add*
     :find
+    :ensure-find
+    :ensure-find*      
     :remove
     :mem
     :iter
@@ -189,6 +197,7 @@
     :last  :rest  :length    :map    :equal    :dup      :typep :list
     :type :reduce)
   (:import-from :tree :make-cursor :with-cursor)
+  (:import-from :dclx :? :?+ :printv)
   (:use :common-lisp :lparallel :named-readtables)
   (:export
     :syntax
@@ -226,6 +235,9 @@
   (:shadowing-import-from :map :map :map*)
   (:shadowing-import-from :seq :seq :seq*)
   (:export
+    :?
+    :?+
+    :printv
     :set
     :set*
     :map

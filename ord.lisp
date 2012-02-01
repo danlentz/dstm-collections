@@ -5,6 +5,21 @@
 (in-package :ord)
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; lexical comparison
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defmacro writing-readably (&rest forms)
+  "Macro to wrap around some forms, causing their writing to suitable for
+reading back in."
+  `(let ((*print-escape*  t)
+          (*print-level*  nil)
+          (*print-length* nil)
+          (*print-array*  t)
+          (*package*     (find-package :common-lisp)))     
+     ,@forms))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; boxed comparison
@@ -17,16 +32,23 @@
 ;; Explicit Comparitors
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defgeneric compare (a b))
 
-(defmethod  compare (a b)
-  (if (eq       (type-of a) (type-of b))
-    #+() (or
-        (eq       (type-of a) (type-of b))
-        (subtypep (type-of a) (type-of b))
-        (subtypep (type-of b) (type-of a)))
-    (error "ord:compare of argument-types ~S and ~S not defined" (type-of a) (type-of b))
-    (ord:compare (princ-to-string (type-of a)) (princ-to-string (type-of b)))))
+(defgeneric compare (a b)
+  (:documentation ""))
+
+
+(defmethod compare ((a null) (b null))
+  "ordinal comparison of null values is always equal"
+  0)
+
+
+(defmethod  compare ((a t) (b t))
+  (if (eq (type-of a) (type-of b))
+    (ord:compare (sxhash a) (sxhash b))
+    (writing-readably 
+      (ord:compare
+        (format nil "~S" (type-of a))
+        (format nil "~S" (type-of b))))))
 
 
 (defmethod  compare ((a number) (b number))
@@ -97,18 +119,23 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(defgeneric slots-to-compare (thing))
+(defgeneric slots-to-compare-using-class (class object)
+  (:documentation ""))
 
 
-(defmethod  slots-to-compare ((thing standard-class))
+(defmethod  slots-to-compare-using-class ((class standard-class) object)
   "comparible slots may be cutomized by class, with the default being all slots"
   (mapcar #'c2mop:slot-definition-name 
-    (c2mop:class-slots thing)))
+    (c2mop:class-slots object)))
 
 
-(defmethod  slots-to-compare ((thing standard-object))
+(defgeneric slots-to-compare (object)
+  (:documentation ""))
+
+
+(defmethod  slots-to-compare ((object standard-object))
   "comparible slots of a standard-object are defined by specialization on it class"
-  (slots-to-compare (class-of thing)))
+  (slots-to-compare-using-class (class-of object) object))
 
 
 (defmethod ord:compare ((a standard-object) (b standard-object))
@@ -128,12 +155,15 @@
    4 - when all preceding steps complete without ordinal determination, the objects are
        considered equal"
   (if (not (eq (class-of a) (class-of b)))
-    (ord:compare
-      (princ-to-string (class-name (class-of a)))
-      (princ-to-string (class-name (class-of b))))
+    (writing-readably 
+      (ord:compare
+        (format nil "~S" (class-name (class-of a)))
+        (format nil "~S" (class-name (class-of b)))))
     (let ((slots (slots-to-compare a)))
       (when (null slots)
-        (return-from compare (ord:compare (princ-to-string a) (princ-to-string b))))      
+        (return-from compare
+          (writing-readably 
+            (ord:compare (format nil "~S" a) (format nil "~S" b)))))
       (loop
         :for x :in slots
         :do (cond
@@ -152,72 +182,48 @@
 ;; Implicit Comparitors
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun compare< (a b)
+(defun compare|<| (a b)
    (minusp (compare a b)))
 
-(defun compare<= (a b)
+(defun compare|<=| (a b)
    (not (plusp (compare a b))))
 
-(defun compare= (a b)
+(defun compare|=| (a b)
    (zerop (compare a b)))
 
-(defun compare>= (a b)
+(defun compare|>=| (a b)
    (not (minusp (compare a b))))
 
-(defun |COMPARE>| (a b)
+(defun compare|>| (a b)
    (plusp (compare a b)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Useful bits
+;; the following are adopted from Alexandria
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-(defmacro writing-readably (&rest forms)
-  "Macro to wrap around some forms, causing their writing to suitable for
-reading back in."
-  `(let ((*print-escape* t)
-          (*print-level* nil)
-          (*print-length* nil)
-          (*print-array* t)
-          (*package* (find-package :common-lisp)))     
-     ,@forms))
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; the following are adopted from CL-TRIVIAL-TYPES by Tomohiro Matsuyama
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-(defmacro %proper-list-p (var &optional (element-type '*))
-  `(loop
-     (typecase ,var
-       (null (return t))
-       (cons (if (or ,(eq element-type '*)
-                     (typep (car ,var) ,element-type))
-                 (setq ,var (cdr ,var))
-                 (return)))
-       (t    (return)))))
-
 
 (defun proper-list-p (object)
-  "Returns true if OBJECT is a proper list.
-   Examples:
-    (proper-list-p 1) => NIL
-    (proper-list-p '(1 . 2)) => NIL
-    (proper-list-p nil) => T
-    (proper-list-p '(1 2 3)) => T"
-  (%proper-list-p object))
+  "Returns true if OBJECT is a proper list."
+  (cond ((not object)
+         t)
+        ((consp object)
+         (do ((fast object (cddr fast))
+              (slow (cons (car object) (cdr object)) (cdr slow)))
+             (nil)
+           (unless (and (listp fast) (consp (cdr fast)))
+             (return (and (listp fast) (not (cdr fast)))))
+           (when (eq fast slow)
+             (return nil))))
+        (t
+         nil)))
 
+(deftype proper-list ()
+  "Type designator for proper lists. Implemented as a SATISFIES type, hence
+not recommended for performance intensive use. Main usefullness as a type
+designator of the expected type in a TYPE-ERROR."
+  `(and list (satisfies proper-list-p)))
 
-(deftype proper-list (&optional (element-type '*))
-  "Equivalent to `(and list (satisfies proper-list-p))`. ELEMENT-TYPE
-   is just ignored. Examples:
-    (typep '(1 2 3) '(proper-list integer)) => T
-    (typep '(1 2 3) '(proper-list string)) => T"
-  (declare (ignore element-type))
-  '(and list (satisfies proper-list-p)))
+;; (proper-list-p (cons t t)) => nil
 
 
 (defun association-list-p (var)
@@ -227,12 +233,13 @@ reading back in."
     (association-list-p nil) => T
     (association-list-p '((foo))) => T
     (association-list-p '((:a . 1) (:b . 2))) => T"
-  (%proper-list-p var 'cons))
+  (proper-list-p var))
 
 
-(deftype association-list (&optional (key-type '*) (value-type '*))
-  "Equivalent to `(proper-list (cons KEY-TYPE VALUE-TYPE))`. KEY-TYPE
-   and VALUE-TYPE are just ignored. Examples:
-    (typep '((:a . 1) (:b . 2)) '(association-list integer)) => T
-    (typep '((:a . 1) (:b . 2)) '(association-list string)) => T"
-  `(proper-list (cons ,key-type ,value-type)))
+(deftype association-list ()
+  'proper-list)
+
+(defun of-type (type)
+  "Returns a function of one argument, which returns true when its argument is
+of TYPE."
+  (lambda (thing) (typep thing type)))
