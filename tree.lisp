@@ -46,7 +46,7 @@
                       furthest leaf.  Rather than annotation using literal :red :black
                       properties, this red-black tree implementation maintains balance
                       based on the relative heights of left and right subtrees, which
-                      may never exceed 3."))
+                      may never exceed 2."))
   (:documentation
     "Sets are represented by balanced binary trees The heights of
      children differ by at most 2.  Tree nodes are quadruples (l v r h)
@@ -92,9 +92,25 @@
     :r r
     :h (1+ (cl:max hl hr))))
 
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Order
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defmethod ord:compare ((a null) (b tree:rb-tree))
+  "ordinal comparison of null against set elements and map cells"
+  -1)
+
+(defmethod ord:compare ((a tree:rb-tree) (b null))
+  "ordinal comparison of null against set elements and map cells"
+  1)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; destructuring macros
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 (defmacro tree:lr ((l r) tree &body body)
   "destructure tree node: left right"
@@ -129,6 +145,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Tree Manipulations
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 (defun tree:bal (l v r)
   "bal -- similar to create, but also performs one step of rebalancing, if necessary.
@@ -202,4 +219,16 @@
     (t (lvr (l v r) s
          (cons-enum l (list v r e))))))
 
+
+(defun tree:height (node)
+  "The distance from NODE to its furthest leaf subnode "
+   (cond ((null (value node)) 0)
+         (t           (rb-tree-h (value node)))))
+
+
+(defun tree:weight (node)
+  "return the total number of nodes in the tree rooted at NODE"
+  (cond ((null node) 0)
+    (t     (lr (l r) node
+             (+ (weight l) 1 (weight r))))))
 
