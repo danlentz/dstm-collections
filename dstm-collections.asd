@@ -12,21 +12,22 @@
   :author "Dr David McClain"
   :author "Dan Lentz"
   :serial t
-  :depends-on (:closer-mop :lparallel :named-readtables :cl-store :local-time :contextl)
+  :depends-on (:closer-mop :lparallel :named-readtables :local-time :contextl)
   :components ((:file "package")
                 (:file "dstm-collections")
                 (:file "printv")
+                (:file "util")
                 (:file "quad")
                 (:file "cstm")
                 (:file "dstm")
                 (:file "ord")
                 (:file "tree")
+                (:file "cursor")
                 (:file "set")
                 (:file "map")
                 (:file "seq")
                 (:file "printer")
                 (:file "reader")
-                (:file "cursor")
                 ))
 
 
