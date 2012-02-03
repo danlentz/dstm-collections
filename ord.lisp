@@ -94,24 +94,32 @@ reading back in."
 
 
 (defmethod  compare ((a pathname) (b pathname))
-   (compare (namestring a) (namestring b)))
+  (compare (namestring a) (namestring b)))
 
 
 (defmethod  compare ((a package) (b package))
-   (compare (package-name a) (package-name b)))
+  (compare (package-name a) (package-name b)))
 
 
 (defmethod  compare ((a ci-char) (b ci-char))
-   (cond ((char-equal (ci-char-c a) (ci-char-c b))  0)
-         ((char-lessp (ci-char-c a) (ci-char-c b)) -1)
-         (t 1)))
+  (cond
+    ((char-equal (ci-char-c a) (ci-char-c b))  0)
+    ((char-lessp (ci-char-c a) (ci-char-c b)) -1)
+    (t 1)))
 
 
 (defmethod  compare ((a ci-string) (b ci-string))
-   (cond ((string-equal (ci-string-s a) (ci-string-s b))  0)
-         ((string-lessp (ci-string-s a) (ci-string-s b)) -1)
-         (t 1)))
+  (cond
+    ((string-equal (ci-string-s a) (ci-string-s b))  0)
+    ((string-lessp (ci-string-s a) (ci-string-s b)) -1)
+    (t 1)))
 
+
+(defmethod  compare ((a local-time:timestamp) (b local-time:timestamp))
+  (cond
+    ((local-time:timestamp= a b)  0)
+    ((local-time:timestamp< a b) -1)
+    (t 1)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -226,6 +234,20 @@ designator of the expected type in a TYPE-ERROR."
 ;; (proper-list-p (cons t t)) => nil
 
 
+(defun alist-elt-p (elt)
+  (and (consp elt)
+       (atom (car elt))
+       (atom (cdr elt))))
+
+
+(defun alistp (list)
+  (when (listp list)
+    (dolist (elt list)
+      (unless (alist-elt-p elt)
+        (return-from alistp nil)))
+    t))
+
+
 (defun association-list-p (var)
   "Returns true if OBJECT is an association list. Examples:
     (association-list-p 1) => NIL
@@ -233,13 +255,14 @@ designator of the expected type in a TYPE-ERROR."
     (association-list-p nil) => T
     (association-list-p '((foo))) => T
     (association-list-p '((:a . 1) (:b . 2))) => T"
-  (proper-list-p var))
+  (alistp var))
 
 
 (deftype association-list ()
-  'proper-list)
+  `(satisfies alistp))
+
 
 (defun of-type (type)
   "Returns a function of one argument, which returns true when its argument is
-of TYPE."
+   of TYPE."
   (lambda (thing) (typep thing type)))
