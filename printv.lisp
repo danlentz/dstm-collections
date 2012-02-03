@@ -4,6 +4,25 @@
 
 (in-package :dclx)
 
+
+(defmacro ppmx (form)
+  "Pretty prints the macro expansion of FORM."
+  `(let* ((exp1 (macroexpand-1 ',form))
+           (exp (macroexpand exp1))
+           (*print-circle* nil))
+     (format *trace-output* "~%;; Form: ~W"  (quote ,form))
+;;     (pprint (quote ,form) *trace-output*)
+     (cond ((equal exp exp1)
+             (format *trace-output* "~%;;~%;; Macro expansion:~%")
+             (pprint exp *trace-output*))
+       (t (format *trace-output* "~&;; First step of expansion:~%")
+         (pprint exp1 *trace-output*)
+         (format *trace-output* "~%;;~%;; Final expansion:~%")
+         (pprint exp *trace-output*)))
+     (format *trace-output* "~%;;~%;; ")
+     (values)))
+
+
 (defun printv-minor-separator ()
   (format *trace-output* "~&;; ~60,,,'-<-~>~%")
   (force-output *trace-output*))

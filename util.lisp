@@ -4,6 +4,29 @@
 (in-package :dclx)
 
 
+(defun symbolicate (&rest things)
+  (let* ((length (reduce #'+ things
+                   :key (lambda (x) (length (string x)))))
+          (name (make-array length :element-type 'character)))
+    (let ((index 0))
+      (dolist (thing things (values (intern name)))
+        (let* ((x (string thing))
+                (len (length x)))
+          (replace name x :start1 index)
+          (incf index len))))))
+
+
+(defun keywordicate (&rest things)
+  (let ((*package* (find-package :keyword)))
+    (apply #'symbolicate things)))
+
+
+(defun ensure-list (thing)
+  (if (atom thing)
+    (list thing)
+    thing))
+
+
 (defmacro with-gensyms (symbols &body body)
   `(let ,(mapcar (lambda (symbol)
                    (let* ((symbol-name (symbol-name symbol))
@@ -21,23 +44,6 @@
   (if name
       (loop repeat n collect (gensym (string name)))
       (loop repeat n collect (gensym))))
-
-
-(defun symbolicate (&rest things)
-  (let* ((length (reduce #'+ things
-                   :key (lambda (x) (length (string x)))))
-          (name (make-array length :element-type 'character)))
-    (let ((index 0))
-      (dolist (thing things (values (intern name)))
-        (let* ((x (string thing))
-                (len (length x)))
-          (replace name x :start1 index)
-          (incf index len))))))
-
-
-(defun keywordicate (&rest things)
-  (let ((*package* (find-package :keyword)))
-    (apply #'symbolicate things)))
 
 
 (defmacro once-only ((&rest names) &body body)
