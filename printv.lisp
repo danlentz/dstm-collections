@@ -52,11 +52,15 @@
                     (car (setf ,result-sym (list ,form))))))))
        (values-list ,result-sym))))
 
-(def (macro e) printv (&rest forms)
+(defmacro printv (&rest forms)
   (printv-expander forms))
 
 (defmacro :printv (&rest forms)
   (printv-expander forms))
+
+(define-symbol-macro ? (describe *))
+
+(define-symbol-macro ?+ (printv /))
 
 
 #||
