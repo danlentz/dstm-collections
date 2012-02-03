@@ -60,3 +60,4 @@
 
 (defmethod (setf value) (new-value (var t))
   (error "Attempt to write the VALUE of the NON-TRANSACTIONAL place ~S" var))
+

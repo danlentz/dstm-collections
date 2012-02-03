@@ -4,7 +4,9 @@
 (defpackage :dstm-collections-test
   (:shadow :set :map)
   (:use :common-lisp
-  ;;  :dstm
+    ;;  :dstm
+    :named-readtables
+    :lparallel
     :bordeaux-threads
     :hu.dwim.stefil
     :hu.dwim.def
@@ -470,7 +472,7 @@
     (loop
       :for i :from 1 :to size
       :do (progn
-            (let ((x (random 16356)))
+            (let ((x (random most-positive-fixnum)))
               (when (not (find x random-list))
                 (push x random-list)
                 (setf random-set (set:add x random-set))))))
