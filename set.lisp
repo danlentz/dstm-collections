@@ -15,7 +15,7 @@
   ())
 
 
-;; TODO: create class set* programmatically
+;; TODO: create class set* programmatically  
 
 (defclass set* (mutable-set/cstm)
   ()
@@ -49,12 +49,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; set api
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-(defun tree:height (node)
-  "convenience api for returning rb-tree height of collection node"
-   (cond ((null (value node)) 0)
-         (t           (rb-tree-h (value node)))))
 
 
 (defun set:add (x collection)
@@ -93,7 +87,8 @@
 
 
 (defun set:add* (element collection)
-  ""
+  "destructively set:add ELEMENT to a mutable MAP if it is not already present.
+   as a second return value, return true if actually added"
   (check-type collection var)
   (setf (value collection) (set:add element collection))
   collection)
@@ -125,7 +120,7 @@
 
 
 (defun set:remove-min* (collection)
-  ""
+  "destructively set:remove the smallest ELEMENT from a mutable COLLECTION"
   (check-type collection var)
   (setf (value collection) (set:remove-min collection))
   collection)
@@ -141,7 +136,7 @@
 
 
 (defun set:remove-max* (collection)
-  ""
+  "destructively set:remove the largest ELEMENT from a mutable COLLECTION"
   (check-type collection var)
   (setf (value collection) (set:remove-max collection))
   collection)
@@ -175,7 +170,7 @@
    (set:make* nil))
 
 
-(defun set:is-empty (collection)
+(defun set:emptyp (collection)
   "return true if set contains no elements, otherwise false"
   (let ((tree (value collection)))
     (null tree)))
@@ -215,7 +210,7 @@
 
 
 (defun set:remove* (x collection)
-  ""
+  "destructively set:remove element X from a mutable set COLLECTION, if present"
   (check-type collection var)
   (setf (value collection) (set:remove x collection))
   collection)
@@ -270,7 +265,7 @@
 
 
 (defun set:union* (tx-collection tx-or-non-tx-collection)
-  ""
+  "destructively update tx-collection as by set:union"
   (check-type tx-collection var)
   (check-type tx-or-non-tx-collection set:type)
   (setf (value tx-collection) (set:union tx-collection tx-or-non-tx-collection))
@@ -305,7 +300,7 @@
 
 
 (defun set:inter* (tx-collection tx-or-non-tx-collection)
-  ""
+  "destructively update tx-collection as by set:inter"
   (check-type tx-collection var)
   (check-type tx-or-non-tx-collection set:type)
   (setf (value tx-collection) (set:inter tx-collection tx-or-non-tx-collection))
@@ -395,6 +390,13 @@
                   (iter fn r))))))
 
 
+(defmacro set:do ((element set) &body body)
+  "Iterate over elements of SET in the manner of the dolist and dotimes macros"
+  `(set:iter #'(lambda (,element)
+                 ,@body)
+     ,set))
+
+
 (defun set:fold (fn s accu)
   "similar to reduce, takes three argument function f as in: (f key value accumulator)"
   (let ((s (value s)))
@@ -439,7 +441,7 @@
 
 
 (defun set:filter* (pred s)
-  ""
+  "destructively update collection S as by set:filter"
   (check-type s var)
   (setf (value s) (set:filter pred s))
   s)
@@ -506,17 +508,17 @@
     (null     (set:empty))
     (var      (set:make (value from)))
     (ord:proper-list  (let (set)
-                          (dolist (elem from)
-                            (if (or (atom elem) (ord:proper-list-p elem))
-                              (setq set (set:add elem set))
-                              (error "Cannot add ~S. Sets admit Only atom or proper-lists"
-                                from)))
+                        (dolist (elem from)
+                          (if (or (atom elem) (ord:proper-list-p elem))
+                            (setq set (set:add elem set))
+                            (error "Cannot add ~S. Sets admit Only atom or proper-lists" from)))
                         set))
     (cons     (error "only proper-lists may be members of a set"))
     (seq:type (set:make (seq:list from)))
     (map:type (error "sets cannot be created from  maps"))
     (set:type (set:dup from))
-    (sequence (set:make (coerce from 'cl:list)))
+    (string   (set:singleton from))
+    (sequence (set:make (cl:coerce from 'cl:list)))
     (atom     (set:singleton from))))
 
 
