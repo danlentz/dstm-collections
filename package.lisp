@@ -84,6 +84,7 @@
     :make-ci-string
     :slots-to-compare
     :writing-readably
+    :of-type
     :proper-list
     :proper-list-p
     :association-list
@@ -93,7 +94,7 @@
 
 (defpackage :tree
   (:use :common-lisp :quad :lparallel :named-readtables)
-  (:import-from :dclx :? :?+ :printv)
+  (:import-from :dclx :? :?+ :printv :value :var)
   (:shadow :merge :typep :type  :min  :max)
   (:export
     :rb-tree
@@ -107,6 +108,7 @@
     :rb-tree-h
     :create
     :height
+    :weight
     :add
     :min
     :max
@@ -127,12 +129,13 @@
 
 (defpackage :set
   (:use :common-lisp :lparallel :named-readtables)
-  (:import-from :dclx :? :?+ :printv :value :var)
-  (:import-from :tree :create :bal :join :concat :cons-enum ;;:not-found :invalid-argument
+  (:import-from :dclx :? :?+ :printv :value :var :with-gensyms :make-gensym-list :once-only)
+  (:import-from :tree :create :bal :join :concat :cons-enum 
     :lr :lvr :lvrh :make-rb-tree :rb-tree-p :rb-tree-l :rb-tree-v :rb-tree-r :rb-tree-h
     :height :add :remove-min :remove-max :make-cursor :with-cursor)
   (:shadowing-import-from :tree :merge  :max :min)
-  (:shadow :equal :remove :union :typep :type :set)
+;;  (:shadowing-import-from :dclx :coerce)
+  (:shadow :equal :remove :union :typep :type :set :do)
   (:export
     :syntax
     :set           :set*
@@ -159,6 +162,7 @@
     :equal
     :subset
     :iter
+    :do
     :fold
     :for-all
     :exists
@@ -167,74 +171,85 @@
     :cardinal
     :elements
     :typep
-    :type))
+    :type
+    ))
 
 
 (defpackage :map
   (:use :common-lisp :lparallel :named-readtables)
-  (:shadow :find :equal :map :remove :typep :type)
+  (:shadow :find :equal :map :remove :typep :type :values :do)
   (:import-from :set :dup)
-  (:import-from :dclx :?)
+  (:import-from :dclx :? :var :value)
+;;  (:shadowing-import-from :dclx :coerce)
  (:import-from :tree :lr :lvr :lvrh :cons-enum :make-cursor :with-cursor)
   (:export
-    :syntax
-    :map   :map*
-    :empty :empty*
+    :map          :map*
+    :empty        :empty*
+    :make         :make*
+    :add          :add*
+    :ensure-find  :ensure-find*      
+    :remove       :remove*
     :emptyp
-    :make  :make*
-    :make-cursor
-    :with-cursor
-    :add
-    :add*
     :find
-    :ensure-find :ensure-find*      
-    :remove  :remove*
     :mem
     :iter
+    :keys
+    :values
     :map
     :mapi
+    :keymap
+    :do
     :fold
     :compare
     :equal
     :typep
     :type
     :dup
+    :make-cursor
+    :with-cursor
+    :syntax
+;;    :coerce
     ))
 
 
 (defpackage :seq
   (:shadow  :push  :pop    :first    :second    :third    :elt :butlast
     :last  :rest  :length    :map    :equal    :dup      :typep :list
-    :type :reduce)
+    :type :reduce :do)
   (:import-from :tree :make-cursor :with-cursor)
-  (:import-from :dclx :? :?+ :printv)
+  (:import-from :dclx :? :?+ :printv :var :value :with-gensyms :once-only :make-gensym-list)
+;;  (:shadowing-import-from :dclx :coerce)
   (:use :common-lisp :lparallel :named-readtables)
   (:export
     :syntax
     :seq
     :seq*
     :empty
-    :is-empty
+    :empty*
+    :emptyp
     :make
     :make*
     :make-cursor
     :with-cursor
-    :push
     :add
+    :push
     :first
     :last
     :rest
+    :butlast
     :list
     :length
     :dup
     :typep
     :type    
     :concat
+    :do
     :map
     :elt
     :compare
     :equal
     :reduce
+;;    :coerce
     ))
 
 
@@ -244,6 +259,7 @@
   (:shadowing-import-from :set :set :set*)
   (:shadowing-import-from :map :map :map*)
   (:shadowing-import-from :seq :seq :seq*)
+;;  (:shadow :coerce)
   (:export
     :?
     :?+
