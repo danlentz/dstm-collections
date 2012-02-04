@@ -397,6 +397,24 @@
 ;; (eq #1=[1 2 3 4 5] #1#)
 
 
+(defun seq:subseq (seq start &optional end)
+  (let ((seq (value seq)))
+    (with-cursor (@ seq)
+      (when (null end) (setq end (@ :remain))) 
+      (when (or (< start 0) (> end (@ :remain)))
+        (error "indices out of bound: ~D ~D" start end))
+      (when (> start end)
+        (error "indices specify negative interval: ~D ~D" start end))
+      (@ :elt start)
+      (@ :collect (- end start))
+      (@))))
+
+
+;; (subseq {0 1 2 3 4 5 6 7 8 9} 0 )
+;; (0 1 2 3 4 5 6 7 8 9)
+
+
+
 #+()
 (defmethod sequence:length ((s tree:rb-tree))
   (set:cardinal s))

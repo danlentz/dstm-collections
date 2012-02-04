@@ -215,7 +215,7 @@
 (defpackage :seq
   (:shadow  :push  :pop    :first    :second    :third    :elt :butlast
     :last  :rest  :length    :map    :equal    :dup      :typep :list
-    :type :reduce :do)
+    :type :reduce :do :reverse :subseq)
   (:import-from :tree :make-cursor :with-cursor)
   (:import-from :dclx :? :?+ :printv :var :value :with-gensyms :once-only :make-gensym-list)
 ;;  (:shadowing-import-from :dclx :coerce)
@@ -239,6 +239,7 @@
     :butlast
     :list
     :length
+    :subseq
     :dup
     :typep
     :type    
@@ -249,7 +250,8 @@
     :compare
     :equal
     :reduce
-;;    :coerce
+    :reverse
+    :reverse*
     ))
 
 
