@@ -261,7 +261,6 @@
   (:shadowing-import-from :set :set :set*)
   (:shadowing-import-from :map :map :map*)
   (:shadowing-import-from :seq :seq :seq*)
-;;  (:shadow :coerce)
   (:export
     :?
     :?+
