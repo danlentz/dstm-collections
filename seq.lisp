@@ -406,12 +406,22 @@
       (when (> start end)
         (error "indices specify negative interval: ~D ~D" start end))
       (@ :elt start)
-      (@ :collect (- end start))
-      (@))))
+      (@ :collect (1+ (- end start))))))
+      (@ :accum))))
 
 
 ;; (subseq {0 1 2 3 4 5 6 7 8 9} 0 )
 ;; (0 1 2 3 4 5 6 7 8 9)
+;;
+;; (subseq {0 1 2 3 4 5 6 7 8 9} 5 )
+;; (5 6 7 8 9)
+;;
+;;
+;; (subseq {0 1 2 3 4 5 6 7 8 9} 5 7)
+;; (5 6 7)
+;;
+;; (subseq {0 1 2 3 4 5 6 7 8 9} 5 5)
+;; (5)
 
 
 
