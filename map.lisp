@@ -268,7 +268,7 @@
   "Return a list containing all keys present in  MAP"
   (let ((map (value map)) keys)
     (map:iter #'(lambda (k v) (declare (ignore v)) (push k keys)) map)
-    keys))
+    (nreverse keys)))
 
 
 (defun map:values (map)
