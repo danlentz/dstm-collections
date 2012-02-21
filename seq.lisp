@@ -146,6 +146,39 @@
       (set:remove-min seq))))
 
 
+(defun seq:butfirst (seq &optional (n 1))
+  "return a new seq containing all but the first n elements of SEQ"
+  (let ((seq (value seq)))
+    (cond
+      ((null  seq) nil)
+      ((zerop n)   seq)
+      ((plusp n)   (seq:butfirst (set:remove-min seq) (- n 1)))
+      (t           (error "invalid argument n: ~s" n)))))
+
+;; (butfirst [1 2 3 4 5])
+;; [ 2 3 4 5 ]
+
+;; (butfirst [1 2 3 4 5] 0)
+;; [ 1 2 3 4 5 ]
+
+;; (butfirst [1 2 3 4 5] 1)
+;; [ 2 3 4 5 ]
+
+;; (butfirst [1 2 3 4 5] 2)
+;; [ 3 4 5 ]
+
+;; (butfirst [1 2 3 4 5] 3)
+;; [ 4 5 ]
+
+;; (butfirst [1 2 3 4 5] 4)
+;; [ 5 ]
+
+;; (butfirst [1 2 3 4 5] 5)
+;; NIL
+
+;; (butfirst [1 2 3 4 5] 6)
+;; NIL
+
 (defun seq:butlast (seq &optional (n 1))
   "return a new seq containing all but the last n elements of SEQ"
   (let ((seq (value seq)))

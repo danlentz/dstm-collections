@@ -268,6 +268,7 @@
     :last
     :rest
     :butlast
+    :butfirst
     :list
     :vector
     :length
