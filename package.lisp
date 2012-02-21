@@ -4,6 +4,37 @@
 (in-package :cl-user)
 
 
+(defpackage :dstm-collections
+  (:nicknames :dclx)
+  (:use :common-lisp :named-readtables)
+  (:export
+    :?
+    :?+
+    :printv
+    :set
+    :set*
+    :map
+    :map*
+    :seq
+    :seq*
+    :var
+    :value
+    :with-gensyms
+    :make-gensym-list
+
+    :once-only
+    :ensure-kernel
+    :standard-syntax
+    :*default-syntax*
+    :enable-syntax
+    :disable-syntax
+    :*set-reader-macro-char*
+    :*seq-reader-macro-char*
+    :*value-reader-macro-char*
+    :*parallel-execution-enabled*
+    :*default-syntax-startup-enabled*
+    :*print-collections-readably*
+   ))
     
 (defpackage :quad
   (:use :common-lisp :lparallel :named-readtables)
@@ -214,7 +245,7 @@
 
 (defpackage :seq
   (:shadow  :push  :pop    :first    :second    :third    :elt :butlast
-    :last  :rest  :length    :map    :equal    :dup      :typep :list
+    :last  :rest  :length    :map    :equal    :dup      :typep :list :vector
     :type :reduce :do :reverse :subseq)
   (:import-from :tree :make-cursor :with-cursor)
   (:import-from :dclx :? :?+ :printv :var :value :with-gensyms :once-only :make-gensym-list)
@@ -238,6 +269,7 @@
     :rest
     :butlast
     :list
+    :vector
     :length
     :subseq
     :dup
@@ -255,32 +287,8 @@
     ))
 
 
-(defpackage :dstm-collections
-  (:nicknames :dclx)
-  (:use :common-lisp :named-readtables)
-  (:shadowing-import-from :set :set :set*)
-  (:shadowing-import-from :map :map :map*)
-  (:shadowing-import-from :seq :seq :seq*)
-  (:export
-    :?
-    :?+
-    :printv
-    :set
-    :set*
-    :map
-    :map*
-    :seq
-    :seq*
-    :ensure-kernel
-    :standard-syntax
-    :*default-syntax*
-    :enable-syntax
-    :disable-syntax
-    :*set-reader-macro-char*
-    :*seq-reader-macro-char*
-    :*value-reader-macro-char*
-    :*parallel-execution-enabled*
-    :*default-syntax-startup-enabled*
-    :*print-collections-readably*
-   ))
 
+  (shadowing-import '(set:set set:set*) :dclx)
+  (shadowing-import '(map:map map:map*) :dclx)
+  (shadowing-import '(seq:seq seq:seq*) :dclx)
+  (export '(dclx::set dclx::set* dclx::map dclx::map* dclx::seq dclx::seq*) :dclx)
