@@ -3,8 +3,10 @@
 
 (in-package :dclx)
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defvar *default-syntax*                 'dclx:standard-syntax))
 
-(defvar *default-syntax*                 'dclx:standard-syntax)
+
 (defvar *default-syntax-startup-enabled* t)                                                         
 (defvar *print-collections-readably*     t)
 (defvar *set-reader-macro-char*          #\{)
@@ -22,9 +24,9 @@
 
 
 (defun enable-syntax ()
-  (unless (eq *readtable* (find-readtable which-syntax))
+  (unless (eq *readtable* (default-syntax))
     (setf *prior-readtable* *readtable*)
-    (in-readtable dclx:standard-syntax)))
+    (funcall #'in-readtable (default-syntax))))
 
 
 (defun disable-syntax ()
