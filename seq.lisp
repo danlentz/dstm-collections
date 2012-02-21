@@ -1,6 +1,14 @@
 ;;;;; -*- mode: common-lisp;   common-lisp-style: modern;    coding: utf-8; -*-
 ;;;;;
 
+;; seq's are somewhat of a comprimise -- to provide  the most efficient and capable
+;; implementation necessitates a weight-balanced tree, but this would cause
+;; a significant hit to performance over red-black tree based collections, in the
+;; general case.  As, at the moment, a homogeneous underlying tree implementation
+;; for all collection types is desirable, and since seq has proven somewhat useful to,
+;; have, a red-black tree based implementation is provided, with the adviso that this may
+;; be subject to significant change in the future.
+
 (in-package :seq)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -138,12 +146,38 @@
       (set:remove-min seq))))
 
 
-(defun seq:butlast (seq)
-  "return a new seq containing all but the last element of s"
+(defun seq:butlast (seq &optional (n 1))
+  "return a new seq containing all but the last n elements of SEQ"
   (let ((seq (value seq)))
-    (if (null seq)
-      nil
-      (set:remove-max seq))))
+    (cond
+      ((null  seq) nil)
+      ((zerop n)   seq)
+      ((plusp n)   (seq:butlast (set:remove-max seq) (- n 1)))
+      (t           (error "invalid argument n: ~s" n)))))
+
+;; (butlast [1 2 3 4 5])
+;; [ 1 2 3 4 ]
+
+;; (butlast [1 2 3 4 5] 0)
+;; [ 1 2 3 4 5 ]
+
+;; (butlast [1 2 3 4 5] 1)
+;; [ 1 2 3 4 ]
+
+;; (butlast [1 2 3 4 5] 2)
+;; [ 1 2 3 ]
+
+;; (butlast [1 2 3 4 5] 3)
+;; [ 1 2 ]
+
+;; (butlast [1 2 3 4 5] 4)
+;; [ 1 ]
+
+;; (butlast [1 2 3 4 5] 5)
+;; NIL
+
+;; (butlast [1 2 3 4 5] 6)
+;; NIL
 
 
 (defun seq:push (elem &optional seq)
@@ -161,6 +195,17 @@
 (defun seq:list (seq)
   "return the list-based equivalent to SEQ, containing all elements of s in the same order"
   (mapcar #'seq-cell-val (set:elements (value seq))))
+
+;; (seq:list [1 2 3 4 5])
+;; (1 2 3 4 5)
+
+
+(defun seq:vector (seq)
+  "return the vector-based equivalent to SEQ, containing all elements of s in the same order"
+  (cl:map 'cl:vector #'seq-cell-val (set:elements (value seq))))
+
+;; (seq:vector [1 2 3 4 5])
+;; #(1 2 3 4 5)
 
 
 (defun seq:dup (seq)
@@ -205,7 +250,8 @@
 
 (defun seq::reindex* (seq &key (offset 0) (increasing t))
   (check-type seq var)
-  (setf (value seq) (reindex seq :offset offset :increasing increasing)))
+  (setf (value seq) (reindex seq :offset offset :increasing increasing))
+  seq)
   
 
 ;; (progn
@@ -407,7 +453,7 @@
         (error "indices specify negative interval: ~D ~D" start end))
       (@ :elt start)
       (@ :collect (1+ (- end start))))))
-      (@ :accum))))
+
 
 
 ;; (subseq {0 1 2 3 4 5 6 7 8 9} 0 )
