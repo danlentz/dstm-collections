@@ -9,6 +9,7 @@
 ;; have, a red-black tree based implementation is provided, with the adviso that this may
 ;; be subject to significant change in the future.
 
+
 (in-package :seq)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -23,6 +24,7 @@
 
 (defclass seq* (map:map* mutable-seq/cstm)
   ())
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; seq element
@@ -218,15 +220,69 @@
   (set:add
     (make-seq-cell :key (- (min-key seq) 1) :val elem) (value seq)))
 
+;; (seq:push :x)
+;; [ :X ]
+
+;; (seq:push 3 [:x 2])
+;; [ 3 :X 2 ]
+
+;; (seq:push 'x (seq:push :x (seq:push #\x)))
+;; [ SEQ::X :X #\x ]
+
+
+(defun seq:push* (elem &optional (seq (seq:make* elem) seq-provided-p))
+  "prepend elem to the mutable seq SEQ, if seq-provided-p, othewise create a new mutable
+   seq containing only elem"
+  (check-type seq var)
+  (prog1 seq
+    (when seq-provided-p
+      (setf (value seq) (seq:push elem (value seq))))))
+
+;; (seq:push* :x)
+;; #[ :X ]
+
+;; (seq:push* 3 #[:x 2])
+;; #[ 3 :X 2 ]
+
+;; (seq:push* 'x (seq:push* :x (seq:push* #\x)))
+;; #[ SEQ::X :X #\x ]
+
 
 (defun seq:add (elem &optional seq)
   "return a new seq identical to SEQ but with elem appended"
   (set:add
     (make-seq-cell :key (+ (max-key seq) 1) :val elem) (value seq)))
 
+;; (seq:add :x)
+;; [ :X ]
+
+;; (seq:add :x ["x" #\x 'x])
+;; [ "x" #\x 'SEQ::X :X ]
+
+;; (seq:add 1 (seq:add 5 (seq:add 2 (seq:add 4 [3]))))
+;; [ 3 4 2 5 1 ]
+
+
+(defun seq:add* (elem &optional (seq (seq:make* elem) seq-provided-p))
+  "append elem to the mutable seq SEQ, if seq-provided-p, othewise create a new mutable
+   seq containing only elem"
+  (check-type seq var)
+  (prog1 seq
+    (when seq-provided-p
+      (setf (value seq) (seq:add elem (value seq))))))
+
+;; (seq:add* :x)
+;; #[ :X ]
+
+;; (seq:add* :x #["x" #\x 'x])
+;; #[ "x" #\x 'SEQ::X :X ]
+
+;; (seq:add* 1 (seq:add* 5 (seq:add* 2 (seq:add* 4 #[3]))))
+;; #[ 3 4 2 5 1 ]
+
 
 (defun seq:list (seq)
-  "return the list-based equivalent to SEQ, containing all elements of s in the same order"
+  "return the list-based equivalent to SEQ, containing all elements and in the same order"
   (mapcar #'seq-cell-val (set:elements (value seq))))
 
 ;; (seq:list [1 2 3 4 5])
@@ -234,7 +290,7 @@
 
 
 (defun seq:vector (seq)
-  "return the vector-based equivalent to SEQ, containing all elements of s in the same order"
+  "return the vector-based equivalent to SEQ, containing all elements and in the same order"
   (cl:map 'cl:vector #'seq-cell-val (set:elements (value seq))))
 
 ;; (seq:vector [1 2 3 4 5])
@@ -307,6 +363,7 @@
 
 
 (defun seq:reverse (seq)
+  ""
   (let ((seq (value seq)))
     (reindex seq :increasing nil :offset (max-key seq))))
 

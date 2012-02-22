@@ -249,21 +249,15 @@
     :type :reduce :do :reverse :subseq)
   (:import-from :tree :make-cursor :with-cursor)
   (:import-from :dclx :? :?+ :printv :var :value :with-gensyms :once-only :make-gensym-list)
-;;  (:shadowing-import-from :dclx :coerce)
   (:use :common-lisp :lparallel :named-readtables)
   (:export
-    :syntax
-    :seq
-    :seq*
-    :empty
-    :empty*
+    :reverse :reverse*
+    :seq     :seq*
+    :empty   :empty*
+    :make    :make*
+    :add     :add*
+    :push    :push*
     :emptyp
-    :make
-    :make*
-    :make-cursor
-    :with-cursor
-    :add
-    :push
     :first
     :last
     :rest
@@ -283,13 +277,11 @@
     :compare
     :equal
     :reduce
-    :reverse
-    :reverse*
+    :syntax
+    :make-cursor
+    :with-cursor
     ))
 
 
-
-  (shadowing-import '(set:set set:set*) :dclx)
-  (shadowing-import '(map:map map:map*) :dclx)
-  (shadowing-import '(seq:seq seq:seq*) :dclx)
-  (export '(dclx::set dclx::set* dclx::map dclx::map* dclx::seq dclx::seq*) :dclx)
+(shadowing-import '(set:set set:set* map:map map:map* seq:seq seq:seq*) :dclx)
+(export '(dclx::set dclx::set* dclx::map dclx::map* dclx::seq dclx::seq*) :dclx)
