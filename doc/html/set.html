@@ -1,0 +1,1715 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../../../cldoc/src/cludg.css"/>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+<title>
+set</title>
+</head>
+<body>
+<div id="navbar">
+<table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
+<colgroup span="3">
+<col width="0*"/>
+<col width="0*"/>
+<col width="1*"/>
+</colgroup>
+<tr>
+<td align="left" valign="baseline">
+<a href="cursor.html">
+Prev:&nbsp;cursor</a>
+<br/>
+<a href="map.html">
+Next:&nbsp;map</a>
+</td>
+<td>
+&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td align="left" valign="baseline">
+<span class="upchain">
+<b>
+set</b>
+<br/>
+<a href="index.html">
+Index</a>
+</span>
+&nbsp;&nbsp;&nbsp;&nbsp;</td>
+</tr>
+</table>
+</div>
+<div class="cludg-doc-body">
+<h2>
+set
+</h2>
+<table style="width: 100%;" class="summary-table">
+<tr class="table-heading-color">
+<th class="summary" colspan="2">
+Class summary</th>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3800">
+mutable-set/cstm</a>
+</td>
+<td class="summary">
+inherits from <em class="cl">transactional-variable</em></td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3799">
+mutable-set/dstm</a>
+</td>
+<td class="summary">
+inherits from <a href="dstm.html#_g3656"><em class="cl">dstm-var</em></a></td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3801">
+set*</a>
+</td>
+<td class="summary">
+inherits from <a href="set.html#_g3800"><em class="cl">mutable-set/cstm</em></a></td>
+</tr>
+</table>
+<table style="width: 100%;" class="summary-table">
+<tr class="table-heading-color">
+<th class="summary" colspan="2">
+Function summary</th>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3804">
+add</a>
+</td>
+<td class="summary">
+x collection</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3805">
+add*</a>
+</td>
+<td class="summary">
+element collection</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3839">
+cardinal</a>
+</td>
+<td class="summary">
+s</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3828">
+compare</a>
+</td>
+<td class="summary">
+s1 s2 <em>&amp;optional</em> (cmp #'ord:compare)</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3824">
+diff</a>
+</td>
+<td class="summary">
+s1 s2</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3841">
+dup</a>
+</td>
+<td class="summary">
+s</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3842">
+dup-alt</a>
+</td>
+<td class="summary">
+s</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3840">
+elements</a>
+</td>
+<td class="summary">
+s</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3813">
+empty</a>
+</td>
+<td class="summary">
+</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3814">
+empty*</a>
+</td>
+<td class="summary">
+</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3815">
+emptyp</a>
+</td>
+<td class="summary">
+collection</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3829">
+equal</a>
+</td>
+<td class="summary">
+s1 s2</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3835">
+exists</a>
+</td>
+<td class="summary">
+pred s</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3836">
+filter</a>
+</td>
+<td class="summary">
+pred s</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3837">
+filter*</a>
+</td>
+<td class="summary">
+pred s</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3833">
+fold</a>
+</td>
+<td class="summary">
+fn s accu</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3834">
+for-all</a>
+</td>
+<td class="summary">
+pred s fn</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3825">
+inter</a>
+</td>
+<td class="summary">
+s1 s2</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3826">
+inter*</a>
+</td>
+<td class="summary">
+tx-collection tx-or-non-tx-collection</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3831">
+iter</a>
+</td>
+<td class="summary">
+fn s</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3843">
+make</a>
+</td>
+<td class="summary">
+<em>&amp;optional</em> (from (set:empty))</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3844">
+make*</a>
+</td>
+<td class="summary">
+<em>&amp;optional</em> (from (set:empty))</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3807">
+max</a>
+</td>
+<td class="summary">
+collection</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3816">
+mem</a>
+</td>
+<td class="summary">
+x collection</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3806">
+min</a>
+</td>
+<td class="summary">
+collection</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3827">
+parallel-inter</a>
+</td>
+<td class="summary">
+s1 s2</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3821">
+parallel-union</a>
+</td>
+<td class="summary">
+s1 s2</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3838">
+partition</a>
+</td>
+<td class="summary">
+pred s</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3819">
+remove</a>
+</td>
+<td class="summary">
+x collection</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3820">
+remove*</a>
+</td>
+<td class="summary">
+x collection</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3810">
+remove-max</a>
+</td>
+<td class="summary">
+collection</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3811">
+remove-max*</a>
+</td>
+<td class="summary">
+collection</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3808">
+remove-min</a>
+</td>
+<td class="summary">
+collection</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3809">
+remove-min*</a>
+</td>
+<td class="summary">
+collection</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3817">
+singleton</a>
+</td>
+<td class="summary">
+x</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3818">
+singleton*</a>
+</td>
+<td class="summary">
+x</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3812">
+split</a>
+</td>
+<td class="summary">
+x tree</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3830">
+subset</a>
+</td>
+<td class="summary">
+s1 s2</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3802">
+typep</a>
+</td>
+<td class="summary">
+thing</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3822">
+union</a>
+</td>
+<td class="summary">
+s1 s2</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3823">
+union*</a>
+</td>
+<td class="summary">
+tx-collection tx-or-non-tx-collection</td>
+</tr>
+</table>
+<table style="width: 100%;" class="summary-table">
+<tr class="table-heading-color">
+<th class="summary" colspan="2">
+Macro summary</th>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="set.html#_g3832">
+do</a>
+</td>
+<td class="summary">
+(element set) <em>&amp;body</em> body</td>
+</tr>
+</table>
+<div class="defclass">
+<div class="defunsignatures">
+<a id="_g3799">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+mutable-set/dstm&nbsp;&nbsp;</td>
+<td class="lambda-list">
+inherits from <a href="dstm.html#_g3656"><em class="cl">dstm-var</em></a></td>
+<td class="symbol-type">
+&nbsp;[Class]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defclass">
+<div class="defunsignatures">
+<a id="_g3800">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+mutable-set/cstm&nbsp;&nbsp;</td>
+<td class="lambda-list">
+inherits from <em class="cl">transactional-variable</em></td>
+<td class="symbol-type">
+&nbsp;[Class]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defclass">
+<div class="defunsignatures">
+<a id="_g3801">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+set*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+inherits from <a href="set.html#_g3800"><em class="cl">mutable-set/cstm</em></a></td>
+<td class="symbol-type">
+&nbsp;[Class]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+A transactional variant of the base functional data structure 
+ set implementation which may be used in a manner similar to ordinary mutable 
+ collection types, such as a list. Currently, The superclass of set* determines 
+ which stm implementation that will be used by default throughout the rest of 
+ this library 
+ </p>
+</div>
+</div>
+<div class="deftype">
+<div class="defunsignatures">
+<a id="_g3803">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+type&nbsp;&nbsp;</td>
+<td class="lambda-list">
+'(satisfies set:typep)</td>
+<td class="symbol-type">
+&nbsp;[Type]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+collection of arbitrary, unique, elements in order determined by defined ordinal 
+ comparison relations on element types and content values 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3802">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+typep&nbsp;&nbsp;</td>
+<td class="lambda-list">
+thing</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+set collection type-predicate 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3804">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+add&nbsp;&nbsp;</td>
+<td class="lambda-list">
+x collection</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a set the same as node with element 'x' added if not already present. as 
+ a second return value, return true if actually added 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3805">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+add*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+element collection</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+destructively set:add ELEMENT to a mutable MAP if it is not already present. 
+ </p>
+<p>
+as a second return value, return true if actually added 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3806">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+min&nbsp;&nbsp;</td>
+<td class="lambda-list">
+collection</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return the smallest element present in the collection 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3807">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+max&nbsp;&nbsp;</td>
+<td class="lambda-list">
+collection</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return the greatest element present in the collection 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3808">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+remove-min&nbsp;&nbsp;</td>
+<td class="lambda-list">
+collection</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a collection with the smallest element removed -- useful for priority-queues 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3809">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+remove-min*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+collection</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+destructively set:remove the smallest ELEMENT from a mutable COLLECTION 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3810">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+remove-max&nbsp;&nbsp;</td>
+<td class="lambda-list">
+collection</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a collection with the greatest element removed -- useful for priority-queues 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3811">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+remove-max*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+collection</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+destructively set:remove the largest ELEMENT from a mutable COLLECTION 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3812">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+split&nbsp;&nbsp;</td>
+<td class="lambda-list">
+x tree</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+returns a triple (l present r) where: 
+ l - is the set of elements of s that are &lt; x 
+ r - is the set of elements of s that are &gt; x 
+ present - is false if s contains no element equal to x 
+ or true if s contains an element equal to x 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3813">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+empty&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+create empty set 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3814">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+empty*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+create a transactional empty set 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3815">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+emptyp&nbsp;&nbsp;</td>
+<td class="lambda-list">
+collection</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return true if set contains no elements, otherwise false 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3816">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+mem&nbsp;&nbsp;</td>
+<td class="lambda-list">
+x collection</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return true if set contains element x 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3817">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+singleton&nbsp;&nbsp;</td>
+<td class="lambda-list">
+x</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+create set containing only the element x 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3818">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+singleton*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+x</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+create transactional collection containing only the element x 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3819">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+remove&nbsp;&nbsp;</td>
+<td class="lambda-list">
+x collection</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a collection the same as argument with the element 'x' removed if present 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3820">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+remove*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+x collection</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+destructively set:remove element X from a mutable set COLLECTION, if present 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3821">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+parallel-union&nbsp;&nbsp;</td>
+<td class="lambda-list">
+s1 s2</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a collection containing all the elements (without duplicates) of s1 and s2 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3822">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+union&nbsp;&nbsp;</td>
+<td class="lambda-list">
+s1 s2</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a collection containing all the elements (without duplicates) of s1 and s2 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3823">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+union*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+tx-collection tx-or-non-tx-collection</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+destructively update tx-collection as by set:union 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3824">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+diff&nbsp;&nbsp;</td>
+<td class="lambda-list">
+s1 s2</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3825">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+inter&nbsp;&nbsp;</td>
+<td class="lambda-list">
+s1 s2</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a collection containing all elements that are present in both s1 and s2 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3826">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+inter*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+tx-collection tx-or-non-tx-collection</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+destructively update tx-collection as by set:inter 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3827">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+parallel-inter&nbsp;&nbsp;</td>
+<td class="lambda-list">
+s1 s2</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a collection containing all elements that are present in both s1 and s2 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3828">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+compare&nbsp;&nbsp;</td>
+<td class="lambda-list">
+s1 s2 <em>&amp;optional</em> (cmp #'ord:compare)</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return 3-way ordinal comparison of sets s1 and s2 with the following return-value semantics: 
+ 0 -&gt; set0 is EQAL-TO set1 
+ -1 -&gt; set0 is LESS-THAN set1 
+ 1 -&gt; set0 is GREATER-THAN set1 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3829">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+equal&nbsp;&nbsp;</td>
+<td class="lambda-list">
+s1 s2</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return true if both hold: s1 is a subset of s2, and s2 is a subset of s1 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3830">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+subset&nbsp;&nbsp;</td>
+<td class="lambda-list">
+s1 s2</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return true if all elements of s1 are present in s2 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3831">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+iter&nbsp;&nbsp;</td>
+<td class="lambda-list">
+fn s</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+funcall fn on each element of set s 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3833">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+fold&nbsp;&nbsp;</td>
+<td class="lambda-list">
+fn s accu</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+similar to reduce, takes three argument function f as in: (f key value accumulator) 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3834">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+for-all&nbsp;&nbsp;</td>
+<td class="lambda-list">
+pred s fn</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+funcall fn on all elements of set s satisfying pred 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3835">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+exists&nbsp;&nbsp;</td>
+<td class="lambda-list">
+pred s</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return true if any element of s satisfies pred 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3836">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+filter&nbsp;&nbsp;</td>
+<td class="lambda-list">
+pred s</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a new set containing all elements of s which satisfy pred 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3837">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+filter*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+pred s</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+destructively update collection S as by set:filter 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3838">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+partition&nbsp;&nbsp;</td>
+<td class="lambda-list">
+pred s</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a list containing two new sets: the first containing those elements 
+ of s which satisfy pred, and the second containing those which do not 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3839">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+cardinal&nbsp;&nbsp;</td>
+<td class="lambda-list">
+s</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return the number of elements contained in set s 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3840">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+elements&nbsp;&nbsp;</td>
+<td class="lambda-list">
+s</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a list containing all elements of s 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3841">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+dup&nbsp;&nbsp;</td>
+<td class="lambda-list">
+s</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a new set which is set:equal the original s 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3842">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+dup-alt&nbsp;&nbsp;</td>
+<td class="lambda-list">
+s</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a new set which is set:equal the original s 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3843">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+make&nbsp;&nbsp;</td>
+<td class="lambda-list">
+<em>&amp;optional</em> (from (set:empty))</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+end-user api for construction of a new set optionally initialized to contain 
+ elements derived from various types of source data 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3844">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+make*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+<em>&amp;optional</em> (from (set:empty))</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3832">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+do&nbsp;&nbsp;</td>
+<td class="lambda-list">
+(element set) <em>&amp;body</em> body</td>
+<td class="symbol-type">
+&nbsp;[Macro]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Iterate over elements of SET in the manner of the dolist and dotimes macros 
+ </p>
+</div>
+</div>
+</div>
+<div class="cludg-footer">
+Generated by&nbsp;<a href="mailto:ihatchondo@common-lisp.net" lang="en">
+CLDOC</a>
+- 2012-02-23 02:12:07</div>
+</body>
+</html>

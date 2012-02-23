@@ -1,0 +1,1707 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../../../cldoc/src/cludg.css"/>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+<title>
+seq</title>
+</head>
+<body>
+<div id="navbar">
+<table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
+<colgroup span="3">
+<col width="0*"/>
+<col width="0*"/>
+<col width="1*"/>
+</colgroup>
+<tr>
+<td align="left" valign="baseline">
+<a href="map.html">
+Prev:&nbsp;map</a>
+<br/>
+<a href="printer.html">
+Next:&nbsp;printer</a>
+</td>
+<td>
+&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td align="left" valign="baseline">
+<span class="upchain">
+<b>
+seq</b>
+<br/>
+<a href="index.html">
+Index</a>
+</span>
+&nbsp;&nbsp;&nbsp;&nbsp;</td>
+</tr>
+</table>
+</div>
+<div class="cludg-doc-body">
+<h2>
+seq
+</h2>
+<table style="width: 100%;" class="summary-table">
+<tr class="table-heading-color">
+<th class="summary" colspan="2">
+Class summary</th>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3887">
+mutable-seq/cstm</a>
+</td>
+<td class="summary">
+inherits from <a href="map.html#_g3847"><em class="cl">mutable-map/cstm</em></a></td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3886">
+mutable-seq/dstm</a>
+</td>
+<td class="summary">
+inherits from <a href="map.html#_g3846"><em class="cl">mutable-map/dstm</em></a></td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3888">
+seq*</a>
+</td>
+<td class="summary">
+inherits from <a href="map.html#_g3848"><em class="cl">map*</em></a> and <a href="seq.html#_g3887"><em class="cl">mutable-seq/cstm</em></a></td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3889">
+seq-cell</a>
+</td>
+<td class="summary">
+inherits from <a href="map.html#_g3849"><em class="cl">map-cell</em></a></td>
+</tr>
+</table>
+<table style="width: 100%;" class="summary-table">
+<tr class="table-heading-color">
+<th class="summary" colspan="2">
+Method summary</th>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3891">
+seq-cell-key</a>
+</td>
+<td class="summary">
+seq-cell</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3890">
+seq-cell-val</a>
+</td>
+<td class="summary">
+seq-cell</td>
+</tr>
+</table>
+<table style="width: 100%;" class="summary-table">
+<tr class="table-heading-color">
+<th class="summary" colspan="2">
+Function summary</th>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3910">
+add</a>
+</td>
+<td class="summary">
+elem <em>&amp;optional</em> seq</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3911">
+add*</a>
+</td>
+<td class="summary">
+elem <em>&amp;optional</em> (seq (seq:make* elem) seq-provided-p)</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3906">
+butfirst</a>
+</td>
+<td class="summary">
+seq <em>&amp;optional</em> (n 1)</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3907">
+butlast</a>
+</td>
+<td class="summary">
+seq <em>&amp;optional</em> (n 1)</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3927">
+compare</a>
+</td>
+<td class="summary">
+seq1 seq2 <em>&amp;optional</em> (cmp #'ord:compare)</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3920">
+concat</a>
+</td>
+<td class="summary">
+s0 <em>&amp;rest</em> args</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3914">
+dup</a>
+</td>
+<td class="summary">
+seq</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3924">
+elt</a>
+</td>
+<td class="summary">
+seq index</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3925">
+elt-impl2</a>
+</td>
+<td class="summary">
+seq index</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3897">
+empty</a>
+</td>
+<td class="summary">
+</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3898">
+empty*</a>
+</td>
+<td class="summary">
+</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3899">
+emptyp</a>
+</td>
+<td class="summary">
+seq <em>&amp;aux</em> (actual-seq (value seq))</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3928">
+equal</a>
+</td>
+<td class="summary">
+seq1 seq2 <em>&amp;optional</em> (cmp #'ord:compare)</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3901">
+first</a>
+</td>
+<td class="summary">
+seq <em>&amp;aux</em> (actual-seq (value seq))</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3895">
+first-node</a>
+</td>
+<td class="summary">
+seq <em>&amp;aux</em> (actual-seq (value seq))</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3902">
+last</a>
+</td>
+<td class="summary">
+seq <em>&amp;aux</em> (actual-seq (value seq))</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3896">
+last-node</a>
+</td>
+<td class="summary">
+seq <em>&amp;aux</em> (actual-seq (value seq))</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3900">
+length</a>
+</td>
+<td class="summary">
+seq <em>&amp;aux</em> (actual-seq (value seq))</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3912">
+list</a>
+</td>
+<td class="summary">
+seq</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3922">
+make</a>
+</td>
+<td class="summary">
+<em>&amp;optional</em> (from (seq:empty))</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3923">
+make*</a>
+</td>
+<td class="summary">
+<em>&amp;optional</em> (from (seq:empty))</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3892">
+make-seq-cell</a>
+</td>
+<td class="summary">
+<em>&amp;rest</em> args</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3921">
+map</a>
+</td>
+<td class="summary">
+f seq</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3915">
+map-indices</a>
+</td>
+<td class="summary">
+f seq <em>&amp;aux</em> new-seq</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3904">
+max-key</a>
+</td>
+<td class="summary">
+seq</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3903">
+min-key</a>
+</td>
+<td class="summary">
+seq</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3908">
+push</a>
+</td>
+<td class="summary">
+elem <em>&amp;optional</em> seq</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3909">
+push*</a>
+</td>
+<td class="summary">
+elem <em>&amp;optional</em> (seq (seq:make* elem) seq-provided-p)</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3926">
+reduce</a>
+</td>
+<td class="summary">
+fn seq <em>&amp;rest</em> args <em>&amp;key</em> key from-end (start 0) end initial-value</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3916">
+reindex</a>
+</td>
+<td class="summary">
+seq <em>&amp;key</em> (offset 0) (increasing t) <em>&amp;aux</em> (idx offset)</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3917">
+reindex*</a>
+</td>
+<td class="summary">
+seq <em>&amp;key</em> (offset 0) (increasing t)</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3905">
+rest</a>
+</td>
+<td class="summary">
+seq</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3918">
+reverse</a>
+</td>
+<td class="summary">
+seq</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3919">
+reverse*</a>
+</td>
+<td class="summary">
+seq</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3929">
+subseq</a>
+</td>
+<td class="summary">
+seq start <em>&amp;optional</em> end</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3893">
+typep</a>
+</td>
+<td class="summary">
+thing</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="seq.html#_g3913">
+vector</a>
+</td>
+<td class="summary">
+seq</td>
+</tr>
+</table>
+<div class="defclass">
+<div class="defunsignatures">
+<a id="_g3886">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+mutable-seq/dstm&nbsp;&nbsp;</td>
+<td class="lambda-list">
+inherits from <a href="map.html#_g3846"><em class="cl">mutable-map/dstm</em></a></td>
+<td class="symbol-type">
+&nbsp;[Class]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defclass">
+<div class="defunsignatures">
+<a id="_g3887">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+mutable-seq/cstm&nbsp;&nbsp;</td>
+<td class="lambda-list">
+inherits from <a href="map.html#_g3847"><em class="cl">mutable-map/cstm</em></a></td>
+<td class="symbol-type">
+&nbsp;[Class]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defclass">
+<div class="defunsignatures">
+<a id="_g3888">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+seq*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+inherits from <a href="map.html#_g3848"><em class="cl">map*</em></a> and <a href="seq.html#_g3887"><em class="cl">mutable-seq/cstm</em></a></td>
+<td class="symbol-type">
+&nbsp;[Class]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defclass">
+<div class="defunsignatures">
+<a id="_g3889">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+seq-cell&nbsp;&nbsp;</td>
+<td class="lambda-list">
+inherits from <a href="map.html#_g3849"><em class="cl">map-cell</em></a></td>
+<td class="symbol-type">
+&nbsp;[Class]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+storage cell for implementation of tree:rb-tree based sequences 
+ </p>
+</div>
+<div class="defclass-initargs">
+<div>
+<div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+:key&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Initarg]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+:val&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Initarg]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="defclass-slots-doc">
+<div>
+<div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+key&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Slot]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+position constituent 
+ </p>
+</div>
+</div>
+<div>
+<div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+val&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Slot]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+item constituent 
+ </p>
+</div>
+</div>
+</div>
+<div class="defclass-generics">
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3890">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+seq-cell-val&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq-cell</td>
+<td class="symbol-type">
+&nbsp;[Generic&nbsp;function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns and (with setf) changes the val of the specified seq-cell 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3891">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+seq-cell-key&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq-cell</td>
+<td class="symbol-type">
+&nbsp;[Generic&nbsp;function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns and (with setf) changes the key of the specified seq-cell 
+ </p>
+</div>
+</div>
+</div>
+</div>
+<div class="deftype">
+<div class="defunsignatures">
+<a id="_g3894">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+type&nbsp;&nbsp;</td>
+<td class="lambda-list">
+'(satisfies seq:typep)</td>
+<td class="symbol-type">
+&nbsp;[Type]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+collection of arbitrary, possibly non-unique, elements in some specific lexical order 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3892">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+make-seq-cell&nbsp;&nbsp;</td>
+<td class="lambda-list">
+<em>&amp;rest</em> args</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+convenience api routine for map-cell initialization 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3893">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+typep&nbsp;&nbsp;</td>
+<td class="lambda-list">
+thing</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+seq collection type-predicate 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3895">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+first-node&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq <em>&amp;aux</em> (actual-seq (value seq))</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3896">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+last-node&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq <em>&amp;aux</em> (actual-seq (value seq))</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3897">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+empty&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+create empty seq 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3898">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+empty*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+create empty seq 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3899">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+emptyp&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq <em>&amp;aux</em> (actual-seq (value seq))</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return true if SEQ contains no elements, otherwise false 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3900">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+length&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq <em>&amp;aux</em> (actual-seq (value seq))</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return the number of elements in SEQ, similar to (cl:length list) 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3901">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+first&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq <em>&amp;aux</em> (actual-seq (value seq))</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return the first element in SEQ, similar to (cl:first list) 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3902">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+last&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq <em>&amp;aux</em> (actual-seq (value seq))</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return the last element in SEQ, similar to (cl:car (cl:last list)) 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3903">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+min-key&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return the key of the first element of SEQ 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3904">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+max-key&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return the key of the last element of SEQ 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3905">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+rest&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a new seq containing all but the first element of SEQ 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3906">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+butfirst&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq <em>&amp;optional</em> (n 1)</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a new seq containing all but the first n elements of SEQ 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3907">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+butlast&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq <em>&amp;optional</em> (n 1)</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a new seq containing all but the last n elements of SEQ 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3908">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+push&nbsp;&nbsp;</td>
+<td class="lambda-list">
+elem <em>&amp;optional</em> seq</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a new seq identical to SEQ but with elem prepended 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3909">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+push*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+elem <em>&amp;optional</em> (seq (seq:make* elem) seq-provided-p)</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+prepend elem to the mutable seq SEQ, if seq-provided-p, othewise create a new mutable 
+ seq containing only elem 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3910">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+add&nbsp;&nbsp;</td>
+<td class="lambda-list">
+elem <em>&amp;optional</em> seq</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a new seq identical to SEQ but with elem appended 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3911">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+add*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+elem <em>&amp;optional</em> (seq (seq:make* elem) seq-provided-p)</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+append elem to the mutable seq SEQ, if seq-provided-p, othewise create a new mutable 
+ seq containing only elem 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3912">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+list&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return the list-based equivalent to SEQ, containing all elements and in the same order 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3913">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+vector&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return the vector-based equivalent to SEQ, containing all elements and in the same order 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3914">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+dup&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a new seq that is seq:equal to the original SEQ 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3915">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+map-indices&nbsp;&nbsp;</td>
+<td class="lambda-list">
+f seq <em>&amp;aux</em> new-seq</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+seq::map-indices is functionally identical to map:keymap, with the exception that a new seq is 
+ constructed and returned rather than a map. seq:map-indices, however, is not exported as part 
+ of the public interface, as the keys of a seq are managed internally in order to 
+ manipulate the lexical order of the elements of a seq, and are not user-visible. That 
+ said, it is extremely useful when implementing new types of sequence operations 
+ that may themselves be exported in the public interface as an extension to this library 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3916">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+reindex&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq <em>&amp;key</em> (offset 0) (increasing t) <em>&amp;aux</em> (idx offset)</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3917">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+reindex*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq <em>&amp;key</em> (offset 0) (increasing t)</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3918">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+reverse&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3919">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+reverse*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3920">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+concat&nbsp;&nbsp;</td>
+<td class="lambda-list">
+s0 <em>&amp;rest</em> args</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a new sequence that consists of all elements of s0 followed by all elements of 
+ each of the supplied additional sequences, in order, from left to right. Any number 
+ of sequences may be concatenated in a single call. 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3921">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+map&nbsp;&nbsp;</td>
+<td class="lambda-list">
+f seq</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return a new seq that contains the result of applying f to each element of seq, 
+ in the same lexical order. The underlying structure of the collection rb-tree 
+ is unaffected. Operates in a manner analogous to cl:mapcar. 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3922">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+make&nbsp;&nbsp;</td>
+<td class="lambda-list">
+<em>&amp;optional</em> (from (seq:empty))</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+end-user api for construction of a new seq optionally initialized to contain 
+ elements derived from various types of source data, with preservation of the 
+ original order in such cases where the concept of lexical ordering applies. 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3923">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+make*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+<em>&amp;optional</em> (from (seq:empty))</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3924">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+elt&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq index</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+return the element of seq at position index, which should be a positive integer 
+ as would apply in a manner analogous to using cl:elt on a built-in sequence type. 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3925">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+elt-impl2&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq index</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3926">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+reduce&nbsp;&nbsp;</td>
+<td class="lambda-list">
+fn seq <em>&amp;rest</em> args <em>&amp;key</em> key from-end (start 0) end initial-value</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+combines the elements of seq according to function and returns the result. 
+ </p>
+<p>
+for example, a sequence of numbers may be reduced using function #'+ which 
+ would return the result of adding them all together. reduction using #'cl:max 
+ would return the largest. In the simplest type of invocation, if the elements 
+ of seq are #[a b c d] calling reduce is equivalent to (fn (fn (fn a b) c) d). 
+ All options of #'cl:reduce are supported as it is what is used in the underlying 
+ implementation of #'seq:reduce 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3927">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+compare&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq1 seq2 <em>&amp;optional</em> (cmp #'ord:compare)</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+ordinal comparison of two seqs 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3928">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+equal&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq1 seq2 <em>&amp;optional</em> (cmp #'ord:compare)</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+compare two seqs for element-wise equality using cmp 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3929">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+subseq&nbsp;&nbsp;</td>
+<td class="lambda-list">
+seq start <em>&amp;optional</em> end</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cludg-footer">
+Generated by&nbsp;<a href="mailto:ihatchondo@common-lisp.net" lang="en">
+CLDOC</a>
+- 2012-02-23 02:12:07</div>
+</body>
+</html>

@@ -3,16 +3,22 @@
 
 (in-package :cl-user)
 
+(eval-when (:load-toplevel :compile-toplevel :execute)
+  (asdf:load-system :cldoc))
+
+
+(import '(cldoc:doc-op cldoc:document-system cldoc:cldoc cldoc:print-op cldoc:print-system))
+
 ;; (pushnew :lparallel.with-debug *features*)
 
 (asdf:defsystem :dstm-collections
   :description "Functional Collections and Lock Free DSTM"
-  :long-description "Red-Black Trees / Dynamic Software Transactional Memory after Herlihy, et. al."
+  :long-description "Software Transactional Collections"
   :version "0.2.0"
   :author "Dr David McClain"
   :author "Dan Lentz"
   :serial t
-  :depends-on (:closer-mop :lparallel :named-readtables :local-time :contextl)
+  :depends-on (:cldoc :unicly :closer-mop :lparallel :named-readtables :local-time :contextl)
   :components ((:file "package")
                 (:file "dstm-collections")
                 (:file "printv")
@@ -21,6 +27,7 @@
                 (:file "cstm")
                 (:file "dstm")
                 (:file "ord")
+                (:file "wbtree")
                 (:file "tree")
                 (:file "cursor")
                 (:file "set")
@@ -28,7 +35,9 @@
                 (:file "seq")
                 (:file "printer")
                 (:file "reader")
-                ))
+                (:cldoc          :dstm-collections-documentation
+                                 :target-system :dstm-collections
+                                 :pathname "doc/html/")))
 
 
 (defmethod asdf:perform :after ((op asdf:load-op) (sys (eql (asdf:find-system :dstm-collections))))

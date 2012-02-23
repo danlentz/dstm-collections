@@ -1,0 +1,1614 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../../../cldoc/src/cludg.css"/>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+<title>
+wbtree</title>
+</head>
+<body>
+<div id="navbar">
+<table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
+<colgroup span="3">
+<col width="0*"/>
+<col width="0*"/>
+<col width="1*"/>
+</colgroup>
+<tr>
+<td align="left" valign="baseline">
+<a href="ord.html">
+Prev:&nbsp;ord</a>
+<br/>
+<a href="tree.html">
+Next:&nbsp;tree</a>
+</td>
+<td>
+&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td align="left" valign="baseline">
+<span class="upchain">
+<b>
+wbtree</b>
+<br/>
+<a href="index.html">
+Index</a>
+</span>
+&nbsp;&nbsp;&nbsp;&nbsp;</td>
+</tr>
+</table>
+</div>
+<div class="cludg-doc-body">
+<h2>
+wbtree
+</h2>
+<table style="width: 100%;" class="summary-table">
+<tr class="table-heading-color">
+<th class="summary" colspan="2">
+Class summary</th>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3731">
+abstract-class</a>
+</td>
+<td class="summary">
+inherits from <em class="cl">standard-class</em></td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3736">
+abstract-node</a>
+</td>
+<td class="summary">
+</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3735">
+abstract-tree</a>
+</td>
+<td class="summary">
+</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3744">
+node</a>
+</td>
+<td class="summary">
+inherits from <a href="wbtree.html#_g3736"><em class="cl">abstract-node</em></a></td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3737">
+tree</a>
+</td>
+<td class="summary">
+inherits from <a href="wbtree.html#_g3735"><em class="cl">abstract-tree</em></a></td>
+</tr>
+</table>
+<table style="width: 100%;" class="summary-table">
+<tr class="table-heading-color">
+<th class="summary" colspan="2">
+Method summary</th>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3732">
+make-instance</a>
+</td>
+<td class="summary">
+(c abstract-class) <em>&amp;rest</em> args</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3749">
+node/k</a>
+</td>
+<td class="summary">
+node</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3747">
+node/l</a>
+</td>
+<td class="summary">
+node</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3746">
+node/r</a>
+</td>
+<td class="summary">
+node</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3748">
+node/v</a>
+</td>
+<td class="summary">
+node</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3745">
+node/w</a>
+</td>
+<td class="summary">
+node</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3743">
+print-object</a>
+</td>
+<td class="summary">
+(tree tree) stream</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3750">
+print-object</a>
+</td>
+<td class="summary">
+(node node) stream</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3740">
+tree/id</a>
+</td>
+<td class="summary">
+tree</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3739">
+tree/node-class</a>
+</td>
+<td class="summary">
+tree</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3738">
+tree/root</a>
+</td>
+<td class="summary">
+tree</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3733">
+validate-superclass</a>
+</td>
+<td class="summary">
+(class abstract-class) (superclass standard-class)</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3734">
+validate-superclass</a>
+</td>
+<td class="summary">
+(class standard-class) (superclass abstract-class)</td>
+</tr>
+</table>
+<table style="width: 100%;" class="summary-table">
+<tr class="table-heading-color">
+<th class="summary" colspan="2">
+Function summary</th>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3761">
+double-l</a>
+</td>
+<td class="summary">
+a.k a.v x r</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3763">
+double-r</a>
+</td>
+<td class="summary">
+c.k c.v l z</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3752">
+empty</a>
+</td>
+<td class="summary">
+</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3753">
+emptyp</a>
+</td>
+<td class="summary">
+thing</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3741">
+make</a>
+</td>
+<td class="summary">
+class <em>&amp;rest</em> args</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3751">
+make-node</a>
+</td>
+<td class="summary">
+k v l r w</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3742">
+make-tree</a>
+</td>
+<td class="summary">
+<em>&amp;optional</em> root</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3759">
+n-join</a>
+</td>
+<td class="summary">
+k v l r</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3758">
+node/call</a>
+</td>
+<td class="summary">
+node fn</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3756">
+node/singleton</a>
+</td>
+<td class="summary">
+k v</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3754">
+node/size</a>
+</td>
+<td class="summary">
+node</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3755">
+node/weight</a>
+</td>
+<td class="summary">
+node</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3760">
+single-l</a>
+</td>
+<td class="summary">
+a.k a.v x r</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3762">
+single-r</a>
+</td>
+<td class="summary">
+b.k b.v l z</td>
+</tr>
+</table>
+<table style="width: 100%;" class="summary-table">
+<tr class="table-heading-color">
+<th class="summary" colspan="2">
+Macro summary</th>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="wbtree.html#_g3757">
+with-node</a>
+</td>
+<td class="summary">
+(node) <em>&amp;body</em> body</td>
+</tr>
+</table>
+<div class="defpackage">
+<div class="defunsignatures">
+<a id="_g3728">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+WBTREE&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Package]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+This is an implementation of a weight-balanced binary tree data 
+ structure based on the following references: 
+ </p>
+<p>
+-- Adams 
+ </p>
+<p>
+-- Hiro 
+ </p>
+<p>
+-- MIT Scheme weight balanced tree as reimplemented by Yoichi Hirai and Kazuhiko Yamamoto 
+ based on the revised non-variant algorithm and integer balance parameters. 
+ {https://github.com/kazu-yamamoto/wttree}
+ </p>
+<p>
+-- Bounded Balance 
+ </p>
+<p>
+-- Making Data Structures Persistent 
+ </p>
+<p>
+* Overview 
+ </p>
+<p>
+A weight balanced binary search tree is a binary tree which maintains height in 
+ logarithmic proportion to the number of elements contained by 
+ </p>
+</div>
+</div>
+<div class="defclass">
+<div class="defunsignatures">
+<a id="_g3731">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+abstract-class&nbsp;&nbsp;</td>
+<td class="lambda-list">
+inherits from <em class="cl">standard-class</em></td>
+<td class="symbol-type">
+&nbsp;[Class]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defclass">
+<div class="defunsignatures">
+<a id="_g3735">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+abstract-tree&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Class]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defclass">
+<div class="defunsignatures">
+<a id="_g3736">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+abstract-node&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Class]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defclass">
+<div class="defunsignatures">
+<a id="_g3737">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+tree&nbsp;&nbsp;</td>
+<td class="lambda-list">
+inherits from <a href="wbtree.html#_g3735"><em class="cl">abstract-tree</em></a></td>
+<td class="symbol-type">
+&nbsp;[Class]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="defclass-initargs">
+<div>
+<div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+:id&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Initarg]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+:node-class&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Initarg]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+:root&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Initarg]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="defclass-slots-doc">
+<div>
+<div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+id&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Slot]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+node-class&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Slot]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+root&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Slot]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="defclass-generics">
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3738">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+tree/root&nbsp;&nbsp;</td>
+<td class="lambda-list">
+tree</td>
+<td class="symbol-type">
+&nbsp;[Generic&nbsp;function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns and (with setf) changes the root of the specified tree 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3739">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+tree/node-class&nbsp;&nbsp;</td>
+<td class="lambda-list">
+tree</td>
+<td class="symbol-type">
+&nbsp;[Generic&nbsp;function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns the node-class of the specified tree 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3740">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+tree/id&nbsp;&nbsp;</td>
+<td class="lambda-list">
+tree</td>
+<td class="symbol-type">
+&nbsp;[Generic&nbsp;function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns the id of the specified tree 
+ </p>
+</div>
+</div>
+</div>
+</div>
+<div class="defclass">
+<div class="defunsignatures">
+<a id="_g3744">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+node&nbsp;&nbsp;</td>
+<td class="lambda-list">
+inherits from <a href="wbtree.html#_g3736"><em class="cl">abstract-node</em></a></td>
+<td class="symbol-type">
+&nbsp;[Class]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="defclass-initargs">
+<div>
+<div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+:k&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Initarg]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+:v&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Initarg]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+:l&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Initarg]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+:r&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Initarg]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+:w&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Initarg]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="defclass-slots-doc">
+</div>
+<div class="defclass-generics">
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3745">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+node/w&nbsp;&nbsp;</td>
+<td class="lambda-list">
+node</td>
+<td class="symbol-type">
+&nbsp;[Generic&nbsp;function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns the w of the specified node 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3746">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+node/r&nbsp;&nbsp;</td>
+<td class="lambda-list">
+node</td>
+<td class="symbol-type">
+&nbsp;[Generic&nbsp;function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns the r of the specified node 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3747">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+node/l&nbsp;&nbsp;</td>
+<td class="lambda-list">
+node</td>
+<td class="symbol-type">
+&nbsp;[Generic&nbsp;function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns the l of the specified node 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3748">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+node/v&nbsp;&nbsp;</td>
+<td class="lambda-list">
+node</td>
+<td class="symbol-type">
+&nbsp;[Generic&nbsp;function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns the v of the specified node 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3749">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+node/k&nbsp;&nbsp;</td>
+<td class="lambda-list">
+node</td>
+<td class="symbol-type">
+&nbsp;[Generic&nbsp;function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns the k of the specified node 
+ </p>
+</div>
+</div>
+</div>
+</div>
+<div class="defparam">
+<div class="defunsignatures">
+<a id="_g3729">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+*delta*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Variable]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+The primary parameter used for the determination whether two subtrees 
+ of a node are in balance or require adjustment by means of some rotation 
+ operation. The specific rotation to be performed is determined by 
+ <a href="wbtree.html#_g3730">
+*gamma*</a>
+
+ </p>
+</div>
+</div>
+<div class="defparam">
+<div class="defunsignatures">
+<a id="_g3730">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+*gamma*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Variable]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3732">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+make-instance&nbsp;&nbsp;</td>
+<td class="lambda-list">
+(c abstract-class) <em>&amp;rest</em> args</td>
+<td class="symbol-type">
+&nbsp;[Method]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3733">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+validate-superclass&nbsp;&nbsp;</td>
+<td class="lambda-list">
+(class abstract-class) (superclass standard-class)</td>
+<td class="symbol-type">
+&nbsp;[Method]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3734">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+validate-superclass&nbsp;&nbsp;</td>
+<td class="lambda-list">
+(class standard-class) (superclass abstract-class)</td>
+<td class="symbol-type">
+&nbsp;[Method]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3743">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+print-object&nbsp;&nbsp;</td>
+<td class="lambda-list">
+(tree tree) stream</td>
+<td class="symbol-type">
+&nbsp;[Method]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3750">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+print-object&nbsp;&nbsp;</td>
+<td class="lambda-list">
+(node node) stream</td>
+<td class="symbol-type">
+&nbsp;[Method]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3741">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+make&nbsp;&nbsp;</td>
+<td class="lambda-list">
+class <em>&amp;rest</em> args</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3742">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+make-tree&nbsp;&nbsp;</td>
+<td class="lambda-list">
+<em>&amp;optional</em> root</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3751">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+make-node&nbsp;&nbsp;</td>
+<td class="lambda-list">
+k v l r w</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3752">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+empty&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3753">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+emptyp&nbsp;&nbsp;</td>
+<td class="lambda-list">
+thing</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3754">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+node/size&nbsp;&nbsp;</td>
+<td class="lambda-list">
+node</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3755">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+node/weight&nbsp;&nbsp;</td>
+<td class="lambda-list">
+node</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3756">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+node/singleton&nbsp;&nbsp;</td>
+<td class="lambda-list">
+k v</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3758">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+node/call&nbsp;&nbsp;</td>
+<td class="lambda-list">
+node fn</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3759">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+n-join&nbsp;&nbsp;</td>
+<td class="lambda-list">
+k v l r</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3760">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+single-l&nbsp;&nbsp;</td>
+<td class="lambda-list">
+a.k a.v x r</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Perform a single left rotation, moving Y, the left subtree of the right subtree of A, 
+ into the left subtree (shown below). 
+ </p>
+<p>
+This must occur in order to restore proper balance when the weight of the left 
+ subtree of node A is less then the weight of the right subtree of node A 
+ multiplied by rotation coefficient <a href="wbtree.html#_g3729">
+*delta*</a>
+and the weight of the 
+ left subtree of node B is less than the weight of the right subtree of node B 
+ multiplied by rotation coefficient <a href="wbtree.html#_g3730">
+*gamma*</a>
+
+ </p>
+<pre>
+    . 
+                  ,---,                                  ,---, 
+                  | A |                                  | B | 
+                  :---:                                  :---: 
+                 :     :                                :     : 
+            ,---:       :---,                      ,---:       :---,  
+            | X |       | B |           =&gt;         | A |       | Z |  
+            '---'       :---:                      :---:       '---' 
+                   ,---:     :---,            ,---:     :---, 
+                   | Y |     | Z |            | X |     | Y | 
+                   '---'     '---'            '---'     '---' 
+     . </pre>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3761">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+double-l&nbsp;&nbsp;</td>
+<td class="lambda-list">
+a.k a.v x r</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Perform a double left rotation, moving Y1, the left subtree of the left subtree 
+ of the right subtree of A, into the left subtree (shown below). 
+ </p>
+<p>
+This must occur in order to restore proper balance when the weight of the left 
+ subtree of node A is less then the weight of the right subtree of node A 
+ multiplied by rotation coefficient <a href="wbtree.html#_g3729">
+*delta*</a>
+and the weight of the 
+ left subtree of node B is greater than or equal to the weight of the right subtree 
+ of node B multiplied by rotation coefficient <a href="wbtree.html#_g3730">
+*gamma*</a>
+
+ </p>
+<pre>
+    . 
+                  ,---,                                    ,---,              
+                  | A |                                    | B |              
+               ___:---:___                             ____:---:____           
+          ,---:           :---,                   ,---:             :---,        
+          | X |           | C |                   | A |             | C |        
+          '---'           :---:         =&gt;        :---:             :---: 
+                     ,---:     :---,         ,---:     :---,   ,---:     :---,   
+                     | B |     | Z |         | X |     | y1|   | y2|     | Z |   
+                     :---:     '---'         '---'     '---'   '---'     '---' 
+                ,---:     :---,    
+                | y1|     | y2|   
+                '---'     '---' 
+     . </pre>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3762">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+single-r&nbsp;&nbsp;</td>
+<td class="lambda-list">
+b.k b.v l z</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Perform a single right rotation, moving Y, the right subtree of the left subtree of B, 
+ into the right subtree (shown below). 
+ </p>
+<p>
+This must occur in order to restore proper balance when the weight of the right 
+ subtree of node B is less then the weight of the left subtree of node B 
+ multiplied by rotation coefficient <a href="wbtree.html#_g3729">
+*delta*</a>
+and the weight of the 
+ right subtree of node A is less than the weight of the left subtree of node A 
+ multiplied by rotation coefficient <a href="wbtree.html#_g3730">
+*gamma*</a>
+
+ </p>
+<pre>
+    . 
+                  ,---,                                  ,---,              
+                  | B |                                  | A |              
+                  :---:                                  :---:              
+                 :     :                                :     :             
+            ,---:       :---,                      ,---:       :---,        
+            | A |       | Z |          =&gt;          | X |       | B |        
+            :---:       '---'                      '---'       :---:        
+       ,---:     :---,                                    ,---:     :---,   
+       | X |     | Y |                                    | Y |     | Z |   
+       '---'     '---'                                    '---'     '---'   
+     . </pre>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3763">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+double-r&nbsp;&nbsp;</td>
+<td class="lambda-list">
+c.k c.v l z</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Perform a double right rotation, moving Y2, the right subtree of the right subtree 
+ of the left subtree of C, into the right subtree (shown below). 
+ </p>
+<p>
+This must occur in order to restore proper balance when the weight of the right 
+ subtree of node C is less then the weight of the left subtree of node C 
+ multiplied by rotation coefficient <a href="wbtree.html#_g3729">
+*delta*</a>
+and the weight of the 
+ right subtree of node B is greater than or equal to the weight of the left subtree 
+ of node B multiplied by rotation coefficient <a href="wbtree.html#_g3730">
+*gamma*</a>
+
+ </p>
+<pre>
+    . 
+                  ,---,                                    ,---,              
+                  | C |                                    | B |              
+               ___:---:___                             ____:---:____           
+          ,---:           :---,                   ,---:             :---,        
+          | A |           | Z |                   | A |             | C |        
+          :---:           '---'        =&gt;         :---:             :---: 
+     ,---:     :---,                         ,---:     :---,   ,---:     :---,   
+     | X |     | B |                         | X |     | y1|   | y2|     | Z |   
+     '---'     :---:                         '---'     '---'   '---'     '---' 
+          ,---:     :---,    
+          | y1|     | y2|   
+          '---'     '---' 
+     . </pre>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3757">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+with-node&nbsp;&nbsp;</td>
+<td class="lambda-list">
+(node) <em>&amp;body</em> body</td>
+<td class="symbol-type">
+&nbsp;[Macro]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cludg-footer">
+Generated by&nbsp;<a href="mailto:ihatchondo@common-lisp.net" lang="en">
+CLDOC</a>
+- 2012-02-23 02:12:07</div>
+</body>
+</html>

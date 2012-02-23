@@ -1,0 +1,2323 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../../../cldoc/src/cludg.css"/>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+<title>
+cstm</title>
+</head>
+<body>
+<div id="navbar">
+<table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
+<colgroup span="3">
+<col width="0*"/>
+<col width="0*"/>
+<col width="1*"/>
+</colgroup>
+<tr>
+<td align="left" valign="baseline">
+<a href="quad.html">
+Prev:&nbsp;quad</a>
+<br/>
+<a href="dstm.html">
+Next:&nbsp;dstm</a>
+</td>
+<td>
+&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td align="left" valign="baseline">
+<span class="upchain">
+<b>
+cstm</b>
+<br/>
+<a href="index.html">
+Index</a>
+</span>
+&nbsp;&nbsp;&nbsp;&nbsp;</td>
+</tr>
+</table>
+</div>
+<div class="cludg-doc-body">
+<h2>
+cstm
+</h2>
+<table style="width: 100%;" class="summary-table">
+<tr class="table-heading-color">
+<th class="summary" colspan="2">
+Class summary</th>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3574">
+transactional-access-class</a>
+</td>
+<td class="summary">
+inherits from <em class="cl">layered-access-class</em> and <em class="cl">standard-class-in-layer</em></td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3595">
+transactional-class</a>
+</td>
+<td class="summary">
+inherits from <em class="cl">layered-class</em> and <a href="cstm.html#_g3574"><em class="cl">transactional-access-class</em></a></td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3576">
+transactional-direct-slot-definition</a>
+</td>
+<td class="summary">
+inherits from <em class="cl">layered-direct-slot-definition</em> and <em class="cl">standard-direct-slot-definition-in-layer</em></td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3580">
+transactional-effective-slot-definition</a>
+</td>
+<td class="summary">
+inherits from <em class="cl">layered-effective-slot-definition-in-layers</em></td>
+</tr>
+</table>
+<table style="width: 100%;" class="summary-table">
+<tr class="table-heading-color">
+<th class="summary" colspan="2">
+Condition summary</th>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3602">
+retry</a>
+</td>
+<td class="summary">
+inherits from <em class="cl">condition</em></td>
+</tr>
+</table>
+<table style="width: 100%;" class="summary-table">
+<tr class="table-heading-color">
+<th class="summary" colspan="2">
+Structure summary</th>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3615">
+deferred-transactional-slot-content</a>
+</td>
+<td class="summary">
+includes <a href="cstm.html#_g3586"><em class="cl">transactional-slot-content</em></a></td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3632">
+direct-transactional-slot-content</a>
+</td>
+<td class="summary">
+includes <a href="cstm.html#_g3586"><em class="cl">transactional-slot-content</em></a></td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3606">
+transaction</a>
+</td>
+<td class="summary">
+</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3586">
+transactional-slot-content</a>
+</td>
+<td class="summary">
+</td>
+</tr>
+</table>
+<table style="width: 100%;" class="summary-table">
+<tr class="table-heading-color">
+<th class="summary" colspan="2">
+Method summary</th>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3584">
+compute-effective-slot-definition</a>
+</td>
+<td class="summary">
+(class transactional-access-class) name direct-slot-definitions</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3579">
+direct-slot-definition-class</a>
+</td>
+<td class="summary">
+(class transactional-access-class) <em>&amp;rest</em> initargs</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3583">
+effective-slot-definition-class</a>
+</td>
+<td class="summary">
+(class transactional-access-class) <em>&amp;rest</em> initargs</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3578">
+initialize-instance</a>
+</td>
+<td class="summary">
+(slot transactional-direct-slot-definition) <em>&amp;rest</em> initargs <em>&amp;key</em> transactional transactionalp</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3598">
+print-object</a>
+</td>
+<td class="summary">
+(var transactional-variable) stream</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3575">
+slot-definition-transactionalp</a>
+</td>
+<td class="summary">
+slot</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3577">
+slot-definition-transactionalp</a>
+</td>
+<td class="summary">
+transactional-direct-slot-definition</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3594">
+slot-unbound</a>
+</td>
+<td class="summary">
+(class layered-class) (object transactional-slot-content) slot-name</td>
+</tr>
+</table>
+<table style="width: 100%;" class="summary-table">
+<tr class="table-heading-color">
+<th class="summary" colspan="2">
+Function summary</th>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3628">
+check-deferred-read</a>
+</td>
+<td class="summary">
+box value</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3620">
+copy-deferred-transactional-slot-content</a>
+</td>
+<td class="summary">
+deferred-transactional-slot-content</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3637">
+copy-direct-transactional-slot-content</a>
+</td>
+<td class="summary">
+direct-transactional-slot-content</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3612">
+copy-transaction</a>
+</td>
+<td class="summary">
+transaction</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3591">
+copy-transactional-slot-content</a>
+</td>
+<td class="summary">
+transactional-slot-content</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3599">
+create-var</a>
+</td>
+<td class="summary">
+<em>&amp;optional</em> (value nil vsp) (class 'transactional-variable)</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3617">
+deferred-transactional-slot-content-most-recent-transaction</a>
+</td>
+<td class="summary">
+deferred-transactional-slot-content</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3616">
+deferred-transactional-slot-content-old-value</a>
+</td>
+<td class="summary">
+deferred-transactional-slot-content</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3619">
+deferred-transactional-slot-content-p</a>
+</td>
+<td class="summary">
+object</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3633">
+direct-transactional-slot-content-lock</a>
+</td>
+<td class="summary">
+direct-transactional-slot-content</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3636">
+direct-transactional-slot-content-p</a>
+</td>
+<td class="summary">
+object</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3634">
+direct-transactional-slot-content-version</a>
+</td>
+<td class="summary">
+direct-transactional-slot-content</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3618">
+make-deferred-transactional-slot-content</a>
+</td>
+<td class="summary">
+<em>&amp;key</em> (most-recent-transaction *current-transaction*) old-value</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3635">
+make-direct-transactional-slot-content</a>
+</td>
+<td class="summary">
+<em>&amp;key</em> (version 0) (lock (bordeaux-threads:make-lock &quot;direct transaction lock&quot;))</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3610">
+make-transaction</a>
+</td>
+<td class="summary">
+<em>&amp;key</em> (process (bordeaux-threads:current-thread)) (start (get-internal-real-time)) (status :active)</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3621">
+most-recent-transaction</a>
+</td>
+<td class="summary">
+object</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3627">
+register-deferred-read</a>
+</td>
+<td class="summary">
+box value</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3641">
+register-direct-read</a>
+</td>
+<td class="summary">
+slot-value</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3642">
+register-direct-write</a>
+</td>
+<td class="summary">
+object slot-name slot-value</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3643">
+release-locks</a>
+</td>
+<td class="summary">
+</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3603">
+retry-transaction</a>
+</td>
+<td class="summary">
+</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3639">
+(setf slot-version)</a>
+</td>
+<td class="summary">
+new-value object</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3623">
+(setf transactional-slot-content-old-value)</a>
+</td>
+<td class="summary">
+new-value object</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3640">
+slot-lock</a>
+</td>
+<td class="summary">
+object</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3638">
+slot-version</a>
+</td>
+<td class="summary">
+object</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3626">
+thread-wait-with-timeout</a>
+</td>
+<td class="summary">
+timeout thunk</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3611">
+transaction-p</a>
+</td>
+<td class="summary">
+object</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3609">
+transaction-process</a>
+</td>
+<td class="summary">
+transaction</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3608">
+transaction-start</a>
+</td>
+<td class="summary">
+transaction</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3607">
+transaction-status</a>
+</td>
+<td class="summary">
+transaction</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3592">
+transactional-slot-content-boundp</a>
+</td>
+<td class="summary">
+object</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3593">
+transactional-slot-content-makunbound</a>
+</td>
+<td class="summary">
+object</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3588">
+transactional-slot-content-object</a>
+</td>
+<td class="summary">
+transactional-slot-content</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3622">
+transactional-slot-content-old-value</a>
+</td>
+<td class="summary">
+object</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3624">
+transactional-slot-content-old-value-boundp</a>
+</td>
+<td class="summary">
+object</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3625">
+transactional-slot-content-old-value-makunbound</a>
+</td>
+<td class="summary">
+object</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3590">
+transactional-slot-content-p</a>
+</td>
+<td class="summary">
+object</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3587">
+transactional-slot-content-value</a>
+</td>
+<td class="summary">
+transactional-slot-content</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3629">
+unregister-deferred-read</a>
+</td>
+<td class="summary">
+box value</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3589">
+%make-transactional-slot-content</a>
+</td>
+<td class="summary">
+<em>&amp;key</em> object (value %unbound%)</td>
+</tr>
+</table>
+<table style="width: 100%;" class="summary-table">
+<tr class="table-heading-color">
+<th class="summary" colspan="2">
+Macro summary</th>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3601">
+atomic</a>
+</td>
+<td class="summary">
+<em>&amp;body</em> body</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3596">
+define-transactional-class</a>
+</td>
+<td class="summary">
+name supers slots <em>&amp;rest</em> options</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="cstm.html#_g3597">
+raw-slot-value</a>
+</td>
+<td class="summary">
+object slot-name <em>&amp;body</em> init</td>
+</tr>
+</table>
+<div class="defclass">
+<div class="defunsignatures">
+<a id="_g3574">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+transactional-access-class&nbsp;&nbsp;</td>
+<td class="lambda-list">
+inherits from <em class="cl">layered-access-class</em> and <em class="cl">standard-class-in-layer</em></td>
+<td class="symbol-type">
+&nbsp;[Class]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defclass">
+<div class="defunsignatures">
+<a id="_g3576">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+transactional-direct-slot-definition&nbsp;&nbsp;</td>
+<td class="lambda-list">
+inherits from <em class="cl">layered-direct-slot-definition</em> and <em class="cl">standard-direct-slot-definition-in-layer</em></td>
+<td class="symbol-type">
+&nbsp;[Class]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="defclass-initargs">
+<div>
+<div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+:transactional :transactionalp&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Initarg]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="defclass-slots-doc">
+</div>
+<div class="defclass-generics">
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3577">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+slot-definition-transactionalp&nbsp;&nbsp;</td>
+<td class="lambda-list">
+transactional-direct-slot-definition</td>
+<td class="symbol-type">
+&nbsp;[Generic&nbsp;function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns the transactionalp of the specified transactional-direct-slot-definition 
+ </p>
+</div>
+</div>
+</div>
+</div>
+<div class="defclass">
+<div class="defunsignatures">
+<a id="_g3580">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+transactional-effective-slot-definition&nbsp;&nbsp;</td>
+<td class="lambda-list">
+inherits from <em class="cl">layered-effective-slot-definition-in-layers</em></td>
+<td class="symbol-type">
+&nbsp;[Class]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defclass">
+<div class="defunsignatures">
+<a id="_g3595">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+transactional-class&nbsp;&nbsp;</td>
+<td class="lambda-list">
+inherits from <em class="cl">layered-class</em> and <a href="cstm.html#_g3574"><em class="cl">transactional-access-class</em></a></td>
+<td class="symbol-type">
+&nbsp;[Class]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defclass">
+<div class="defunsignatures">
+<a id="_g3602">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+retry&nbsp;&nbsp;</td>
+<td class="lambda-list">
+inherits from <em class="cl">condition</em></td>
+<td class="symbol-type">
+&nbsp;[Condition]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defstruct">
+<div class="defunsignatures">
+<a id="_g3586">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+transactional-slot-content&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Structure]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="defclass-initargs">
+</div>
+<div class="defclass-slots-doc">
+</div>
+<div class="defclass-generics">
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3587">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+transactional-slot-content-value&nbsp;&nbsp;</td>
+<td class="lambda-list">
+transactional-slot-content</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns and (with setf) changes the value of the specified transactional-slot-content 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3588">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+transactional-slot-content-object&nbsp;&nbsp;</td>
+<td class="lambda-list">
+transactional-slot-content</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns and (with setf) changes the object of the specified transactional-slot-content 
+ </p>
+</div>
+</div>
+</div>
+<div class="defstruct-defuns">
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3589">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+%make-transactional-slot-content&nbsp;&nbsp;</td>
+<td class="lambda-list">
+<em>&amp;key</em> object (value %unbound%)</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns a newly created transactional-slot-content. 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3591">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+copy-transactional-slot-content&nbsp;&nbsp;</td>
+<td class="lambda-list">
+transactional-slot-content</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns a copy of the specified transactional-slot-content. 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3590">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+transactional-slot-content-p&nbsp;&nbsp;</td>
+<td class="lambda-list">
+object</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns T if the specified object is of type transactional-slot-content. 
+ </p>
+</div>
+</div>
+</div>
+</div>
+<div class="defstruct">
+<div class="defunsignatures">
+<a id="_g3606">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+transaction&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Structure]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="defclass-initargs">
+</div>
+<div class="defclass-slots-doc">
+</div>
+<div class="defclass-generics">
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3607">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+transaction-status&nbsp;&nbsp;</td>
+<td class="lambda-list">
+transaction</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns and (with setf) changes the status of the specified transaction 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3608">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+transaction-start&nbsp;&nbsp;</td>
+<td class="lambda-list">
+transaction</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns and (with setf) changes the start of the specified transaction 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3609">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+transaction-process&nbsp;&nbsp;</td>
+<td class="lambda-list">
+transaction</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns and (with setf) changes the process of the specified transaction 
+ </p>
+</div>
+</div>
+</div>
+<div class="defstruct-defuns">
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3610">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+make-transaction&nbsp;&nbsp;</td>
+<td class="lambda-list">
+<em>&amp;key</em> (process (bordeaux-threads:current-thread)) (start (get-internal-real-time)) (status :active)</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns a newly created transaction. 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3612">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+copy-transaction&nbsp;&nbsp;</td>
+<td class="lambda-list">
+transaction</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns a copy of the specified transaction. 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3611">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+transaction-p&nbsp;&nbsp;</td>
+<td class="lambda-list">
+object</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns T if the specified object is of type transaction. 
+ </p>
+</div>
+</div>
+</div>
+</div>
+<div class="defstruct">
+<div class="defunsignatures">
+<a id="_g3615">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+deferred-transactional-slot-content&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Structure]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="defclass-initargs">
+</div>
+<div class="defclass-slots-doc">
+</div>
+<div class="defclass-generics">
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3616">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+deferred-transactional-slot-content-old-value&nbsp;&nbsp;</td>
+<td class="lambda-list">
+deferred-transactional-slot-content</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns and (with setf) changes the old-value of the specified deferred-transactional-slot-content 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3617">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+deferred-transactional-slot-content-most-recent-transaction&nbsp;&nbsp;</td>
+<td class="lambda-list">
+deferred-transactional-slot-content</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns and (with setf) changes the most-recent-transaction of the specified deferred-transactional-slot-content 
+ </p>
+</div>
+</div>
+</div>
+<div class="defstruct-defuns">
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3618">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+make-deferred-transactional-slot-content&nbsp;&nbsp;</td>
+<td class="lambda-list">
+<em>&amp;key</em> (most-recent-transaction *current-transaction*) old-value</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns a newly created deferred-transactional-slot-content. 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3620">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+copy-deferred-transactional-slot-content&nbsp;&nbsp;</td>
+<td class="lambda-list">
+deferred-transactional-slot-content</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns a copy of the specified deferred-transactional-slot-content. 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3619">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+deferred-transactional-slot-content-p&nbsp;&nbsp;</td>
+<td class="lambda-list">
+object</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns T if the specified object is of type deferred-transactional-slot-content. 
+ </p>
+</div>
+</div>
+</div>
+</div>
+<div class="defstruct">
+<div class="defunsignatures">
+<a id="_g3632">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+direct-transactional-slot-content&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Structure]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="defclass-initargs">
+</div>
+<div class="defclass-slots-doc">
+</div>
+<div class="defclass-generics">
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3633">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+direct-transactional-slot-content-lock&nbsp;&nbsp;</td>
+<td class="lambda-list">
+direct-transactional-slot-content</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns and (with setf) changes the lock of the specified direct-transactional-slot-content 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3634">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+direct-transactional-slot-content-version&nbsp;&nbsp;</td>
+<td class="lambda-list">
+direct-transactional-slot-content</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns and (with setf) changes the version of the specified direct-transactional-slot-content 
+ </p>
+</div>
+</div>
+</div>
+<div class="defstruct-defuns">
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3635">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+make-direct-transactional-slot-content&nbsp;&nbsp;</td>
+<td class="lambda-list">
+<em>&amp;key</em> (version 0) (lock (bordeaux-threads:make-lock &quot;direct transaction lock&quot;))</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns a newly created direct-transactional-slot-content. 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3637">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+copy-direct-transactional-slot-content&nbsp;&nbsp;</td>
+<td class="lambda-list">
+direct-transactional-slot-content</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns a copy of the specified direct-transactional-slot-content. 
+ </p>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3636">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+direct-transactional-slot-content-p&nbsp;&nbsp;</td>
+<td class="lambda-list">
+object</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="doc-body">
+<p>
+Returns T if the specified object is of type direct-transactional-slot-content. 
+ </p>
+</div>
+</div>
+</div>
+</div>
+<div class="defparam">
+<div class="defunsignatures">
+<a id="_g3582">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+*transactional-effective-slot-definition-class*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Variable]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defparam">
+<div class="defunsignatures">
+<a id="_g3585">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+%unbound%&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Variable]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defparam">
+<div class="defunsignatures">
+<a id="_g3600">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+*big-lock*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Variable]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defparam">
+<div class="defunsignatures">
+<a id="_g3604">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+*tries*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Variable]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defparam">
+<div class="defunsignatures">
+<a id="_g3605">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+*timeout*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Variable]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defparam">
+<div class="defunsignatures">
+<a id="_g3613">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+*current-transaction*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Variable]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defparam">
+<div class="defunsignatures">
+<a id="_g3614">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+*deferred-read-set*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Variable]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defparam">
+<div class="defunsignatures">
+<a id="_g3630">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+*direct-read-set*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Variable]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defparam">
+<div class="defunsignatures">
+<a id="_g3631">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+*direct-write-set*&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Variable]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3575">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+slot-definition-transactionalp&nbsp;&nbsp;</td>
+<td class="lambda-list">
+slot</td>
+<td class="symbol-type">
+&nbsp;[Generic&nbsp;function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3578">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+initialize-instance&nbsp;&nbsp;</td>
+<td class="lambda-list">
+(slot transactional-direct-slot-definition) <em>&amp;rest</em> initargs <em>&amp;key</em> transactional transactionalp</td>
+<td class="symbol-type">
+&nbsp;[Around&nbsp;method]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3579">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+direct-slot-definition-class&nbsp;&nbsp;</td>
+<td class="lambda-list">
+(class transactional-access-class) <em>&amp;rest</em> initargs</td>
+<td class="symbol-type">
+&nbsp;[Method]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3583">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+effective-slot-definition-class&nbsp;&nbsp;</td>
+<td class="lambda-list">
+(class transactional-access-class) <em>&amp;rest</em> initargs</td>
+<td class="symbol-type">
+&nbsp;[Method]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3584">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+compute-effective-slot-definition&nbsp;&nbsp;</td>
+<td class="lambda-list">
+(class transactional-access-class) name direct-slot-definitions</td>
+<td class="symbol-type">
+&nbsp;[Method]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3594">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+slot-unbound&nbsp;&nbsp;</td>
+<td class="lambda-list">
+(class layered-class) (object transactional-slot-content) slot-name</td>
+<td class="symbol-type">
+&nbsp;[Method]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3598">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+print-object&nbsp;&nbsp;</td>
+<td class="lambda-list">
+(var transactional-variable) stream</td>
+<td class="symbol-type">
+&nbsp;[Method]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3592">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+transactional-slot-content-boundp&nbsp;&nbsp;</td>
+<td class="lambda-list">
+object</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3593">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+transactional-slot-content-makunbound&nbsp;&nbsp;</td>
+<td class="lambda-list">
+object</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3599">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+create-var&nbsp;&nbsp;</td>
+<td class="lambda-list">
+<em>&amp;optional</em> (value nil vsp) (class 'transactional-variable)</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3603">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+retry-transaction&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3621">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+most-recent-transaction&nbsp;&nbsp;</td>
+<td class="lambda-list">
+object</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3622">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+transactional-slot-content-old-value&nbsp;&nbsp;</td>
+<td class="lambda-list">
+object</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3623">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+(setf transactional-slot-content-old-value)&nbsp;&nbsp;</td>
+<td class="lambda-list">
+new-value object</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3624">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+transactional-slot-content-old-value-boundp&nbsp;&nbsp;</td>
+<td class="lambda-list">
+object</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3625">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+transactional-slot-content-old-value-makunbound&nbsp;&nbsp;</td>
+<td class="lambda-list">
+object</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3626">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+thread-wait-with-timeout&nbsp;&nbsp;</td>
+<td class="lambda-list">
+timeout thunk</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3627">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+register-deferred-read&nbsp;&nbsp;</td>
+<td class="lambda-list">
+box value</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3628">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+check-deferred-read&nbsp;&nbsp;</td>
+<td class="lambda-list">
+box value</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3629">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+unregister-deferred-read&nbsp;&nbsp;</td>
+<td class="lambda-list">
+box value</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3638">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+slot-version&nbsp;&nbsp;</td>
+<td class="lambda-list">
+object</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3639">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+(setf slot-version)&nbsp;&nbsp;</td>
+<td class="lambda-list">
+new-value object</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3640">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+slot-lock&nbsp;&nbsp;</td>
+<td class="lambda-list">
+object</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3641">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+register-direct-read&nbsp;&nbsp;</td>
+<td class="lambda-list">
+slot-value</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3642">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+register-direct-write&nbsp;&nbsp;</td>
+<td class="lambda-list">
+object slot-name slot-value</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3643">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+release-locks&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3596">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+define-transactional-class&nbsp;&nbsp;</td>
+<td class="lambda-list">
+name supers slots <em>&amp;rest</em> options</td>
+<td class="symbol-type">
+&nbsp;[Macro]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3597">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+raw-slot-value&nbsp;&nbsp;</td>
+<td class="lambda-list">
+object slot-name <em>&amp;body</em> init</td>
+<td class="symbol-type">
+&nbsp;[Macro]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g3601">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+atomic&nbsp;&nbsp;</td>
+<td class="lambda-list">
+<em>&amp;body</em> body</td>
+<td class="symbol-type">
+&nbsp;[Macro]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cludg-footer">
+Generated by&nbsp;<a href="mailto:ihatchondo@common-lisp.net" lang="en">
+CLDOC</a>
+- 2012-02-23 02:12:07</div>
+</body>
+</html>
