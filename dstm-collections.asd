@@ -3,13 +3,14 @@
 
 (in-package :cl-user)
 
+#-cldoc
 (eval-when (:load-toplevel :compile-toplevel :execute)
   (asdf:load-system :cldoc))
 
-
+#+cldoc
 (import '(cldoc:doc-op cldoc:document-system cldoc:cldoc cldoc:print-op cldoc:print-system))
 
-;; (pushnew :lparallel.with-debug *features*)
+
 
 (asdf:defsystem :dstm-collections
   :description "Functional Collections and Lock Free DSTM"
@@ -36,7 +37,7 @@
                 (:file "seq")
                 (:file "printer")
                 (:file "reader")
-                (:cldoc          :dstm-collections-documentation
+#+cldoc         (:cldoc          :dstm-collections-documentation
                                  :target-system :dstm-collections
                                  :pathname "doc/html/")))
 
