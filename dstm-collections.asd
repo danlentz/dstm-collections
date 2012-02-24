@@ -24,6 +24,7 @@
                 (:file "printv")
                 (:file "util")
                 (:file "quad")
+                (:file "mmap-stream")
                 (:file "cstm")
                 (:file "dstm")
                 (:file "ord")

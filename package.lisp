@@ -11,17 +11,10 @@
     :?
     :?+
     :printv
-    :set
-    :set*
-    :map
-    :map*
-    :seq
-    :seq*
     :var
     :value
     :with-gensyms
     :make-gensym-list
-
     :once-only
     :ensure-kernel
     :standard-syntax
@@ -35,7 +28,8 @@
     :*default-syntax-startup-enabled*
     :*print-collections-readably*
    ))
-    
+
+
 (defpackage :quad
   (:use :common-lisp :lparallel :named-readtables)
   (:import-from :dclx :? :?+ :printv)
@@ -51,6 +45,19 @@
     :c
     :d))
 
+
+(defpackage :mmap
+  (:use :common-lisp)
+  (:export
+    :string-to-octets
+    :octets-to-string
+    :make-buffer
+    :mmap-stream
+    :mmap-stream-pathname
+    :mmap-stream-length
+    :open-mmap-stream
+    :close-mmap-stream))
+    
 
 (defpackage :cstm
   (:shadowing-import-from :closer-mop :standard-generic-function :defgeneric :defmethod)
@@ -123,7 +130,8 @@
     ))
 
 
-(defpackage :tree
+(defpackage :rbtree
+  (:nicknames :rb :tree) ;; tree is deprecated
   (:use :common-lisp :quad :lparallel :named-readtables)
   (:import-from :dclx :? :?+ :printv :value :var)
   (:shadow :merge :typep :type  :min  :max)
@@ -283,5 +291,15 @@
     ))
 
 
-(shadowing-import '(set:set set:set* map:map map:map* seq:seq seq:seq*) :dclx)
-(export '(dclx::set dclx::set* dclx::map dclx::map* dclx::seq dclx::seq*) :dclx)
+(shadowing-import '(;set:set
+                     set:set*
+                     ;map:map
+                     map:map*
+                     ;seq:seq 
+                     seq:seq*) :dclx)
+(export '(;dclx::set
+           dclx::set*
+           ;dclx::map
+           dclx::map*
+           ;dclx::seq
+           dclx::seq*) :dclx)
