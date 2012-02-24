@@ -6,7 +6,7 @@
 <link rel="Stylesheet" type="text/css" href="../../../cldoc/src/cludg.css"/>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
 <title>
-map</title>
+mmap-stream</title>
 </head>
 <body>
 <div id="navbar">
@@ -18,18 +18,18 @@ map</title>
 </colgroup>
 <tr>
 <td align="left" valign="baseline">
-<a href="set.html">
-Prev:&nbsp;set</a>
+<a href="quad.html">
+Prev:&nbsp;quad</a>
 <br/>
-<a href="seq.html">
-Next:&nbsp;seq</a>
+<a href="cstm.html">
+Next:&nbsp;cstm</a>
 </td>
 <td>
 &nbsp;&nbsp;&nbsp;&nbsp;</td>
 <td align="left" valign="baseline">
 <span class="upchain">
 <b>
-map</b>
+mmap-stream</b>
 <br/>
 <a href="index.html">
 Index</a>
@@ -40,7 +40,7 @@ Index</a>
 </div>
 <div class="cludg-doc-body">
 <h2>
-map
+mmap-stream
 </h2>
 <table style="width: 100%;" class="summary-table">
 <tr class="table-heading-color">
@@ -49,35 +49,11 @@ Class summary</th>
 </tr>
 <tr class="table-row-color">
 <td class="summary-name">
-<a href="map.html#_g12314">
-map*</a>
+<a href="mmap-stream.html#_g12020">
+mmap-stream</a>
 </td>
 <td class="summary">
-inherits from <a href="set.html#_g12267"><em class="cl">set*</em></a> and <a href="map.html#_g12313"><em class="cl">mutable-map/cstm</em></a></td>
-</tr>
-<tr class="table-row-color">
-<td class="summary-name">
-<a href="map.html#_g12315">
-map-cell</a>
-</td>
-<td class="summary">
-</td>
-</tr>
-<tr class="table-row-color">
-<td class="summary-name">
-<a href="map.html#_g12313">
-mutable-map/cstm</a>
-</td>
-<td class="summary">
-inherits from <a href="set.html#_g12266"><em class="cl">mutable-set/cstm</em></a></td>
-</tr>
-<tr class="table-row-color">
-<td class="summary-name">
-<a href="map.html#_g12312">
-mutable-map/dstm</a>
-</td>
-<td class="summary">
-inherits from <a href="set.html#_g12265"><em class="cl">mutable-set/dstm</em></a></td>
+inherits from <em class="cl">fundamental-binary-input-stream</em> and <em class="cl">fundamental-binary-output-stream</em></td>
 </tr>
 </table>
 <table style="width: 100%;" class="summary-table">
@@ -87,19 +63,75 @@ Method summary</th>
 </tr>
 <tr class="table-row-color">
 <td class="summary-name">
-<a href="map.html#_g12317">
-map-cell-key</a>
+<a href="mmap-stream.html#_g12023">
+close</a>
 </td>
 <td class="summary">
-map-cell</td>
+(stream mmap-stream) <em>&amp;key</em> abort</td>
 </tr>
 <tr class="table-row-color">
 <td class="summary-name">
-<a href="map.html#_g12316">
-map-cell-val</a>
+<a href="mmap-stream.html#_g12022">
+initialize-instance</a>
 </td>
 <td class="summary">
-map-cell</td>
+(stream mmap-stream) <em>&amp;key</em></td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="mmap-stream.html#_g12021">
+mmap-stream-sap</a>
+</td>
+<td class="summary">
+mmap-stream</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="mmap-stream.html#_g12030">
+read-seq-at</a>
+</td>
+<td class="summary">
+stream sequence position <em>&amp;key</em> (start 0) end</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="mmap-stream.html#_g12033">
+stream-file-position</a>
+</td>
+<td class="summary">
+(stream mmap-stream) <em>&amp;optional</em> position-spec</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="mmap-stream.html#_g12034">
+stream-length</a>
+</td>
+<td class="summary">
+(stream mmap-stream)</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="mmap-stream.html#_g12035">
+stream-pathname</a>
+</td>
+<td class="summary">
+stream</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="mmap-stream.html#_g12025">
+stream-truncate</a>
+</td>
+<td class="summary">
+(stream mmap-stream) size</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="mmap-stream.html#_g12031">
+write-seq-at</a>
+</td>
+<td class="summary">
+stream sequence position <em>&amp;key</em> (start 0) end</td>
 </tr>
 </table>
 <table style="width: 100%;" class="summary-table">
@@ -109,219 +141,147 @@ Function summary</th>
 </tr>
 <tr class="table-row-color">
 <td class="summary-name">
-<a href="map.html#_g12328">
-add</a>
+<a href="mmap-stream.html#_g12024">
+close-mmap-stream</a>
 </td>
 <td class="summary">
-key val map</td>
+stream <em>&amp;key</em> abort</td>
 </tr>
 <tr class="table-row-color">
 <td class="summary-name">
-<a href="map.html#_g12329">
-add*</a>
+<a href="mmap-stream.html#_g12017">
+copy-sap-to-sap</a>
 </td>
 <td class="summary">
-key val map</td>
+sap-src sap-src-start sap-dest sap-dest-start length</td>
 </tr>
 <tr class="table-row-color">
 <td class="summary-name">
-<a href="map.html#_g12337">
-compare</a>
+<a href="mmap-stream.html#_g12015">
+copy-sap-to-vector</a>
 </td>
 <td class="summary">
-map1 map2 <em>&amp;optional</em> (cmp #'ord:compare)</td>
+sap sap-start vector vector-start length</td>
 </tr>
 <tr class="table-row-color">
 <td class="summary-name">
-<a href="map.html#_g12325">
-empty</a>
+<a href="mmap-stream.html#_g12016">
+copy-vector-to-sap</a>
+</td>
+<td class="summary">
+vector vector-start sap sap-start length</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="mmap-stream.html#_g12009">
+lock-recursive-spinlock</a>
+</td>
+<td class="summary">
+recursive-spinlock</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="mmap-stream.html#_g12005">
+lock-spinlock</a>
+</td>
+<td class="summary">
+spinlock</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="mmap-stream.html#_g12012">
+make-buffer</a>
+</td>
+<td class="summary">
+size</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="mmap-stream.html#_g12008">
+make-recursive-spinlock</a>
 </td>
 <td class="summary">
 </td>
 </tr>
 <tr class="table-row-color">
 <td class="summary-name">
-<a href="map.html#_g12326">
-empty*</a>
+<a href="mmap-stream.html#_g12004">
+make-spinlock</a>
 </td>
 <td class="summary">
 </td>
 </tr>
 <tr class="table-row-color">
 <td class="summary-name">
-<a href="map.html#_g12327">
-emptyp</a>
+<a href="mmap-stream.html#_g12037">
+mmap-stream-length</a>
 </td>
 <td class="summary">
-map</td>
+stream</td>
 </tr>
 <tr class="table-row-color">
 <td class="summary-name">
-<a href="map.html#_g12335">
-ensure-find</a>
+<a href="mmap-stream.html#_g12036">
+mmap-stream-pathname</a>
 </td>
 <td class="summary">
-key map <em>&amp;optional</em> default</td>
+stream</td>
 </tr>
 <tr class="table-row-color">
 <td class="summary-name">
-<a href="map.html#_g12336">
-ensure-find*</a>
+<a href="mmap-stream.html#_g12019">
+octets-to-string</a>
 </td>
 <td class="summary">
-key map <em>&amp;optional</em> default</td>
+octets <em>&amp;key</em> end</td>
 </tr>
 <tr class="table-row-color">
 <td class="summary-name">
-<a href="map.html#_g12338">
-equal</a>
+<a href="mmap-stream.html#_g12038">
+open-mmap-stream</a>
 </td>
 <td class="summary">
-map1 map2 <em>&amp;optional</em> (cmp #'ord:compare)</td>
+path mmap-size <em>&amp;optional</em> (extend 1.5)</td>
 </tr>
 <tr class="table-row-color">
 <td class="summary-name">
-<a href="map.html#_g12334">
-find</a>
+<a href="mmap-stream.html#_g12018">
+string-to-octets</a>
 </td>
 <td class="summary">
-key map <em>&amp;optional</em> default</td>
+string</td>
 </tr>
 <tr class="table-row-color">
 <td class="summary-name">
-<a href="map.html#_g12330">
-find-cell</a>
+<a href="mmap-stream.html#_g12010">
+unlock-recursive-spinlock</a>
 </td>
 <td class="summary">
-key map <em>&amp;optional</em> default</td>
+recursive-spinlock</td>
 </tr>
 <tr class="table-row-color">
 <td class="summary-name">
-<a href="map.html#_g12339">
-fold</a>
+<a href="mmap-stream.html#_g12006">
+unlock-spinlock</a>
 </td>
 <td class="summary">
-f map accu</td>
+spinlock</td>
 </tr>
 <tr class="table-row-color">
 <td class="summary-name">
-<a href="map.html#_g12340">
-iter</a>
+<a href="mmap-stream.html#_g12013">
+unsigned-byte-to-vector</a>
 </td>
 <td class="summary">
-f map</td>
+unsigned-byte size</td>
 </tr>
 <tr class="table-row-color">
 <td class="summary-name">
-<a href="map.html#_g12346">
-keymap</a>
+<a href="mmap-stream.html#_g12014">
+vector-to-unsigned-byte</a>
 </td>
 <td class="summary">
-f map</td>
-</tr>
-<tr class="table-row-color">
-<td class="summary-name">
-<a href="map.html#_g12342">
-keys</a>
-</td>
-<td class="summary">
-map</td>
-</tr>
-<tr class="table-row-color">
-<td class="summary-name">
-<a href="map.html#_g12349">
-make</a>
-</td>
-<td class="summary">
-<em>&amp;optional</em> (from (map:empty))</td>
-</tr>
-<tr class="table-row-color">
-<td class="summary-name">
-<a href="map.html#_g12350">
-make*</a>
-</td>
-<td class="summary">
-<em>&amp;optional</em> (from (map:empty))</td>
-</tr>
-<tr class="table-row-color">
-<td class="summary-name">
-<a href="map.html#_g12318">
-make-map-cell</a>
-</td>
-<td class="summary">
-<em>&amp;rest</em> args</td>
-</tr>
-<tr class="table-row-color">
-<td class="summary-name">
-<a href="map.html#_g12345">
-map</a>
-</td>
-<td class="summary">
-f map</td>
-</tr>
-<tr class="table-row-color">
-<td class="summary-name">
-<a href="map.html#_g12344">
-map-sequential</a>
-</td>
-<td class="summary">
-f map</td>
-</tr>
-<tr class="table-row-color">
-<td class="summary-name">
-<a href="map.html#_g12348">
-mapi</a>
-</td>
-<td class="summary">
-f map</td>
-</tr>
-<tr class="table-row-color">
-<td class="summary-name">
-<a href="map.html#_g12347">
-mapi-sequential</a>
-</td>
-<td class="summary">
-f map</td>
-</tr>
-<tr class="table-row-color">
-<td class="summary-name">
-<a href="map.html#_g12331">
-mem</a>
-</td>
-<td class="summary">
-key map</td>
-</tr>
-<tr class="table-row-color">
-<td class="summary-name">
-<a href="map.html#_g12332">
-remove</a>
-</td>
-<td class="summary">
-key map</td>
-</tr>
-<tr class="table-row-color">
-<td class="summary-name">
-<a href="map.html#_g12333">
-remove*</a>
-</td>
-<td class="summary">
-key map</td>
-</tr>
-<tr class="table-row-color">
-<td class="summary-name">
-<a href="map.html#_g12319">
-typep</a>
-</td>
-<td class="summary">
-thing</td>
-</tr>
-<tr class="table-row-color">
-<td class="summary-name">
-<a href="map.html#_g12343">
-values</a>
-</td>
-<td class="summary">
-map</td>
+vector size</td>
 </tr>
 </table>
 <table style="width: 100%;" class="summary-table">
@@ -331,115 +291,82 @@ Macro summary</th>
 </tr>
 <tr class="table-row-color">
 <td class="summary-name">
-<a href="map.html#_g12341">
-do</a>
+<a href="mmap-stream.html#_g12027">
+define-read-method</a>
 </td>
 <td class="summary">
-(key value map) <em>&amp;body</em> body</td>
+name (<em>&amp;rest</em> lambda-list) length under-mmap-size over-mmap-size cross-over-mmap-size</td>
 </tr>
-</table>
-<div class="defclass">
-<div class="defunsignatures">
-<a id="_g12312">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-mutable-map/dstm&nbsp;&nbsp;</td>
-<td class="lambda-list">
-inherits from <a href="set.html#_g12265"><em class="cl">mutable-set/dstm</em></a></td>
-<td class="symbol-type">
-&nbsp;[Class]</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="defclass">
-<div class="defunsignatures">
-<a id="_g12313">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-mutable-map/cstm&nbsp;&nbsp;</td>
-<td class="lambda-list">
-inherits from <a href="set.html#_g12266"><em class="cl">mutable-set/cstm</em></a></td>
-<td class="symbol-type">
-&nbsp;[Class]</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="defclass">
-<div class="defunsignatures">
-<a id="_g12314">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-map*&nbsp;&nbsp;</td>
-<td class="lambda-list">
-inherits from <a href="set.html#_g12267"><em class="cl">set*</em></a> and <a href="map.html#_g12313"><em class="cl">mutable-map/cstm</em></a></td>
-<td class="symbol-type">
-&nbsp;[Class]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-A transactional variant of the base functional data structure 
- map implementation which may be used in a manner similar to 'regular' mutable 
- dictionary constructs, such as a hash-table. 
- </p>
-</div>
-</div>
-<div class="defclass">
-<div class="defunsignatures">
-<a id="_g12315">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-map-cell&nbsp;&nbsp;</td>
-<td class="lambda-list">
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="mmap-stream.html#_g12029">
+define-read-unsigned-byte-method</a>
 </td>
+<td class="summary">
+name size</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="mmap-stream.html#_g12032">
+define-stream-at-method</a>
+</td>
+<td class="summary">
+name (<em>&amp;rest</em> args) <em>&amp;body</em> body</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="mmap-stream.html#_g12026">
+define-write-method</a>
+</td>
+<td class="summary">
+name (<em>&amp;rest</em> lambda-list) length under-mmap-size over-mmap-size cross-over-mmap-size return-value</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="mmap-stream.html#_g12028">
+define-write-unsigned-byte-method</a>
+</td>
+<td class="summary">
+name size</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="mmap-stream.html#_g12011">
+with-recursive-spinlock</a>
+</td>
+<td class="summary">
+(recursive-spinlock) <em>&amp;body</em> body</td>
+</tr>
+<tr class="table-row-color">
+<td class="summary-name">
+<a href="mmap-stream.html#_g12007">
+with-spinlock</a>
+</td>
+<td class="summary">
+(spinlock) <em>&amp;body</em> body</td>
+</tr>
+</table>
+<div class="defclass">
+<div class="defunsignatures">
+<a id="_g12020">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+mmap-stream&nbsp;&nbsp;</td>
+<td class="lambda-list">
+inherits from <em class="cl">fundamental-binary-input-stream</em> and <em class="cl">fundamental-binary-output-stream</em></td>
 <td class="symbol-type">
 &nbsp;[Class]</td>
 </tr>
 </tbody>
 </table>
-</div>
-<div class="doc-body">
-<p>
-storage cell for implementation of tree:rb-tree based key-value maps 
- </p>
 </div>
 <div class="defclass-initargs">
 <div>
@@ -453,7 +380,7 @@ storage cell for implementation of tree:rb-tree based key-value maps
 <tbody>
 <tr>
 <td class="symbol-name">
-:key&nbsp;&nbsp;</td>
+:base-stream&nbsp;&nbsp;</td>
 <td class="lambda-list">
 </td>
 <td class="symbol-type">
@@ -474,7 +401,28 @@ storage cell for implementation of tree:rb-tree based key-value maps
 <tbody>
 <tr>
 <td class="symbol-name">
-:val&nbsp;&nbsp;</td>
+:mmap-size&nbsp;&nbsp;</td>
+<td class="lambda-list">
+</td>
+<td class="symbol-type">
+&nbsp;[Initarg]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+:ext&nbsp;&nbsp;</td>
 <td class="lambda-list">
 </td>
 <td class="symbol-type">
@@ -486,63 +434,11 @@ storage cell for implementation of tree:rb-tree based key-value maps
 </div>
 </div>
 <div class="defclass-slots-doc">
-<div>
-<div>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-key&nbsp;&nbsp;</td>
-<td class="lambda-list">
-</td>
-<td class="symbol-type">
-&nbsp;[Slot]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-domain constituent 
- </p>
-</div>
-</div>
-<div>
-<div>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-val&nbsp;&nbsp;</td>
-<td class="lambda-list">
-</td>
-<td class="symbol-type">
-&nbsp;[Slot]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-range constituent 
- </p>
-</div>
-</div>
 </div>
 <div class="defclass-generics">
 <div class="defun">
 <div class="defunsignatures">
-<a id="_g12316">
+<a id="_g12021">
 </a>
 <table cellpadding="0" cellspacing="0" width="100%">
 <colgroup span="3">
@@ -553,9 +449,9 @@ range constituent
 <tbody>
 <tr>
 <td class="symbol-name">
-map-cell-val&nbsp;&nbsp;</td>
+mmap-stream-sap&nbsp;&nbsp;</td>
 <td class="lambda-list">
-map-cell</td>
+mmap-stream</td>
 <td class="symbol-type">
 &nbsp;[Generic&nbsp;function]</td>
 </tr>
@@ -564,13 +460,15 @@ map-cell</td>
 </div>
 <div class="doc-body">
 <p>
-Returns and (with setf) changes the val of the specified map-cell 
+Returns the sap of the specified mmap-stream 
  </p>
+</div>
+</div>
 </div>
 </div>
 <div class="defun">
 <div class="defunsignatures">
-<a id="_g12317">
+<a id="_g12035">
 </a>
 <table cellpadding="0" cellspacing="0" width="100%">
 <colgroup span="3">
@@ -581,26 +479,19 @@ Returns and (with setf) changes the val of the specified map-cell
 <tbody>
 <tr>
 <td class="symbol-name">
-map-cell-key&nbsp;&nbsp;</td>
+stream-pathname&nbsp;&nbsp;</td>
 <td class="lambda-list">
-map-cell</td>
+stream</td>
 <td class="symbol-type">
 &nbsp;[Generic&nbsp;function]</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="doc-body">
-<p>
-Returns and (with setf) changes the key of the specified map-cell 
- </p>
 </div>
-</div>
-</div>
-</div>
-<div class="deftype">
+<div class="defun">
 <div class="defunsignatures">
-<a id="_g12320">
+<a id="_g12022">
 </a>
 <table cellpadding="0" cellspacing="0" width="100%">
 <colgroup span="3">
@@ -611,24 +502,19 @@ Returns and (with setf) changes the key of the specified map-cell
 <tbody>
 <tr>
 <td class="symbol-name">
-type&nbsp;&nbsp;</td>
+initialize-instance&nbsp;&nbsp;</td>
 <td class="lambda-list">
-'(satisfies map:typep)</td>
+(stream mmap-stream) <em>&amp;key</em></td>
 <td class="symbol-type">
-&nbsp;[Type]</td>
+&nbsp;[After&nbsp;method]</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="doc-body">
-<p>
-key-value associative set 
- </p>
-</div>
 </div>
 <div class="defun">
 <div class="defunsignatures">
-<a id="_g12318">
+<a id="_g12023">
 </a>
 <table cellpadding="0" cellspacing="0" width="100%">
 <colgroup span="3">
@@ -639,24 +525,19 @@ key-value associative set
 <tbody>
 <tr>
 <td class="symbol-name">
-make-map-cell&nbsp;&nbsp;</td>
+close&nbsp;&nbsp;</td>
 <td class="lambda-list">
-<em>&amp;rest</em> args</td>
+(stream mmap-stream) <em>&amp;key</em> abort</td>
 <td class="symbol-type">
-&nbsp;[Function]</td>
+&nbsp;[Method]</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="doc-body">
-<p>
-convenience api routine for map-cell initialization 
- </p>
-</div>
 </div>
 <div class="defun">
 <div class="defunsignatures">
-<a id="_g12319">
+<a id="_g12025">
 </a>
 <table cellpadding="0" cellspacing="0" width="100%">
 <colgroup span="3">
@@ -667,24 +548,19 @@ convenience api routine for map-cell initialization
 <tbody>
 <tr>
 <td class="symbol-name">
-typep&nbsp;&nbsp;</td>
+stream-truncate&nbsp;&nbsp;</td>
 <td class="lambda-list">
-thing</td>
+(stream mmap-stream) size</td>
 <td class="symbol-type">
-&nbsp;[Function]</td>
+&nbsp;[Method]</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="doc-body">
-<p>
-type predicate responsible for aggregate classification of the various map subtypes 
- </p>
-</div>
 </div>
 <div class="defun">
 <div class="defunsignatures">
-<a id="_g12325">
+<a id="_g12030">
 </a>
 <table cellpadding="0" cellspacing="0" width="100%">
 <colgroup span="3">
@@ -695,7 +571,99 @@ type predicate responsible for aggregate classification of the various map subty
 <tbody>
 <tr>
 <td class="symbol-name">
-empty&nbsp;&nbsp;</td>
+read-seq-at&nbsp;&nbsp;</td>
+<td class="lambda-list">
+stream sequence position <em>&amp;key</em> (start 0) end</td>
+<td class="symbol-type">
+&nbsp;[Method]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12031">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+write-seq-at&nbsp;&nbsp;</td>
+<td class="lambda-list">
+stream sequence position <em>&amp;key</em> (start 0) end</td>
+<td class="symbol-type">
+&nbsp;[Method]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12033">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+stream-file-position&nbsp;&nbsp;</td>
+<td class="lambda-list">
+(stream mmap-stream) <em>&amp;optional</em> position-spec</td>
+<td class="symbol-type">
+&nbsp;[Method]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12034">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+stream-length&nbsp;&nbsp;</td>
+<td class="lambda-list">
+(stream mmap-stream)</td>
+<td class="symbol-type">
+&nbsp;[Method]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12004">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+make-spinlock&nbsp;&nbsp;</td>
 <td class="lambda-list">
 </td>
 <td class="symbol-type">
@@ -704,15 +672,10 @@ empty&nbsp;&nbsp;</td>
 </tbody>
 </table>
 </div>
-<div class="doc-body">
-<p>
-create empty map 
- </p>
-</div>
 </div>
 <div class="defun">
 <div class="defunsignatures">
-<a id="_g12326">
+<a id="_g12005">
 </a>
 <table cellpadding="0" cellspacing="0" width="100%">
 <colgroup span="3">
@@ -723,7 +686,53 @@ create empty map
 <tbody>
 <tr>
 <td class="symbol-name">
-empty*&nbsp;&nbsp;</td>
+lock-spinlock&nbsp;&nbsp;</td>
+<td class="lambda-list">
+spinlock</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12006">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+unlock-spinlock&nbsp;&nbsp;</td>
+<td class="lambda-list">
+spinlock</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12008">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+make-recursive-spinlock&nbsp;&nbsp;</td>
 <td class="lambda-list">
 </td>
 <td class="symbol-type">
@@ -732,15 +741,10 @@ empty*&nbsp;&nbsp;</td>
 </tbody>
 </table>
 </div>
-<div class="doc-body">
-<p>
-create empty map 
- </p>
-</div>
 </div>
 <div class="defun">
 <div class="defunsignatures">
-<a id="_g12327">
+<a id="_g12009">
 </a>
 <table cellpadding="0" cellspacing="0" width="100%">
 <colgroup span="3">
@@ -751,610 +755,9 @@ create empty map
 <tbody>
 <tr>
 <td class="symbol-name">
-emptyp&nbsp;&nbsp;</td>
+lock-recursive-spinlock&nbsp;&nbsp;</td>
 <td class="lambda-list">
-map</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-return true if map contains no elements, otherwise false 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12328">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-add&nbsp;&nbsp;</td>
-<td class="lambda-list">
-key val map</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-retun map with key-val association added or replaced if already present 
- as a second return value, return true if actually added 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12329">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-add*&nbsp;&nbsp;</td>
-<td class="lambda-list">
-key val map</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-destructively map:add or replace KEY-VAL association to a mutable MAP 
- as a second return value, return true if actually added 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12330">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-find-cell&nbsp;&nbsp;</td>
-<td class="lambda-list">
-key map <em>&amp;optional</em> default</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-return cell-object with key in map, or default if not present 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12331">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-mem&nbsp;&nbsp;</td>
-<td class="lambda-list">
-key map</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-return true if map contains mapping 'key' -- key may be key or cell object 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12332">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-remove&nbsp;&nbsp;</td>
-<td class="lambda-list">
-key map</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-construct a new map identical to MAP, but with the KEY-VALUE association for KEY 
- removed, if present 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12333">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-remove*&nbsp;&nbsp;</td>
-<td class="lambda-list">
-key map</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-destructively map:remove KEY-VALUE association from a mutable MAP 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12334">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-find&nbsp;&nbsp;</td>
-<td class="lambda-list">
-key map <em>&amp;optional</em> default</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-return value mapped to key in map, or default if not present 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12335">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-ensure-find&nbsp;&nbsp;</td>
-<td class="lambda-list">
-key map <em>&amp;optional</em> default</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-Like FIND, but if KEY is not found in the MAP constructs a new map 
- with association of DEFAULT under key and returns it. Secondary return 
- value is true if key was already in the table. 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12336">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-ensure-find*&nbsp;&nbsp;</td>
-<td class="lambda-list">
-key map <em>&amp;optional</em> default</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-Operates as map:ensure-find, but destructively modifies mutable MAP. 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12337">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-compare&nbsp;&nbsp;</td>
-<td class="lambda-list">
-map1 map2 <em>&amp;optional</em> (cmp #'ord:compare)</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-ordinal comparison of two maps 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12338">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-equal&nbsp;&nbsp;</td>
-<td class="lambda-list">
-map1 map2 <em>&amp;optional</em> (cmp #'ord:compare)</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-compare two maps for equality using cmp 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12339">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-fold&nbsp;&nbsp;</td>
-<td class="lambda-list">
-f map accu</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-similar to reduce, takes three argument function f as in: (f key value accumulator) 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12340">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-iter&nbsp;&nbsp;</td>
-<td class="lambda-list">
-f map</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-funcall a function f as (funcall #'f k v) on each key-value pair contained in map 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12342">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-keys&nbsp;&nbsp;</td>
-<td class="lambda-list">
-map</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-Return a list containing all keys present in MAP 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12343">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-values&nbsp;&nbsp;</td>
-<td class="lambda-list">
-map</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-Return a list containing all values present in MAP 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12344">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-map-sequential&nbsp;&nbsp;</td>
-<td class="lambda-list">
-f map</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-return a newly created map where the keys of 'map' are associated with function f applied 
- to the corresponding map cl:values 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12345">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-map&nbsp;&nbsp;</td>
-<td class="lambda-list">
-f map</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-return a newly created map where the keys of 'map' are associated with function f applied 
- to the corresponding map cl:values 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12346">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-keymap&nbsp;&nbsp;</td>
-<td class="lambda-list">
-f map</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-return a newly created map where the keys of 'map' are replaced by the result of 
- applying the function f to each key. Note that unless f is a properly 'invertable' 
- function, the resulting map will not be very useful. This is included in the external 
- interface mainly because it is extremely useful for manipulating SEQ type collections, 
- where we rely on it heavily 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12347">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-mapi-sequential&nbsp;&nbsp;</td>
-<td class="lambda-list">
-f map</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-return a newly created map from the existing set of keys to values computed as 
- dyadic function f(k, v) 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12348">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-mapi&nbsp;&nbsp;</td>
-<td class="lambda-list">
-f map</td>
-<td class="symbol-type">
-&nbsp;[Function]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="doc-body">
-<p>
-return a newly created map from the existing set of keys to values computed as 
- dyadic function f(k, v) 
- </p>
-</div>
-</div>
-<div class="defun">
-<div class="defunsignatures">
-<a id="_g12349">
-</a>
-<table cellpadding="0" cellspacing="0" width="100%">
-<colgroup span="3">
-<col width="0*"/>
-<col width="1*"/>
-<col width="0*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="symbol-name">
-make&nbsp;&nbsp;</td>
-<td class="lambda-list">
-<em>&amp;optional</em> (from (map:empty))</td>
+recursive-spinlock</td>
 <td class="symbol-type">
 &nbsp;[Function]</td>
 </tr>
@@ -1364,7 +767,7 @@ make&nbsp;&nbsp;</td>
 </div>
 <div class="defun">
 <div class="defunsignatures">
-<a id="_g12350">
+<a id="_g12010">
 </a>
 <table cellpadding="0" cellspacing="0" width="100%">
 <colgroup span="3">
@@ -1375,9 +778,9 @@ make&nbsp;&nbsp;</td>
 <tbody>
 <tr>
 <td class="symbol-name">
-make*&nbsp;&nbsp;</td>
+unlock-recursive-spinlock&nbsp;&nbsp;</td>
 <td class="lambda-list">
-<em>&amp;optional</em> (from (map:empty))</td>
+recursive-spinlock</td>
 <td class="symbol-type">
 &nbsp;[Function]</td>
 </tr>
@@ -1387,7 +790,7 @@ make*&nbsp;&nbsp;</td>
 </div>
 <div class="defun">
 <div class="defunsignatures">
-<a id="_g12341">
+<a id="_g12012">
 </a>
 <table cellpadding="0" cellspacing="0" width="100%">
 <colgroup span="3">
@@ -1398,25 +801,434 @@ make*&nbsp;&nbsp;</td>
 <tbody>
 <tr>
 <td class="symbol-name">
-do&nbsp;&nbsp;</td>
+make-buffer&nbsp;&nbsp;</td>
 <td class="lambda-list">
-(key value map) <em>&amp;body</em> body</td>
+size</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12013">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+unsigned-byte-to-vector&nbsp;&nbsp;</td>
+<td class="lambda-list">
+unsigned-byte size</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12014">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+vector-to-unsigned-byte&nbsp;&nbsp;</td>
+<td class="lambda-list">
+vector size</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12015">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+copy-sap-to-vector&nbsp;&nbsp;</td>
+<td class="lambda-list">
+sap sap-start vector vector-start length</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12016">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+copy-vector-to-sap&nbsp;&nbsp;</td>
+<td class="lambda-list">
+vector vector-start sap sap-start length</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12017">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+copy-sap-to-sap&nbsp;&nbsp;</td>
+<td class="lambda-list">
+sap-src sap-src-start sap-dest sap-dest-start length</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12018">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+string-to-octets&nbsp;&nbsp;</td>
+<td class="lambda-list">
+string</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12019">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+octets-to-string&nbsp;&nbsp;</td>
+<td class="lambda-list">
+octets <em>&amp;key</em> end</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12024">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+close-mmap-stream&nbsp;&nbsp;</td>
+<td class="lambda-list">
+stream <em>&amp;key</em> abort</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12036">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+mmap-stream-pathname&nbsp;&nbsp;</td>
+<td class="lambda-list">
+stream</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12037">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+mmap-stream-length&nbsp;&nbsp;</td>
+<td class="lambda-list">
+stream</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12038">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+open-mmap-stream&nbsp;&nbsp;</td>
+<td class="lambda-list">
+path mmap-size <em>&amp;optional</em> (extend 1.5)</td>
+<td class="symbol-type">
+&nbsp;[Function]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12007">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+with-spinlock&nbsp;&nbsp;</td>
+<td class="lambda-list">
+(spinlock) <em>&amp;body</em> body</td>
 <td class="symbol-type">
 &nbsp;[Macro]</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="doc-body">
-<p>
-Iterate over (key . value) from map in the manner of the dolist and dotimes macros 
- </p>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12011">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+with-recursive-spinlock&nbsp;&nbsp;</td>
+<td class="lambda-list">
+(recursive-spinlock) <em>&amp;body</em> body</td>
+<td class="symbol-type">
+&nbsp;[Macro]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12026">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+define-write-method&nbsp;&nbsp;</td>
+<td class="lambda-list">
+name (<em>&amp;rest</em> lambda-list) length under-mmap-size over-mmap-size cross-over-mmap-size return-value</td>
+<td class="symbol-type">
+&nbsp;[Macro]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12027">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+define-read-method&nbsp;&nbsp;</td>
+<td class="lambda-list">
+name (<em>&amp;rest</em> lambda-list) length under-mmap-size over-mmap-size cross-over-mmap-size</td>
+<td class="symbol-type">
+&nbsp;[Macro]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12028">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+define-write-unsigned-byte-method&nbsp;&nbsp;</td>
+<td class="lambda-list">
+name size</td>
+<td class="symbol-type">
+&nbsp;[Macro]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12029">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+define-read-unsigned-byte-method&nbsp;&nbsp;</td>
+<td class="lambda-list">
+name size</td>
+<td class="symbol-type">
+&nbsp;[Macro]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="defun">
+<div class="defunsignatures">
+<a id="_g12032">
+</a>
+<table cellpadding="0" cellspacing="0" width="100%">
+<colgroup span="3">
+<col width="0*"/>
+<col width="1*"/>
+<col width="0*"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="symbol-name">
+define-stream-at-method&nbsp;&nbsp;</td>
+<td class="lambda-list">
+name (<em>&amp;rest</em> args) <em>&amp;body</em> body</td>
+<td class="symbol-type">
+&nbsp;[Macro]</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
 <div class="cludg-footer">
 Generated by&nbsp;<a href="mailto:ihatchondo@common-lisp.net" lang="en">
 CLDOC</a>
-- 2012-02-24 00:57:29</div>
+- 2012-02-24 00:57:28</div>
 </body>
 </html>
