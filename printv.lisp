@@ -73,7 +73,7 @@
 
 (defmacro printv (&rest forms)
   (printv-expander forms))
-
+#+()
 (defmacro :printv (&rest forms)
   (printv-expander forms))
 
