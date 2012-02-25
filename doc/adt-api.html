@@ -1,0 +1,232 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html> 
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <title>CL-ADT - algebraic datatypes</title>
+  <style type="text/css">
+  pre { padding:5px; background-color:#e0e0e0 }
+  h3, h4 { text-decoration: underline; }
+  a { text-decoration: none; padding: 1px 2px 1px 2px; }
+  a:visited { text-decoration: none; padding: 1px 2px 1px 2px; }
+  a:hover { text-decoration: none; padding: 1px 1px 1px 1px; border: 1px solid #000000; } 
+  a:focus { text-decoration: none; padding: 1px 2px 1px 2px; border: none; }
+  a.none { text-decoration: none; padding: 0; }
+  a.none:visited { text-decoration: none; padding: 0; } 
+  a.none:hover { text-decoration: none; border: none; padding: 0; } 
+  a.none:focus { text-decoration: none; border: none; padding: 0; } 
+  a.noborder { text-decoration: none; padding: 0; } 
+  a.noborder:visited { text-decoration: none; padding: 0; } 
+  a.noborder:hover { text-decoration: none; border: none; padding: 0; } 
+  a.noborder:focus { text-decoration: none; border: none; padding: 0; }  
+  pre.none { padding:5px; background-color:#ffffff }
+  </style>
+</head>
+
+<body bgcolor=white>
+
+<h2> CL-ADT - algebraic datatypes</h2>
+
+<blockquote>
+<br>&nbsp;<br><h3><a name=abstract class=none>Abstract</a></h3>
+
+The code comes with
+a <a
+href="http://www.opensource.org/licenses/bsd-license.php">BSD-style
+license</a> so you can basically do with it whatever you want.
+
+<p>
+<font color=red>Download shortcut:</font> <a href="http://weitz.de/files/cl-adt.tar.gz">http://weitz.de/files/cl-adt.tar.gz</a>.
+</blockquote>
+
+<br>&nbsp;<br><h3><a class=none name="contents">Contents</a></h3>
+<ol>
+  <li><a href="#download">Download</a>
+  <li><a href="#dictionary">The CL-ADT dictionary</a>
+    <ol>
+      <li><a href="#defalgebraic"><code>defalgebraic</code></a>
+      <li><a href="#defpattern"><code>defpattern</code></a>
+      <li><a href="#ematch"><code>ematch</code></a>
+      <li><a href="#match"><code>match</code></a>
+      <li><a href="#with-matching"><code>with-matching</code></a>
+    </ol>
+  <li><a href="#ack">Acknowledgements</a>
+</ol>
+
+<br>&nbsp;<br><h3><a class=none name="download">Download</a></h3>
+
+CL-ADT together with this documentation can be downloaded from <a
+href="http://weitz.de/files/cl-adt.tar.gz">http://weitz.de/files/cl-adt.tar.gz</a>. The
+current version is 0.1.0.
+
+<br>&nbsp;<br><h3><a class=none name="dictionary">The CL-ADT dictionary</a></h3>
+
+
+
+<!-- Entry for DEFALGEBRAIC -->
+
+<p><br>[Macro]<br><a class=none name='defalgebraic'><b>defalgebraic</b> <i>name declaration* statement*</i> =&gt; <i>result</i></a>
+<blockquote><br>
+
+Defines an algebraic data type. Each element of SPECS must have a
+form of `CTOR` or `(CTOR . SLOTS)`. The former has no slots (zero
+arity), meaning this defines a constant. The latter has one or more
+slots, meaning this defines a data constructor. Each element of ARGS
+must be slot specifier.
+
+Algebraic data types are defined as classes. In addition, all of
+constants and constructors are also be defined as subclasses of it.
+
+Accessing internal data of algebraic data types can be done by
+pattern-matching.
+
+Examples:
+
+    (defalgebraic btree
+      empty
+      (node left value right))
+    
+    empty =&gt; #&lt;EMPTY {1004FFA7C1}&gt;
+    (empty) =&gt; #&lt;EMPTY {1004FFA7C1}&gt;
+    (typep empty &#039;btree) =&gt; T
+    (typep empty &#039;empty) =&gt; T
+    
+    (node empty 1 empty) =&gt; #&lt;NODE {1003021DF1}&gt;
+    (typep (node empty 1 empty) &#039;btree) =&gt; T
+    (typep (node empty 1 empty) &#039;node) =&gt; T
+
+    (match empty ((empty) &#039;empty)) =&gt; EMPTY
+    (match empty ((node _ _ _) &#039;node)) =&gt; NIL
+    (match (node empty 1 empty)
+      ((node l x r) (list l x r)))
+      =&gt; (#&lt;EMPTY {1004FFA7C1}&gt; 1 #&lt;EMPTY {1004FFA7C1}&gt;)
+
+</blockquote>
+
+<!-- End of entry for DEFALGEBRAIC -->
+
+
+<!-- Entry for DEFPATTERN -->
+
+<p><br>[Macro]<br><a class=none name='defpattern'><b>defpattern</b> <i>name lambda-list declaration* statement*</i> =&gt; <i>result</i></a>
+<blockquote><br>
+
+Defines a constructor pattern named NAME as a function internally
+that takes LAMBDA-LIST as arguments and evaluates BODY when called. A
+constructor pattern has a form `(NAME . ARGS)` in pattern-matcing
+clauses. When such a pattern is found during pattern-matching, this
+function will called with arguments: VAR of matching object and rest
+of ARGS. The result must be a list of `(TEST ARGS PATTERNS)` where
+TEST is a form that predicates VAR is matched or not, ARGS is a list
+of objects that are destructured by this pattern, and PATTERNS is a
+list of patterns that should be matched with each element of ARGS
+respectively. ARGS and PATTERNS must have same length.
+
+Examples:
+
+    ;; cons pattern
+    (defpattern cons (var car-pattern cdr-pattern)
+      `((consp ,var)
+        ((car ,var) (cdr ,var))
+        (,car-pattern ,cdr-pattern)))
+    (match (cons 1 2)
+      ((cons x y) (+ x y))) =&gt; 3
+
+</blockquote>
+
+<!-- End of entry for DEFPATTERN -->
+
+
+<!-- Entry for EMATCH -->
+
+<p><br>[Macro]<br><a class=none name='ematch'><b>ematch</b> <i>arg declaration* statement*</i> =&gt; <i>result</i></a>
+<blockquote><br>
+
+Same as MATCH except MATCH-ERROR will be raised unless matched.
+
+</blockquote>
+
+<!-- End of entry for EMATCH -->
+
+
+<!-- Entry for MATCH -->
+
+<p><br>[Macro]<br><a class=none name='match'><b>match</b> <i>arg declaration* statement*</i> =&gt; <i>result</i></a>
+<blockquote><br>
+
+If ARG matches against CLAUSES, returns the last evaluated value of
+the body of CLAUSES, otherwise returns NIL. CLAUSES is a list
+of (PATTERN . THEN) where PATTERN is a pattern and THEN is an implicit
+progn that will be evaulated when matched.
+
+A pattern must be one of
+
+* a constant (self-evaluating object) such as `1` and `&quot;str&quot;`
+* a quote that means constant such as `&#039;foo` and `&#039;(a b c)`
+* a symbol such as `foo`
+* a constructor of `(CTOR . ARGS)`
+
+A constant pattern will be matched by proper test functions such like
+`EQ`, `EQL`, and `EQUAL` on each constants.
+
+Examples:
+
+    (match 1 (1 t)) =&gt; T
+    (match 3.14 (3.14 t)) =&gt; T
+    (match &quot;str&quot; (&quot;str&quot; t)) =&gt; T
+
+A quote pattern is same as a constant pattern except that a body of
+the form will be used as a constant.
+
+Examples:
+
+    (match &#039;foo (&#039;foo T)) =&gt; T
+
+A symbol pattern binds a variable of the symbol to ARG.
+
+Examples:
+
+    (match 1 (a a)) =&gt; 1
+
+A constructor pattern will be matched by calling a function on the
+constructor that is defined with DEFPATTERN. Pre-defined constructors
+are the following:
+
+* `(cons car-pattern cdr-pattern)`
+* `(list pattern*)`
+* `(tuple pattern*)`
+* `(vector pattern*)`
+
+Examples:
+
+    (match (cons 1 2) ((cons x y) (+ x y))) =&gt; 3
+    (match (list 1 2 3) ((list x y z) (+ x y z))) =&gt; 6
+
+</blockquote>
+
+<!-- End of entry for MATCH -->
+
+
+<!-- Entry for WITH-MATCHING -->
+
+<p><br>[Macro]<br><a class=none name='with-matching'><b>with-matching</b> <i>pattern arg declaration* statement*</i> =&gt; <i>result</i></a>
+<blockquote><br>
+
+Equivalent to `(ematch ARG (PATTERN . BODY))`.
+
+</blockquote>
+
+<!-- End of entry for WITH-MATCHING -->
+
+
+<br>&nbsp;<br><h3><a class=none name="ack">Acknowledgements</a></h3>
+
+<p>
+This documentation was prepared with <a href="http://weitz.de/documentation-template/">DOCUMENTATION-TEMPLATE</a>.
+</p>
+<p>
+$Header: /usr/local/cvsrep/documentation-template/output.lisp,v 1.17 2010/08/05 19:24:27 edi Exp $
+<p><a href="http://weitz.de/index.html">BACK TO MY HOMEPAGE</a>
+
+</body>
+</html>

@@ -1,0 +1,183 @@
+<h1 id="cl-adt-algebraicdatatypes">cl-adt - Algebraic data types</h1>
+
+<p>CL-ADT provides algebraic data types. You can
+define algebraic data types with DEFALGEBRAIC and pattern-match on
+these types with MATCH.</p>
+
+<p>Algebraic data types are defined as classes. All type constructors and
+all data constructors are also classes. For example, if you have the
+following algebraic data type,</p>
+
+<pre><code>(defalgebraic btree
+  empty
+  (node left value right))
+</code></pre>
+
+<p>BTREE, EMPTY, and NODE will be a class respectively. Additionally,
+EMPTY and NODE are also subclasses of BTREE.</p>
+
+<p>To destructure algebraic data types, you need to use MATCH for
+pattern-matching. In above case, you can write a function that
+calculate a total number of node like:</p>
+
+<pre><code>(defun number-of-node (tree)
+  (match tree
+    ((empty) 1)
+    ((node left _ right)
+     (+ 1
+        (number-of-node left)
+        (number-of-node right)))))
+</code></pre>
+
+<h2 id="packagecl-adt">[Package] cl-adt</h2>
+
+<h2 id="macrodefalgebraic">[Macro] defalgebraic</h2>
+
+<pre><code>defalgebraic name &amp;body specs
+</code></pre>
+
+<p>Defines an algebraic data type. Each element of SPECS must have a
+form of <code>CTOR</code> or <code>(CTOR . SLOTS)</code>. The former has no slots (zero
+arity), meaning this defines a constant. The latter has one or more
+slots, meaning this defines a data constructor. Each element of ARGS
+must be slot specifier.</p>
+
+<p>Algebraic data types are defined as classes. In addition, all of
+constants and constructors are also be defined as subclasses of it.</p>
+
+<p>Accessing internal data of algebraic data types can be done by
+pattern-matching.</p>
+
+<p>Examples:</p>
+
+<pre><code>(defalgebraic btree
+  empty
+  (node left value right))
+
+empty =&gt; #&lt;EMPTY {1004FFA7C1}&gt;
+(empty) =&gt; #&lt;EMPTY {1004FFA7C1}&gt;
+(typep empty 'btree) =&gt; T
+(typep empty 'empty) =&gt; T
+
+(node empty 1 empty) =&gt; #&lt;NODE {1003021DF1}&gt;
+(typep (node empty 1 empty) 'btree) =&gt; T
+(typep (node empty 1 empty) 'node) =&gt; T
+
+(match empty ((empty) 'empty)) =&gt; EMPTY
+(match empty ((node _ _ _) 'node)) =&gt; NIL
+(match (node empty 1 empty)
+  ((node l x r) (list l x r)))
+  =&gt; (#&lt;EMPTY {1004FFA7C1}&gt; 1 #&lt;EMPTY {1004FFA7C1}&gt;)
+</code></pre>
+
+<h2 id="macromatch">[Macro] match</h2>
+
+<pre><code>match arg &amp;body clauses
+</code></pre>
+
+<p>If ARG matches against CLAUSES, returns the last evaluated value of
+the body of CLAUSES, otherwise returns NIL. CLAUSES is a list
+of (PATTERN . THEN) where PATTERN is a pattern and THEN is an implicit
+progn that will be evaulated when matched.</p>
+
+<p>A pattern must be one of</p>
+
+<ul>
+<li>a constant (self-evaluating object) such as <code>1</code> and <code>"str"</code></li>
+<li>a quote that means constant such as <code>'foo</code> and <code>'(a b c)</code></li>
+<li>a symbol such as <code>foo</code></li>
+<li>a constructor of <code>(CTOR . ARGS)</code></li>
+</ul>
+
+<p>A constant pattern will be matched by proper test functions such like
+<code>EQ</code>, <code>EQL</code>, and <code>EQUAL</code> on each constants.</p>
+
+<p>Examples:</p>
+
+<pre><code>(match 1 (1 t)) =&gt; T
+(match 3.14 (3.14 t)) =&gt; T
+(match "str" ("str" t)) =&gt; T
+</code></pre>
+
+<p>A quote pattern is same as a constant pattern except that a body of
+the form will be used as a constant.</p>
+
+<p>Examples:</p>
+
+<pre><code>(match 'foo ('foo T)) =&gt; T
+</code></pre>
+
+<p>A symbol pattern binds a variable of the symbol to ARG.</p>
+
+<p>Examples:</p>
+
+<pre><code>(match 1 (a a)) =&gt; 1
+</code></pre>
+
+<p>A constructor pattern will be matched by calling a function on the
+constructor that is defined with DEFPATTERN. Pre-defined constructors
+are the following:</p>
+
+<ul>
+<li><code>(cons car-pattern cdr-pattern)</code></li>
+<li><code>(list pattern*)</code></li>
+<li><code>(tuple pattern*)</code></li>
+<li><code>(vector pattern*)</code></li>
+</ul>
+
+<p>Examples:</p>
+
+<pre><code>(match (cons 1 2) ((cons x y) (+ x y))) =&gt; 3
+(match (list 1 2 3) ((list x y z) (+ x y z))) =&gt; 6
+</code></pre>
+
+<h2 id="macroematch">[Macro] ematch</h2>
+
+<pre><code>ematch arg &amp;body clauses
+</code></pre>
+
+<p>Same as MATCH except MATCH-ERROR will be raised unless matched.</p>
+
+<h2 id="macrowith-matching">[Macro] with-matching</h2>
+
+<pre><code>with-matching pattern arg &amp;body body
+</code></pre>
+
+<p>Equivalent to <code>(ematch ARG (PATTERN . BODY))</code>.</p>
+
+<h2 id="macrodefpattern">[Macro] defpattern</h2>
+
+<pre><code>defpattern name lambda-list &amp;body body
+</code></pre>
+
+<p>Defines a constructor pattern named NAME as a function internally
+that takes LAMBDA-LIST as arguments and evaluates BODY when called. A
+constructor pattern has a form <code>(NAME . ARGS)</code> in pattern-matcing
+clauses. When such a pattern is found during pattern-matching, this
+function will called with arguments: VAR of matching object and rest
+of ARGS. The result must be a list of <code>(TEST ARGS PATTERNS)</code> where
+TEST is a form that predicates VAR is matched or not, ARGS is a list
+of objects that are destructured by this pattern, and PATTERNS is a
+list of patterns that should be matched with each element of ARGS
+respectively. ARGS and PATTERNS must have same length.</p>
+
+<p>Examples:</p>
+
+<pre><code>;; cons pattern
+(defpattern cons (var car-pattern cdr-pattern)
+  `((consp ,var)
+    ((car ,var) (cdr ,var))
+    (,car-pattern ,cdr-pattern)))
+(match (cons 1 2)
+  ((cons x y) (+ x y))) =&gt; 3
+</code></pre>
+
+<h2 id="authors">Authors</h2>
+
+<ul>
+<li>Tomohiro Matsuyama</li>
+</ul>
+
+<h2 id="license">License</h2>
+
+<p>LLGPL</p>
