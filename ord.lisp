@@ -3,8 +3,8 @@
 
 (defpackage :ord
   (:documentation "")
-  (:shadowing-import-from :closer-mop :standard-generic-function :defgeneric :defmethod)
   (:use :common-lisp :closer-mop)
+  (:shadowing-import-from :closer-mop :standard-generic-function :defgeneric :defmethod)
   (:export
     :compare|>|
     :compare|<|
@@ -20,8 +20,7 @@
     :proper-list
     :proper-list-p
     :association-list
-    :association-list-p
-    ))
+    :association-list-p))
 
 (in-package :ord)
 
