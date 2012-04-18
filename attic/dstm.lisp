@@ -1,35 +1,50 @@
 ;;;;; -*- mode: common-lisp;   common-lisp-style: modern;    coding: utf-8; -*-
 ;;;;;
-;;;;; Lock Free DTSM -- Software Transactional Memory after Herlihy, et. al.
+;;;;; Lock Free DSTM -- Software Transactional Memory after Herlihy, et. al.
 ;;;;;
 ;;;;; based on:
 ;;;;;  http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.59.8787
 ;;;;;
 ;;;;; original implementation by: Dr. David McClain
+;;;;; updates, tests, and sbcl compatibility by: Dan Lentz
+;;;;;
 ;;;;; portions Copyright (C) 2008-2010 by SpectroDynamics, LLC
 ;;;;;
 
 (defpackage :dstm
-  (:use #:common-lisp)
+  (:documentation "")
+  (:use :common-lisp  :named-readtables)
+  (:import-from :dclx :? :?+ :printv :var :value)
+  (:shadow :read :write)
   (:export
-    #:var
-    #:create-var
-    #:read-var
-    #:write-var
-    #:write-vars
-    #:atomic
-    #:orelse
-    #:rollback
-    #:rmw
-    #:check
-    #:test-dstm))
+    :var
+    :dstm-var
+    :*transaction*
+    :transaction
+    :create-var
+    :read
+    :write    
+    :atomic
+    :orelse
+    :rollback
+    :with-update
+    :updatef
+    :safe-value
+    :value
+    :check
+    :reset))
 
 (in-package :dstm)
 
+#-(or sbcl lispworks)
+(error "unsupported lisp implementation.")
+
+
+(defvar *transaction* nil)
 
 
 (defclass transaction ()
-  ((state   :accessor transaction-state  :initform :active  :initarg :state)
+  ((state   :accessor transaction-state  :initform :active :initarg :state)
     (root   :reader   transaction-root   :initform nil)
     (reads  :accessor transaction-reads  :initform nil)
     (subs   :accessor transaction-subs   :initform nil)
@@ -37,13 +52,21 @@
 
 
 (defun current-transaction ()
-  (unless sb-thread:*current-thread*
-    (error "Multiprocessing not running"))
-  (sb-thread:symbol-value-in-thread 'transaction sb-thread:*current-thread* nil ))
+  (unless (bt:current-thread) 
+    (warn "Starting Multiprocessing")
+    (bt:start-multiprocessing))
+  #+lispworks (mp:process-private-property 'dstm:*transaction*)
+  #+sbcl (sb-thread:symbol-value-in-thread 'dstm:*transaction* sb-thread:*current-thread* nil))
 
 
 (defun (setf current-transaction) (trans)
-  (setf (sb-thread:symbol-value-in-thread 'transaction sb-thread:*current-thread*) trans))
+  (unless (bt:current-thread) 
+    (warn "Starting Multiprocessing")
+    (bt:start-multiprocessing))
+  (setf
+    #+lispworks (mp:process-private-property 'dstm:*transaction*) 
+    #+sbcl (sb-thread:symbol-value-in-thread 'dstm:*transaction* sb-thread:*current-thread* nil)
+    trans))
 
 
 (defmethod initialize-instance :after ((trans transaction) &key &allow-other-keys)
@@ -58,9 +81,10 @@
    (eq (transaction-root trans1) (transaction-root trans2)))
 
 
-(defclass var ()
-   ;; make a consistent top-level export representing STM vars
-   ())
+(when (not (find-class 'var nil))
+  (defclass var ()
+    ()
+    (:documentation "a consistent top-level export representing transactional variables")))
 
 
 (defclass dstm-var (var)
@@ -73,12 +97,13 @@
       :initform nil)
     (trans
       :accessor dstm-var-trans
-      :initform (load-time-value
-                  (make-instance 'transaction :state :committed)))))
+      :initform (load-time-value (make-instance 'transaction :state :committed)))))
 
 
-(defun create-var (&optional val)
-   (make-instance 'dstm-var :new val))
+
+(defun create-var (&optional val (class-name 'dstm-var))
+   (make-instance class-name :new val))
+
 
 
 (define-condition rollback-exn ()
@@ -89,8 +114,15 @@
   (setf (transaction-reads  trans) nil
     (transaction-subs   trans) nil))
 
-(defparameter *nrolls* (make-array '(1) :element-type 'sb-ext:word :initial-element #x0))
-(defparameter *ntrans* (make-array '(1) :element-type 'sb-ext:word :initial-element #x0))
+
+(defparameter *nrolls*
+  #+sbcl      (make-array '(1) :element-type 'sb-ext:word :initial-element #x0)
+  #+lispworks (make-array '(1) :initial-element 0))
+
+
+(defparameter *ntrans*
+  #+sbcl      (make-array '(1) :element-type 'sb-ext:word :initial-element #x0)
+  #+lispworks (make-array '(1) :initial-element 0))
 
 
 (defun rollback-trans-and-subs (trans)
@@ -103,17 +135,15 @@
 (defun rollback ()
   (let ((trans (current-transaction)))
     ;; rollbacks outside of transactions are permitted but meaningless
-    (when trans      
-      (sb-ext:atomic-incf (aref *nrolls* 0)) ;; *nrolls*)
+    (when trans
+      #+sbcl      (sb-ext:atomic-incf (aref *nrolls* 0))
+      #+lispworks (sys:atomic-incf (aref *nrolls* 0))
       (rollback-trans-and-subs trans)
-      (error (load-time-value
-               (make-condition 'rollback-exn)
-               t)))))
+      (error (load-time-value (make-condition 'rollback-exn) t)))))
 
 
 (defun check-reads (trans)
-  #+lispworks
-  (sys:ensure-memory-after-store)
+  #+lispworks  (sys:ensure-memory-after-store)
   (dolist (pair (transaction-reads trans))
     (destructuring-bind (var . vtrans) pair
       (let ((vnow (dstm-var-trans var)))
@@ -124,7 +154,6 @@
 
 (defun commit (final)
    (commit-with-transaction (current-transaction) final))
-
 
 
 (defun commit-with-transaction (trans final)
@@ -141,12 +170,15 @@
      (reclaim-lists trans)))
 
 
+;; (defun read-var (var)
+;;   (warn "read-var deprecated")
+;;   (dstm:read var))
 
-(defun read-var (var)
+
+(defun read (var)
   (let ((trans (current-transaction)))
     (loop
-      #+lispworks
-      (sys:ensure-memory-after-store)
+      #+lispworks  (sys:ensure-memory-after-store)
       (let* ((vtrans (dstm-var-trans var))
               (vstate (transaction-state vtrans)))
         (when (or (not (eq :ACTIVE vstate))
@@ -155,12 +187,15 @@
             (push (cons var vtrans) (transaction-reads trans)))
           (return (if (eq :ABORTED vstate)
                     (dstm-var-old var)
-                    (dstm-var-new var))))
-        ))))
+                    (dstm-var-new var))))))))
 
 
+;; (defun write-var (var val)
+;;   (warn "write-var deprecated")
+;;   (dstm:write var val))
 
-(defun write-var (var val)
+
+(defun write (var val)
    (let* ((trans   (current-transaction))
           (wtrans  (or trans (make-instance 'transaction))))
      (prog1
@@ -172,25 +207,25 @@
 (defun write-vars (&rest pairs)
    (do ((pairs pairs (cddr pairs)))
        ((null pairs))
-     (write-var (car pairs) (cdar pairs))))
+     (dstm:write (car pairs) (cdar pairs))))
 
 
 (defun write-var-with-transaction (trans var val)
   "trans is the current transaction for a thread"
   (loop
-    #+lispworks
-    (sys:ensure-memory-after-store)
+    #+lispworks  (sys:ensure-memory-after-store)
     (let* ((vtrans (dstm-var-trans var))
             (vstate (transaction-state vtrans)))
       (cond
         ((not (eq :ACTIVE vstate))
-          (when (sb-ext:compare-and-swap (slot-value var 'trans) vtrans trans)
+          (when (#+sbcl       sb-ext:compare-and-swap
+                  #+lispworks sys:compare-and-swap
+                  (slot-value var 'trans) vtrans trans)
             (when (eq :COMMITTED vstate)
               (setf (dstm-var-old var) (dstm-var-new var)))
             (return (setf (dstm-var-new var) val)) ))
         ((equivalentp trans vtrans)
-          (return (setf (dstm-var-new var) val)))
-        ))))
+          (return (setf (dstm-var-new var) val)))))))
 
 
 (defun do-orelse (&rest fns)
@@ -203,7 +238,9 @@
       (dolist (fn fns)
         (setf (current-transaction)
           (make-instance 'transaction))
-        (sb-ext:atomic-incf (aref *ntrans* 0))
+        (#+sbcl sb-ext:atomic-incf
+          #+lispworks sys:atomic-incf
+          (aref *ntrans* 0))
         (unwind-protect
           (handler-case
             (return-from do-orelse
@@ -214,12 +251,12 @@
               (declare (ignore exn)))
             (error (exn)
               (rollback-trans-and-subs (current-transaction))
-              (error exn)) )
+              (error exn)))
           ;; unwind
-          (setf (current-transaction) ct-save)) )
+          (setf (current-transaction) ct-save)))
       ;; end of list
       (when ct-save
-        (rollback)) )))
+        (rollback)))))
 
 
 (defmacro orelse (&rest clauses)
@@ -242,105 +279,87 @@
       (rollback)))
 
 
-(defun do-rmw (place fn)
-  "RMW = read / modify / write"
-  (atomic (write-var place (funcall fn (read-var place)))))
+;; (defun do-rmw (place fn)
+;;   "RMW = read / modify / write"
+;;   (warn "do-rmw is deprecated, use execute-transaction instead")
+;;   (atomic (dstm:write place (funcall fn (dstm:read place)))))
 
 
-(defmacro rmw ((var-name place) &body body)
-   `(do-rmw ,place (lambda (,var-name)
-                     ,@body)))
+;; (defmacro rmw ((var-name place) &body body)
+;;   (warn "rmw is deprecated, use with--update instead")
+;;    `(do-rmw ,place (lambda (,var-name)
+;;                      ,@body)))
 
 
-;; ---------------------------------------------------
-;; Test it out... hopefully lots of contention... yep!
-
-
-(defun show-rolls (&optional (duration 1))
-   (let ((pcnt (/ (aref *nrolls* 0) (aref *ntrans* 0) 0.01))
-         (rate (/ (aref *ntrans* 0) duration)))
-     (list :rollbacks (aref *nrolls* 0)
-           :transactions (aref *ntrans* 0)
-           :percent-rollbacks pcnt
-           :trans-per-roll (if (zerop pcnt) :infinite (* 100 (/ pcnt)))
-           :duration duration
-           :trans-per-sec  rate)))
-
-(defun reset ()
-   (setf (current-transaction) nil)
-   (setf (aref  *nrolls* 0) 0)
-   (setf (aref  *ntrans* 0) 0))
-
-(defvar *a* (create-var 0))
-(defvar *b* (create-var 0))
-
-(defun check-invariant (&aux a b)
+(defun execute-transaction (place fn)
+  "read / if modify, then write"
   (atomic
-    (setf a (read-var *a*)
-      b (read-var *b*)))
-  (unless (= b (* 2 a))    
-    (format *trace-output* "Invariant broken: A = ~A, B = ~A" a  b)))
+    (let* ((original-value (dstm:read place))
+            (updated-value (funcall fn original-value)))
+      (if (eq updated-value :secret-unchanged-value-flag)
+        original-value
+        (dstm:write place updated-value)))))
 
 
-(defun common-code (delta)
-  (atomic
-    (let ((a (+ delta (read-var *a*))))
-      (write-var *a* a)
-      (write-var *b* (* 2 a)))))
+(defmacro with-update ((var-name place) &body body)
+  `(let ((place ,place))
+     (if (cl:typep place 'dstm:var)
+       (execute-transaction ,place (lambda (,var-name) (declare (ignorable ,var-name))
+                                     :secret-unchanged-value-flag ,@body))
+       (error "~S is not a transactional variable" place))))
+     
+#+()
+(defgeneric value (var)
+  (:documentation "Atomically read the value of a DSTM transactional variable"))
+#+()
+(defmethod  value ((var t))
+  (error "Attempt to read the VALUE of the NON-TRANSACTIONAL place ~S. Try safe-value instead."
+    var))
 
-(defun count-up ()
-   (loop repeat 5000000 do (common-code 1)))
+(defmethod  value ((var dstm-var))
+  (atomic (dstm:read var)))
 
-(defun count-down ()
-   (loop repeat 5000000 do (common-code -1)))
+
+(defun safe-value (thing)
+  "If thing is a DSTM variable, read and return its value within an atomic transaction.
+   If thing is not a DSTM variable, simply return its value."
+  (if (cl:typep thing 'dstm:var)
+    (value thing)
+    thing))
 
 #+()
-(defun checker (&rest procs)
-  (let ((start (local-time:now)))
-     (loop while (some #'sb-thread:thread-alive-p procs)
-           do (check-invariant))
-    (let ((stop (local-time:now)))    ;;usec:get-time-usec)))
-      (princ (show-rolls (* 1e-6 (local-time:timestamp-difference  stop start))))) ))
+(defgeneric (setf value) (new-value var))
+#+()
+(defmethod (setf value) (new-value (var t))
+  (error "Attempt to write the VALUE of the NON-TRANSACTIONAL place ~S" var))
 
-(defun test-dstm ()
+(defmethod (setf value) (new-value (var dstm-var))
+  (atomic (dstm:write var new-value)))
 
-  ;; so as not to impose the several dependencies required only for testing on the
-  ;; general user population, we check for their presence and load the packages
-  ;; (only if necessary) as part of the initial unit-test setup process.
-  
-  (or (find-package :local-time)      (ql:quickload :local-time))
-  (or (find-package :bordeaux-threads (ql:quickload :bordeaux-threads)))
+#+()
+(defmethod (setf value) ((new-value var) (var dstm-var))
+  (error "The VALUE of a transactional place should not, itself, be a transactional variable."))
 
-  ;; (re)initialization of fixtures required for test
-  
-  (princ "Start DSTM Test..." *trace-output*)
-  (setf *a* (create-var 0))
-  (setf *b* (create-var 0))
-  (reset)
 
-  ;; here begins the actual unit test
-  
-  (let ((start (local-time:now))
-         (procs
-           (list
-             (bt:make-thread #'count-down :name "down" :initial-bindings '((transaction . nil)))
-             (bt:make-thread #'count-up   :name "up"   :initial-bindings '((transaction . nil))))))
-    (loop while (some #'sb-thread:thread-alive-p procs)  do (check-invariant))
-    (let ((stop (local-time:now)))
-      (princ (show-rolls (* 1e-6 (local-time:timestamp-difference stop start)))
-        *trace-output*))))
+(define-modify-macro updatef (new-value)
+  "Execute an atomic DSTM transaction to update the VALUE of a DSTM variable to NEW-VALUE."
+  (lambda (place new-value)
+    (setf (value place) new-value)))
 
-;; a: 500000 b: 500000
-;; Start DSTM Test...
-;; (ROLLBACKS 23 TRANSACTIONS 1439589 PERCENT-ROLLBACKS 0.0015976782 TRANS-PER-ROLL
-;;  62590.83 DURATION 4.6898001881593924d-5 TRANS-PER-SEC 3.06961691808238d10)
 
-;; a: 1000000 b: 1000000
-;; Start DSTM Test...
-;; (ROLLBACKS 44 TRANSACTIONS 2221568 PERCENT-ROLLBACKS 0.0019805832 TRANS-PER-ROLL
-;;  50490.18 DURATION 7.452033281185425d-5 TRANS-PER-SEC 2.9811568415950584d10)
+(defun reset ()
+  (setf (current-transaction) nil)
+  (setf (aref  *nrolls* 0) 0)
+  (setf (aref  *ntrans* 0) 0))
 
-;; a: 5000000 b: 5000000
-;; Start DSTM Test...
-;; (ROLLBACKS 261 TRANSACTIONS 13883984 PERCENT-ROLLBACKS 0.0018798639
-;;  TRANS-PER-ROLL 53195.344 DURATION 4.5344716185515596d-4 TRANS-PER-SEC 3.061874716162617d10)
+
+
+
+
+;; (let ((x #{1 2 3}))
+;;   (setf (value x) {0})
+;;   x)
+
+;; (let ((x #{1 2 3}))
+;;   (updatef x {0})
+;;   x)
