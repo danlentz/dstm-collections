@@ -127,7 +127,7 @@
                 (:file "lock")
                 (:file "io")
                 (:file "mmap-stream")
-                (:file "deref")
+                (:file "pointer")
                 (:file "ord")
                 (:file "cstm")
                 (:file "node")
