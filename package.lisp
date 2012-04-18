@@ -83,7 +83,7 @@
 (defpackage :tree
   (:documentation "")
   (:shadowing-import-from :closer-mop :standard-generic-function :defgeneric :defmethod)
-  (:use :common-lisp :collex :contextl :closer-mop)
+  (:use :common-lisp :ptc :contextl :closer-mop)
   (:export
     :balanced
     :height-balanced
