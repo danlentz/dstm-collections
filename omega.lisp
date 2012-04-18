@@ -59,7 +59,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Reporting and Correlating
+;; Report and Correlation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun group (list &key (test #'eql) (key #'identity))
@@ -104,7 +104,6 @@
 		 (t (join rest (cons partion result)))))))
     (join list nil)))
    
-
 (defparameter *test-list* '((3 5) (3 1) (3 3) (1 2) (1 7) (1 1) (2 3)))
 
 (defun ex (list)
@@ -121,7 +120,7 @@
 ;; result: '((3 1) (3 3) (3 5) (1 1) (1 2) (1 7) (2 3))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Formatting and Presentation
+;; Format and Presentation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object ((info timing-info) stream)
@@ -159,7 +158,7 @@
       (write struct :stream stream))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Instrumentation
+;; Measurement and Instrumentation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+sbcl

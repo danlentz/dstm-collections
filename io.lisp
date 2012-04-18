@@ -1,8 +1,8 @@
 ;;;;; -*- mode: common-lisp;   common-lisp-style: modern;    coding: utf-8; -*-
 ;;;;;
 
-(defpackage :io-stream
-  (:nicknames :io)
+(defpackage :io
+  (:nicknames :io-stream)
   (:use :common-lisp)
   (:export
     :string-to-octets
@@ -40,28 +40,28 @@
     :head
     :tail))
 
-(in-package :io-stream)
+(in-package :io)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Fundamental I/O Routines
+;; Common Idioms
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 (defun ensure-list (thing)
   (if (atom thing)
     (list thing)
     thing))
 
-
 (defun string-to-octets (string)
   #+sbcl (sb-ext:string-to-octets string :external-format :utf-8)
   #-sbcl (babel:string-to-octets string))
 
-
 (defun octets-to-string (octets &key (start 0) end)
   #+sbcl (sb-ext:octets-to-string octets :external-format :utf-8 :start start :end end)
   #-sbcl (babel:octets-to-string octets :start start :end end))
-  
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Fundamental I/O Routines
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmacro writing-nicely (&rest forms)
   `(let ((*print-escape*  t)
@@ -74,7 +74,6 @@
           (*package*     (find-package :common-lisp)))     
      ,@forms))
 
-
 (defun read-stream-to-strings (in)
   (let ((lines '())
         (end-of-file (gensym)))
@@ -84,12 +83,10 @@
       (push line lines))
     (nreverse lines)))
 
-
 (defun write-strings-to-stream (string-or-strings stream &aux
                                  (string-list (ensure-list string-or-strings)))
   (loop for string in string-list
     do (write-line string stream)))
-
 
 (defun read-stream-to-string (in)
   (with-output-to-string (contents)
@@ -98,7 +95,6 @@
       (loop for size = (read-sequence buffer in)
         do (write-string buffer contents :start 0 :end size)
         while (= size buffer-size)))))
-
 
 (defun read-stream-to-byte-vector (in)
   (let* ((contents (make-array 0 :element-type '(unsigned-byte 8)))
@@ -113,13 +109,11 @@
       while (= size buffer-size)
       finally (return contents))))
 
-
 (defun read-file-to-list (pathname)
   (with-open-file (in pathname :direction :input)
     (loop for form = (read in nil :eof-marker)
       until (eq form :eof-marker)
       collect form)))
-
 
 (defun write-list-to-file (list pathname &key (if-exists :overwrite)
                             (if-does-not-exist :create))
@@ -127,8 +121,7 @@
                     :if-exists if-exists :if-does-not-exist if-does-not-exist)
     (writing-nicely
       (loop for form in list do (pprint form out)))))
-
-  
+ 
 (defun read-file-to-strings (pathname)
   (with-open-file (in pathname :direction :input)
     (let ((lines '())
@@ -139,7 +132,6 @@
         (push line lines))
       (nreverse lines))))
 
-
 (defun read-file-to-string (pathname)
   (with-output-to-string (contents)
     (with-open-file (in pathname :direction :input)
@@ -149,14 +141,12 @@
           do (write-string buffer contents :start 0 :end size)
           while (= size buffer-size))))))
 
-
 (defun write-string-to-file (string pathname &key (if-exists :overwrite)
                               (if-does-not-exist :create) (external-format :default))
   (with-open-file (out pathname :direction :output  :if-exists if-exists
                          :if-does-not-exist if-does-not-exist
                          :external-format external-format)
     (write-sequence string out)))
-
 
 (defun write-strings-to-file (string-list pathname &key (if-exists :overwrite)
                               (if-does-not-exist :create) (external-format :default))
@@ -165,7 +155,6 @@
                     :external-format external-format)
     (dolist (string string-list)
       (write-line string out))))
-
 
 (defun read-file-to-byte-vector (pathname &key (start 0) end)
   (with-open-file (in pathname :direction :input :element-type '(unsigned-byte 8))
@@ -176,14 +165,12 @@
         (read-sequence byte-vector in)
         byte-vector))))
 
-
 (defun write-byte-vector-to-file (byte-vector pathname &key (file-position 0)
                                    (if-exists :overwrite) (if-does-not-exist :create))
   (with-open-file (out pathname :direction :output :element-type '(unsigned-byte 8)
                     :if-exists if-exists :if-does-not-exist if-does-not-exist)            
     (file-position out file-position)
     (write-sequence byte-vector out)))
-
 
 (defun copy-stream (in out &key (element-type '(unsigned-byte 8)) finish-output)
   (let* ((buffer-size 4096)
@@ -198,14 +185,12 @@
       (read-chunks))
     (when finish-output (finish-output out))))
 
-
 (defun copy-binary-stream (in out &key (chunk-size 16384))
   (do*
     ((buf (make-array chunk-size :element-type '(unsigned-byte 8)))
       (pos (read-sequence buf in) (read-sequence buf in)))
     ((zerop pos))
     (write-sequence buf out :end pos)))
-
 
 (defun copy-file (from to &key (if-to-exists :supersede))
   (prog1 to
@@ -214,12 +199,9 @@
                         :if-exists if-to-exists)
         (copy-binary-stream input output)))))
 
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Miscellaneous Utilities
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 (defun relative-pathname (relative-to pathname &key name type)
   (let ((directory (pathname-directory pathname)))
@@ -231,18 +213,15 @@
         :directory directory)
       relative-to)))
 
-
 (defun random-string (&optional (len 36))
   (funcall #'concatenate 'string
     (loop repeat len collect (code-char (+ (char-code #\A) (random 26))))))
-
 
 (defun make-temporary-filename (&key (directory #p"/tmp/") (type "tmp"))
   (make-pathname
     :directory (pathname-directory directory)
     :name (concatenate 'string (princ-to-string (get-universal-time)) "-" (random-string))
     :type type))
-
 
 (defmacro with-temporary-file ((&optional (file-var '-file-) (pathname-var '-filename-))
                                 &body body)
@@ -254,29 +233,24 @@
                        ,@body)
        (ignore-errors (delete-file ,pathname-var)))))
 
-
 (assert (equal "hi" (with-temporary-file (x)
                       (format x "hi")
                       (force-output x)
                       (cat -filename-))))
-
 
 (assert (equal "hi" (with-temporary-file (x fn)
                       (format x "hi")
                       (force-output x)
                       (cat fn))))
 
-
 (assert (equal "hi" (with-temporary-file ()
                       (format -file- "hi")
                       (force-output -file-)
                       (cat  -filename-))))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic Regular Expression Utilities
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 #+cl-ppcre
 (defun regex-replace-in-file (pattern replacement pathname)
@@ -289,7 +263,6 @@
       (unless missing-newline-p (terpri))  (finish-output stream)
       (setf position (file-position stream)))))
 
-
 #+cl-ppcre
 (defun regex-search-in-file (pattern pathname)
   (remove-if-not #'identity
@@ -298,7 +271,6 @@
         with line and missing-newline-p 
         do (setf (values line missing-newline-p) (read-line stream nil))
         while line collect (ppcre:scan-to-strings regexp line)))))
-
 
 #+cl-ppcre
 (defun regex-search-in-string (pattern string &optional (start 0) end)
@@ -309,11 +281,9 @@
         do (setf (values line missing-newline-p) (read-line stream nil))
         while line collect (ppcre:scan-to-strings regexp line)))))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; UNIXish Convenience
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 #+cl-ppcre
 (defgeneric grep (pattern where &key &allow-other-keys)
@@ -324,11 +294,9 @@
       (regex-replace-in-file pattern replacement pathname)
       (regex-search-in-file pattern pathname))))
 
-
 (defun cat (pathname)
   "return contents of file PATHNAME as a string"
   (read-file-to-string pathname))
-
 
 (defmacro tee (pathname &body body)
   "simultateously append output directed to *standard-output* to the file at PATHNAME"
@@ -346,7 +314,6 @@
                ,@body)))
          (format *trace-output* "~&;;;; *standard-output* no longer appending to ~A~%" ,path)))))
 
-
 (defun head (pathname &optional (lines 5))
   (unless (and (integerp lines) (plusp lines))
     (error "lines must be a positive integer, but was specified as ~A" lines))
@@ -357,21 +324,17 @@
       do (setf line (read-line in nil))
       while line collect line)))
 
-
 (defun tail (pathname &optional (lines 5))
   (unless (and (integerp lines) (plusp lines))
     (error "lines must be a positive integer, but was specified as ~A" lines))
   (last (read-file-to-strings pathname) lines))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Figlet
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
 #+sbcl
 (defvar *figlet-program* "/usr/local/bin/figlet")
-
 
 #+sbcl
 (defun figlet (message &key output (executable *figlet-program*)
