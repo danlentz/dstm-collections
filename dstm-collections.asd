@@ -130,7 +130,7 @@
                 (:file "util")
                 (:file "timing")
                 (:file "lock")
-                (:file "io-stream")
+                (:file "io")
                 (:file "mmap-stream")
                 (:file "deref")
                 (:file "ord")
