@@ -11,20 +11,17 @@
 ;; Prerequisite 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
 #-cldoc
 (eval-when (:load-toplevel :compile-toplevel :execute)
   (ignore-errors
     (asdf:load-system :cldoc)))
 
-#+cldoc
+;; #+cldoc
 (import '(cldoc:doc-op cldoc:document-system cldoc:cldoc cldoc:print-op cldoc:print-system))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ASDF Component Specializtion
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 (defvar *file-local-variables* ()
   "List of file-local special variables.")
@@ -73,7 +70,6 @@
               (terpri out) 
               (describe operation out))))
 
-  
 (defmethod asdf:perform :around ((operation asdf:load-op)
                                       (file dstm-collections-source-file)) 
   "Establish new dynamic bindings for file-local variables."
@@ -89,7 +85,6 @@
     (mapcar #'symbol-value *file-local-variables*)
     (call-next-method)))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Project System Definition
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -98,7 +93,7 @@
   
   :description "Transactional Set, Map, and Seq Functional Collections Library"
   :serial       t  
-  :version     "0.6.0"
+  :version     "1.1.6"
   :license     "LLGPL"
   
   :author      "Dan Lentz. Source code available at <http://github.com/danlentz/dstm-collections/>"
@@ -118,13 +113,13 @@
   Software Transactional Memory incorporating the flexibility of on-the-fly runtime
   selection of both 'direct-update' (locking) style and 'deferred-update' (optimistic)
   style transaction models, independently configurable on a per-thread basis."
-  
-  :depends-on (:closer-mop :contextl :named-readtables :local-time :unicly :cldoc
-                :cl-store :manardb)
-  
+
+  :defsystem-depends-on (:cldoc)
+  :weakly-depends-on    (:cl-store :unicly :local-time)
+  :depends-on           (:closer-mop :contextl :named-readtables :manardb)
+    
   :components ((:dstm-collections-system-source-file "dstm-collections.asd")
-                (:dstm-collections-package-file      "package")
-                
+                (:dstm-collections-package-file      "package")                
                 (:file "special")             
                 (:file "printv")
                 (:file "utility")
