@@ -7,6 +7,14 @@
   (:documentation "")
   (:use :common-lisp :contextl :named-readtables)
   (:export
+    :standard-syntax
+    :*default-syntax*
+    :enable-syntax
+    :disable-syntax
+    :*set-reader-macro-char*
+    :*seq-reader-macro-char*
+    :*default-syntax-startup-enabled*
+    :*print-collections-readably*
     :?
     :?+
     :printv
@@ -33,17 +41,9 @@
     :multiple-value-compose
     :ensure-list
     :ppmx
-    :ensure-kernel
-    :standard-syntax
-    :*default-syntax*
-    :enable-syntax
-    :disable-syntax
-    :*set-reader-macro-char*
-    :*seq-reader-macro-char*
-    :*value-reader-macro-char*
-    :*parallel-execution-enabled*
-    :*default-syntax-startup-enabled*
-    :*print-collections-readably*
+#+()    :ensure-kernel
+#+()    :*value-reader-macro-char*
+#+()    :*parallel-execution-enabled*
     :timing-info
     :real-time
     :user-time
@@ -56,15 +56,10 @@
     :pprint-milliseconds
     :with-profiling-enabled
     :execution-time
-    :specification
     :pprint-to-string
     :report-and-ignore-errors
-    :s
-    :ps
-    :pcond
-    :plet
-    :plet*
     :class-proto
+    :drop
     :using))
 
 
