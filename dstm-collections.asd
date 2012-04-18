@@ -125,7 +125,7 @@
   :components ((:dstm-collections-system-source-file "dstm-collections.asd")
                 (:dstm-collections-package-file      "package")
                 
-                (:file "dstm-collections")             
+                (:file "special")             
                 (:file "printv")
                 (:file "util")
                 (:file "timing")
