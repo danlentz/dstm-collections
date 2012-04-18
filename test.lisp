@@ -2,76 +2,25 @@
 ;;;;;
 
 (defpackage :dstm-collections-test
-  (:shadow :set :map)
-  (:use :common-lisp
-    ;;  :dstm
+;  (:shadow :set :map)
+  (:shadowing-import-from :closer-mop :standard-generic-function :defgeneric :defmethod)
+  (:use :common-lisp :collex :tree :contextl :closer-mop
     :named-readtables
-    :lparallel
-    :bordeaux-threads
     :hu.dwim.stefil
     :hu.dwim.def
-    :hu.dwim.defclass-star)
-  (:export :dstm-collections :quad :ord :tree :set :map :seq :dstm))
+    :hu.dwim.defclass-star))
+
 
 (in-package :dstm-collections-test)
+;;(in-readtable dclx:standard-syntax)
 
 (def (suite* e) (dstm-collections :in root-suite))
 
-(def test check-dstm-featurep ()
-  (is (find :dstm *features*)))
+;; (def test check-dstm-featurep ()
+;;   (is (find :dstm *features*)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; QUAD
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(def (suite* e) (quad :in dstm-collections))
-
-(def test check-protocol-class-constitutents ()
-  (let ((x (make-instance 'quad:tuple)))
-    (signals error (quad:qar x))
-    (signals error (quad:qbr x))
-    (signals error (quad:qcr x))
-    (signals error (quad:qdr x))))
-
-(def test check-sequence-type-assertions ()
-  (signals error (quad:qar (list 1 2 3 4 5)))
-  (signals error (quad:qar (list 1 2 3)))
-  (signals error (quad:qbr #(1 2 3 4 5)))
-  (signals error (quad:qbr #(1 2 3)))
-  (signals error (quad:qcr "abcde"))
-  (signals error (quad:qcr "abc"))
-  (signals error (quad:qdr (list '(1 2) 3 4)))
-  (signals error (quad:qdr (list '(1 2 3 4)))))
-
-(def test check-list-constituent-accessors ()
-  (is (eql 1 (quad:qar '(1 2 3 4))))
-  (is (eql 2 (quad:qbr '(1 2 3 4))))
-  (is (eql 3 (quad:qcr '(1 2 3 4))))
-  (is (eql 4 (quad:qdr '(1 2 3 4)))))
-
-(def test check-vector-constituent-accessors ()
-  (is (eql 1 (quad:qar #(1 2 3 4))))
-  (is (eql 2 (quad:qbr #(1 2 3 4))))
-  (is (eql 3 (quad:qcr #(1 2 3 4))))
-  (is (eql 4 (quad:qdr #(1 2 3 4)))))
-
-(def test check-string-constituent-accessors ()
-  (is (eql #\a (quad:qar "abcd")))
-  (is (eql #\b (quad:qbr "abcd")))
-  (is (eql #\c (quad:qcr "abcd")))
-  (is (eql #\d (quad:qdr "abcd"))))
-
-(def test check-abstract-quad-class-precidence ()
-  (let ((x (make-instance 'quad:abstract-quad)))
-    (is (typep x 'standard-object))
-    (is (typep x 'quad:tuple))))
-
-(def test check-abstract-quad-constituent-accessors ()
-  (let ((x (make-instance 'quad:abstract-quad :a 1 :b 2 :c 3 :d 4)))
-    (is (eql 1 (quad:qar x)))
-    (is (eql 2 (quad:qbr x)))
-    (is (eql 3 (quad:qcr x)))
-    (is (eql 4 (quad:qdr x)))))
+(def test check-cstm-featurep ()
+  (is (find :cstm *features*)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ORD
@@ -117,29 +66,12 @@
     (check-compare-ordinality :aardvark :zebra)
     (check-compare-ordinality '#:aardvark '#:zebra)
     (check-compare-ordinality 'aardvark 'zebra)
-    (check-compare-ordinality
+#+()    (check-compare-ordinality
       (make-instance 'standard-object)
       (make-instance 'standard-object))
-    (check-compare-ordinality
-      (make-instance 'quad:abstract-quad)
-      (make-instance 'standard-object))
-    (check-compare-ordinality
-      (make-instance 'quad:abstract-quad :a 0)
-      (make-instance 'quad:abstract-quad :a 10))
-    (check-compare-ordinality
-      (make-instance 'quad:abstract-quad :a 10 :b 10 :c 0)
-      (make-instance 'quad:abstract-quad :a 10 :b 10 :c 10))
-    (check-compare-ordinality
-      (make-instance 'quad:abstract-quad :a 10 :b 10 :c 10 :d 0)
-      (make-instance 'quad:abstract-quad :a 10 :b 10 :c 10 :d 10))
-    (check-compare-ordinality
-      (make-instance 'quad:abstract-quad :a 10 :b 0  :c 10 :d 10)
-      (make-instance 'quad:abstract-quad :a 10 :b 10 :c 10 :d 10))  
-    (check-compare-ordinality
-      (make-instance 'quad:abstract-quad :a 1)
-      (make-instance 'quad:abstract-quad))
     (check-compare-ordinality (find-package :common-lisp) (find-package :keyword))
-    (check-compare-ordinality #p"/tmp/aardvark" #p"/tmp/zebra")))
+    (check-compare-ordinality #p"/tmp/aardvark" #p"/tmp/zebra"))
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TREE
@@ -147,166 +79,369 @@
 
 (def (suite* e) (tree :in dstm-collections))
 
-(def test check-rb-tree-class-precidence ()
-  (let ((x (make-instance 'tree:rb-tree)))
-    (is (typep x 'quad:abstract-quad))
-    (is (typep x 'quad:tuple))
-    (is (typep x 'standard-object))))
 
-(def test check-rb-tree-type-predicate ()
-  (is (tree:rb-tree-p (tree:make-rb-tree)))
-  (is (not (tree:rb-tree-p (make-instance 'quad:abstract-quad))))
-  (is (not (tree:rb-tree-p :x)))
-  (is (tree:rb-tree-p (change-class (make-instance 'quad:abstract-quad) 'tree:rb-tree))))
-  
-(def test check-rb-tree-class-constituent-initargs ()
-  (let ((x (tree:make-rb-tree :l :a :v :b :r :c :h :d))
-         (y (tree:make-rb-tree :a :a :b :b :c :c :d :d)))
-    (is (eql (slot-value x 'quad:a) (slot-value y 'quad:a)))
-    (is (eql (slot-value x 'quad:b) (slot-value y 'quad:b)))
-    (is (eql (slot-value x 'quad:c) (slot-value y 'quad:c)))
-    (is (eql (slot-value x 'quad:d) (slot-value y 'quad:d)))))
-
-
-(def test check-rb-tree-class-constituent-accessors ()
-  (let ((x (tree:make-rb-tree :l :a :v :b :r :c :h :d)))
-    (is (eql (tree:rb-tree-l x) :a))
-    (is (eql (tree:rb-tree-v x) :b))
-    (is (eql (tree:rb-tree-r x) :c))
-    (is (eql (tree:rb-tree-h x) :d))))
-
-
-(def test check-height-create-tree-with-subtrees ()
-  (is (eql 1 (tree:height (tree:create nil 0 nil))))
-  (is (eql 2 (tree:height (tree:create (tree:create nil 4 nil) 8 (tree:create nil 16 nil)))))
-  (is (eql 3 (tree:height (tree:create
-                            (tree:create
-                              (tree:create nil 1 nil) 4 nil)
-                            8
-                            (tree:create nil 16
-                              (tree:create nil 32 nil)))))))
+(def test check-simple-constituent-accessors ()
+  (let ((x (node :k :v :l :r)))
+    (is (eql (node/k x) :k))
+    (is (eql (node/v x) :v))
+    (is (eql (node/l x) :l))
+    (is (eql (node/r x) :r)))
+  (with-active-layers (balanced)
+    (let ((x (node :k :v :l :r :x)))
+      (is (eql (node/k x) :k))
+      (is (eql (node/v x) :v))
+      (is (eql (node/l x) :l))
+      (is (eql (node/r x) :r))  
+      (is (eql (node/x x) :x))))
+  (with-active-layers (weight-balanced)
+    (let ((x (node :k :v :l :r :s)))
+      (is (eql (node/k x) :k))
+      (is (eql (node/v x) :v))
+      (is (eql (node/l x) :l))
+      (is (eql (node/r x) :r))  
+      (is (eql (node/s x) :s))))
+  (with-active-layers (height-balanced)
+    (let ((x (node :k :v :l :r :h)))
+      (is (eql (node/k x) :k))
+      (is (eql (node/v x) :v))
+      (is (eql (node/l x) :l))
+      (is (eql (node/r x) :r))  
+      (is (eql (node/h x) :h)))))
 
 
-(def test check-destructuring-macro-lr ()
-  (tree:lr (l r) (tree:create nil 1 nil)
-    (is (null l))
-    (is (null r)))
-  (tree:lr (l0 r0) (tree:create (tree:create nil 4 nil) 8 (tree:create nil 16 nil))
-    (is (eql (tree:height l0) 1))
-    (is (eql (tree:height r0) 1))
-    (tree:lr (l1 r1) l0
-      (is (null l1))
-      (is (null r1)))
-    (tree:lr (l1 r1) r0
-      (is (null l1))
-      (is (null r1)))))      
-  
-(def test check-destructuring-macro-lvr ()
-  (tree:lvr (l v r) (tree:create nil 1 nil)
-    (is (eql 1 v))
-    (is (null l))
-    (is (null r)))
-  (tree:lvr (l0 v0 r0) (tree:create (tree:create nil 4 nil) 8 (tree:create nil 16 nil))
-    (is (eql 8 v0))
-    (is (eql (tree:height l0) 1))
-    (is (eql (tree:height r0) 1))
-    (tree:lvr (l1 v1 r1) l0
-      (is (eql 4 v1))
-      (is (null l1))
-      (is (null r1)))
-    (tree:lvr (l1 v1 r1) r0
-      (is (eql 16 v1))
-      (is (null l1))
-      (is (null r1)))))
-
-(def test check-destructuring-macro-lvrh ()
-  (tree:lvrh (l v r h) (tree:create nil 1 nil)
-    (is (eql 1 h))
-    (is (eql 1 v))
-    (is (null l))
-    (is (null r)))
-  (tree:lvrh (l0 v0 r0 h0) (tree:create (tree:create nil 4 nil) 8 (tree:create nil 16 nil))
-    (is (eql 2 h0))
-    (is (eql 8 v0))
-    (is (eql (tree:height l0) 1))
-    (is (eql (tree:height r0) 1))
-    (tree:lvrh (l1 v1 r1 h1) l0
-      (is (eql 1 h1))
-      (is (eql 4 v1))
-      (is (null l1))
-      (is (null r1)))
-    (tree:lvrh (l1 v1 r1 h1) r0
-      (is (eql 1 h1))
-      (is (eql 16 v1))
-      (is (null l1))
-      (is (null r1)))))
+(def test check-compound-constituent-accessors ()
+  (with-active-layers (t)
+    (let ((x (node :k :v :l :r :x)))
+      (is (equalp (node/kv x)            (list :k :v)))
+      (is (equalp (node/lr x)            (list :l :r)))
+      (is (equalp (node/kvlr x)          (list :k :v :l :r)))
+      (is (equalp (node/kvlrx x)         (list :k :v :l :r :x)))
+      (is (equalp (node/constituents x)  (list :k :v :l :r :x)))))
+  (with-active-layers (weight-balanced)
+    (let ((x (node :k :v :l :r :s)))
+      (is (equalp (node/kv x)            (list :k :v)))
+      (is (equalp (node/lr x)            (list :l :r)))
+      (is (equalp (node/kvlr x)          (list :k :v :l :r)))
+      (is (equalp (node/kvlrs x)         (list :k :v :l :r :s)))
+      (is (equalp (node/constituents x)  (list :k :v :l :r :s)))))
+  (with-active-layers (height-balanced)
+    (let ((x (node :k :v :l :r :h)))
+      (is (equalp (node/kv x)            (list :k :v)))
+      (is (equalp (node/lr x)            (list :l :r)))
+      (is (equalp (node/kvlr x)          (list :k :v :l :r)))
+      (is (equalp (node/kvlrh x)         (list :k :v :l :r :h)))
+      (is (equalp (node/constituents x)  (list :k :v :l :r :h))))))
 
 
-(def test check-balance-one-step-bal ()
-  (let ((x (tree:create
-             (tree:create
-               (tree:create nil 1 nil) 4 nil)
-             8
-             (tree:create
-               (tree:create nil 12 nil)
-               16
-               (tree:create (tree:create nil 24 nil) 32
-                 (tree:create (tree:create nil 48 nil) 64
-                   (tree:create nil 128 (tree:create nil 256 nil))))))))
-    (is (eql 6 (tree:rb-tree-h x)))
-    (is (eql 2 (tree:rb-tree-h (tree:rb-tree-l x))))
-    (is (eql 5 (tree:rb-tree-h (tree:rb-tree-r x))))
-    (let ((y (tree:lvr (l v r) x
-               (tree:bal l v r))))
-      (is (eql 16 (tree:rb-tree-v y)))
-      (is (eql 5  (tree:rb-tree-h y)))
-      (tree:lr (l r) y
-        (is (eql 3  (tree:rb-tree-h l)))
-        (is (eql 4  (tree:rb-tree-h r)))
-        (is (eql 8  (tree:rb-tree-v l)))
-        (is (eql 32 (tree:rb-tree-v r)))))))
+(defmacro with-instances/wb (&body body)
+  `(with-active-layers (weight-balanced)
+    (symbol-macrolet ((_1    (node/singleton (gensym)))
+                       (_3   (node/create    (gensym) t _1  _1))
+                       (_5   (node/create    (gensym) t _3  _1))
+                       (_7   (node/create    (gensym) t _3  _3))
+                       (_11  (node/create    (gensym) t _3  _7)) 
+                       (_15  (node/create    (gensym) t _7  _7))
+                       (_23  (node/create    (gensym) t _15 _7))
+                       (_27  (node/create    (gensym) t _15 _11))
+                       (_31  (node/create    (gensym) t _15 _15))
+                       (_39  (node/create    (gensym) t _15 _23))
+                       (_51  (node/create    (gensym) t _23 _27))
+                       (_63  (node/create    (gensym) t _31 _31))
+                       (_127 (node/create    (gensym) t _63 _63)))
+      ,@body)))
 
 
-(def test check-balance-join-subtrees ()
-  (let* ((a    (tree:create nil 1 nil))
-          (b   (tree:create nil 3 nil))
-          (c   (tree:create nil 5 nil))
-          (d   (tree:create nil 7 nil))
-          (e   (tree:create nil 9 nil))
-          (f   (tree:create c   6   d))
-          (g   (tree:create f   8   e))
-          (h   (tree:create b   4   g))
-          (i   (tree:create a   2   h)) 
-          (j   (tree:join   a   2   h)))
-    (tree:lvrh (l v r h) i
-      (is (eql 2 v))
-      (is (eql 5 h))
-      (is (eql (tree:rb-tree-v l) 1))
-      (is (eql (tree:rb-tree-h l) 1))
-      (is (eql (tree:rb-tree-v r) 4))
-      (is (eql (tree:rb-tree-h r) 4)))
-    (tree:lvrh (l v r h) j
-      (is (eql 4 v))
-      (is (eql 4 h))
-      (tree:lvrh (l v r h) l
+(def test check-simple-constructors/wb ()
+  (with-active-layers (weight-balanced)
+    (with-instances/wb ()
+      (is (= 0 (node/size   (empty))))
+      (is (= 1 (node/weight (empty))))
+      (is (= 1 (node/size   (node/singleton :k :v))))
+      (is (= 2 (node/weight (node/singleton :k :v))))
+      (is (= 1 (node/size   (node/create :k :v nil nil))))
+      (is (= 2 (node/weight (node/create :k :v nil nil))))
+      (is (= 3  (node/size   _3)))
+      (is (= 4  (node/weight _3)))
+      (is (= 7  (node/size   _7)))
+      (is (= 8  (node/weight _7)))
+      (is (= 15 (node/size   _15)))
+      (is (= 16 (node/weight _15)))
+      (is (= 31 (node/size   _31)))
+      (is (= 32 (node/weight _31)))
+      (is (= 63 (node/size   _63)))
+      (is (= 64 (node/weight _63))))))
+
+
+(def test check-simple-constructors/rb ()
+  (with-active-layers (height-balanced)
+    (is (= 0 (node/height (empty))))
+    (is (= 1 (node/height (node/singleton :k :v))))
+    (is (= 1 (node/height (node/create :k :v nil nil))))
+    (symbol-macrolet ((_1   (node/singleton (gensym)))
+                       (_3  (node/create  (gensym) t _1 _1))
+                       (_7  (node/create  (gensym) t _3 _3))
+                       (_15 (node/create  (gensym) t _7 _7)))
+      (is (= 2  (node/height _3)))
+      (is (= 3  (node/height _7)))
+      (is (= 4  (node/height _15))))))
+
+
+(def test check-rotation-wb/single-l ()
+  (with-active-layers (weight-balanced)
+    (labels ((matches (n1 n2)
+               (or (if (empty? n1) (is (empty? n2)))
+                 (progn
+                   (is (eq  (node/k n1) (node/k n2)))
+                   (is (eq  (node/v n1) (node/v n2)))
+                   (is (eql (node/s n1) (node/s n2)))
+                   (matches (node/l n1) (node/l n2))
+                   (matches (node/r n1) (node/r n2))))))
+      (matches (tree::single-l :AK :AV
+                 (node :XK :XV () () 1)
+                 (node :BK :BV (node :YK :YV () () 1) (node :ZK :XZ () () 1) 3))
+        (node :BK :BV
+          (node :AK :AV (node :XK :XV () () 1) (node :YK :YV () () 1) 3)
+          (node :ZK :XZ () () 1) 5)))))
+
+
+(def test check-rotation-wb/double-l ()
+  (with-active-layers (weight-balanced)
+    (labels ((matches (n1 n2)
+               (or (if (empty? n1) (is (empty? n2)))
+                 (progn
+                   (is (eq  (node/k n1) (node/k n2)))
+                   (is (eq  (node/v n1) (node/v n2)))
+                   (is (eql (node/s n1) (node/s n2)))
+                   (matches (node/l n1) (node/l n2))
+                   (matches (node/r n1) (node/r n2))))))
+      (matches (tree::double-l :AK :AV
+                 (node :XK :XV () () 1)
+                 (node :CK :CV
+                   (node :BK :BV (node :Y1K :Y1V () () 1) (node :Y2K :Y2V () () 1) 3)
+                   (node :ZK :ZV () () 1) 5))
+        (node :BK :BV
+          (node :AK :AV (node :XK :XV () () 1) (node :Y1K :Y1V () () 1) 3)
+          (node :CK :CV (node :Y2K :Y2V () () 1) (node :ZK :ZV () () 1) 3) 7)))))
+
+
+(def test check-rotation-wb/single-r ()
+  (with-active-layers (weight-balanced)
+    (labels ((matches (n1 n2)
+               (or (if (empty? n1) (is (empty? n2)))
+                 (progn
+                   (is (eq  (node/k n1) (node/k n2)))
+                   (is (eq  (node/v n1) (node/v n2)))
+                   (is (eql (node/s n1) (node/s n2)))
+                   (matches (node/l n1) (node/l n2))
+                   (matches (node/r n1) (node/r n2))))))
+      (matches (tree::single-r :BK :BV
+                 (node :AK :AV (node :XK :XV () () 1) (node :YK :YV () () 1) 3)
+                 (node :ZK :XZ () () 1))
+        (node :AK :AV
+          (node :XK :XV () () 1)
+          (node :BK :BV (node :YK :YV () () 1) (node :ZK :XZ () () 1) 3) 5)))))
+
+
+(def test check-rotation-wb/double-r ()
+  (with-active-layers (weight-balanced)
+    (labels ((matches (n1 n2)
+               (or (if (empty? n1) (is (empty? n2)))
+                 (progn
+                   (is (eq  (node/k n1) (node/k n2)))
+                   (is (eq  (node/v n1) (node/v n2)))
+                   (is (eql (node/s n1) (node/s n2)))
+                   (matches (node/l n1) (node/l n2))
+                   (matches (node/r n1) (node/r n2))))))
+      (matches (tree::double-r :CK :CV
+                 (node :aK :aV
+                   (node :XK :XV () () 1)
+                   (node :BK :BV (node :Y1K :Y1V () () 1) (node :Y2K :Y2V () () 1) 3) 5)
+                 (node :ZK :ZV () () 1))
+        (node :BK :BV
+          (node :AK :AV (node :XK :XV () () 1) (node :Y1K :Y1V () () 1) 3)
+          (node :CK :CV (node :Y2K :Y2V () () 1) (node :ZK :ZV () () 1) 3) 7)))))
+
+
+(def test check-join-wb/single-l ()
+  (with-active-layers (weight-balanced)
+    (with-instances/wb ()
+      (let ((rot/1l (node/join :root t _1 _7)))
+        (is (eql 9 (node/size rot/1l)))
+        (is (eq :root (node/k (node/l rot/1l))))
+        (is (eql 5 (node/size (node/l rot/1l))))
+        (is (eql 3 (node/size (node/r rot/1l))))
+        (kvlr (k v l r) rot/1l
+          (is (eq k (node/k (node/join k v l r)))))))))
+
+
+(def test check-join-wb/single-r ()
+  (with-active-layers (weight-balanced)
+    (with-instances/wb ()
+      (let ((rot/1r (node/join :root t _7 _1)))
+        (is (eql 9 (node/size rot/1r)))
+        (is (eq :root (node/k (node/r rot/1r))))
+        (is (eql 5 (node/size (node/r rot/1r))))
+        (is (eql 3 (node/size (node/l rot/1r))))
+        (kvlr (k v l r) rot/1r
+          (is (eq k (node/k (node/join k v l r)))))))))
+
+
+(def test check-join-wb/double-l ()
+  (with-active-layers (weight-balanced)
+    (labels ((matches (n1 n2)
+               (or (if (empty? n1) (is (empty? n2)))
+                 (progn
+                   (is (eq  (node/k n1) (node/k n2)))
+                   (is (eq  (node/v n1) (node/v n2)))
+                   (is (eql (node/s n1) (node/s n2)))
+                   (matches (node/l n1) (node/l n2))
+                   (matches (node/r n1) (node/r n2))))))
+      (matches (node/join :AK :AV
+                 (node :XK :XV () () 1)
+                 (node :CK :CV
+                   (node :BK :BV
+                     (node :Y1K :Y1V (node :q1k :q1v () () 1) () 2)
+                     (node :Y2K :Y2V (node :q2k :q2v () () 1) () 2) 5) 
+                   (node :ZK :ZV () () 1) 7))
+        (node :BK :BV
+          (node :AK :AV
+            (node :XK :XV NIL NIL 1)
+            (node :Y1K :Y1V (node :Q1K :Q1V NIL NIL 1) NIL 2) 4)
+          (node :CK :CV
+            (node :Y2K :Y2V (node :Q2K :Q2V NIL NIL 1) NIL 2)
+            (node :ZK :ZV NIL NIL 1) 4) 9)))))
+
+
+(def test check-join-wb/double-r ()
+  (with-active-layers (weight-balanced)
+    (labels ((matches (n1 n2)
+               (or (if (empty? n1) (is (empty? n2)))
+                 (progn
+                   (is (eq  (node/k n1) (node/k n2)))
+                   (is (eq  (node/v n1) (node/v n2)))
+                   (is (eql (node/s n1) (node/s n2)))
+                   (matches (node/l n1) (node/l n2))
+                   (matches (node/r n1) (node/r n2))))))
+      (matches (node/join :CK :CV
+                 (node :AK :AV
+                   (node :XK :XV () () 1)
+                   (node :BK :BV
+                     (node :Y1K :Y1V (node :Q1K :Q1V () () 1) () 2)
+                     (node :Y2K :Y2V (node :Q2K :Q2V () () 1) () 2) 5) 7)
+                 (node :ZK :ZV () () 1))
+        (node :BK :BV
+          (node :AK :AV
+            (node :XK :XV NIL NIL 1)
+            (node :Y1K :Y1V (node :Q1K :Q1V NIL NIL 1) NIL 2) 4)
+          (node :CK :CV
+            (node :Y2K :Y2V (node :Q2K :Q2V NIL NIL 1) NIL 2)
+            (node :ZK :ZV NIL NIL 1) 4) 9)))))
+
+
+(def test check-concat3-wb ()
+  (with-active-layers (weight-balanced)
+    (with-instances/wb ()
+      (is
+        (eql #\A
+          (elt
+            (symbol-name
+              (node/k
+                (node/least
+                  (node/concat3
+                    (gensym "A") t () _5)))) 0)))
+      (is
+        (eql #\Z
+          (elt
+            (symbol-name
+              (node/k
+                (node/greatest
+                  (node/concat3
+                    (gensym "Z") t _5 ())))) 0)))
+      (is
+        (eql #\A
+          (elt
+            (symbol-name
+              (node/k
+                (node/least
+                  (node/concat3
+                    (gensym "C") t
+                    (node/singleton (gensym "A") t) _7)))) 0))))))
+
+
+
+(def test check-join-rb/single ()
+  (with-active-layers (height-balanced)
+    (let ((x (node/create 8 8
+               (node/create 4 4
+                 (node/create 1 1 nil nil) nil)
+               (node/create 16 16
+                 (node/create 12 12 nil nil)             
+                 (node/create 32 32
+                   (node/create 24 24 nil nil)
+                   (node/create 64 64
+                     (node/create 48 48 nil nil)
+                     (node/create 128 128 nil
+                       (node/create 256 256 nil nil))))))))   
+      (is (eql 6 (node/height x)))
+      (is (eql 2 (node/height (node/l x))))
+      (is (eql 5 (node/height (node/r x))))
+      (let ((y (kvlr (k v l r) x
+                 (node/join k v l r))))
+        (is (eql 16 (node/v y)))
+        (is (eql 5  (node/h y)))
+        (lr (l r) y
+          (is (eql 3  (node/h l)))
+          (is (eql 4  (node/h r)))
+          (is (eql 8  (node/v l)))
+          (is (eql 32 (node/v r))))))))
+
+
+(def test check-concat3-rb ()
+  (with-active-layers (height-balanced)
+    (let* ((a    (node/create   1 1 nil nil))
+            (b   (node/create   3 3 nil nil))
+            (c   (node/create   5 5 nil nil))
+            (d   (node/create   7 7 nil nil))
+            (e   (node/create   9 9 nil nil))
+            (f   (node/create   6 6 c   d))
+            (g   (node/create   8 8 f   e))
+            (h   (node/create   4 4 b   g))
+            (i   (node/create   2 2 a   h)) 
+            (j   (node/concat3  2 2 a   h)))
+      (tree:kvlrh (k v l r h) i
+        (is (eql 2 k))
         (is (eql 2 v))
-        (is (eql 2 h))
-        (is (eql (tree:rb-tree-v l) 1))
-        (is (eql (tree:rb-tree-v r) 3)))
-      (tree:lvrh (l v r h) r
-        (is (eql 8 v))
-        (is (eql 3 h))
-        (is (eql (tree:rb-tree-v r) 9))
-        (is (eql (tree:rb-tree-h r) 1))
-        (tree:lvrh (l v r h) l
-          (is (eql 6 v))
+        (is (eql 5 h))
+        (is (eql (node/v l) 1))
+        (is (eql (node/h l) 1))
+        (is (eql (node/v r) 4))
+        (is (eql (node/h r) 4)))
+      (tree:kvlrh (k v l r h) j
+        (is (eql 4 k))
+        (is (eql 4 v))
+        (is (eql 4 h))
+        (tree:kvlrh (k v l r h) l
+          (is (eql 2 k))
+          (is (eql 2 v))
           (is (eql 2 h))
-          (is (eql (tree:rb-tree-v l) 5))
-          (is (eql (tree:rb-tree-h l) 1))
-          (is (eql (tree:rb-tree-v r) 7))
-          (is (eql (tree:rb-tree-h r) 1)))))))
+          (is (eql (node/v l) 1))
+          (is (eql (node/v r) 3)))
+        (tree:kvlrh (k v l r h) r
+          (is (eql 8 k))
+          (is (eql 8 v))
+          (is (eql 3 h))
+          (is (eql (node/v r) 9))
+          (is (eql (node/h r) 1))
+          (tree:kvlrh (k v l r h) l
+            (is (eql 6 k))
+            (is (eql 6 v))
+            (is (eql 2 h))
+            (is (eql (node/v l) 5))
+            (is (eql (node/h l) 1))
+            (is (eql (node/v r) 7))
+            (is (eql (node/h r) 1))))))))
       
-
+#+()
 (def test check-structure-merged-trees ()
   (let* ((a    (tree:create nil 1  nil))
           (b   (tree:create nil 3  nil))
@@ -349,6 +484,7 @@
           (is (eql (tree:rb-tree-v r) 11))
           (is (eql (tree:rb-tree-h r) 1)))))))
 
+#+()
 (def test check-structure-concat-trees ()
   (let* ((a    (tree:create nil 1  nil))
           (b   (tree:create nil 2  nil))
@@ -892,6 +1028,8 @@
   (is  (cl:typep (set:singleton 5)                 'set:type)))
 
 
+
+
 #|
 
 (seq:make)
@@ -918,6 +1056,11 @@
 
 |#
                 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; CSTM 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(def (suite* e) (cstm :in dstm-collections))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; DSTM 
@@ -1003,17 +1146,17 @@
 
   (values))
 
-
+#+()
 (def test check-dstm/1-million-transactions ()
   (finishes
     (test-dstm-contention 500000)))
 
-
+#+()
 (def test check-dstm/2-million-transactions ()
   (finishes
     (test-dstm-contention 1000000)))
 
-
+#+()
 (def test check-dstm/10-million-transactions ()
   (finishes
     (test-dstm-contention 5000000)))
@@ -1036,3 +1179,23 @@
 ;;  DURATION 4.699111058135885d-4 TRANS-PER-SEC 3.075220785637819d10).
 ;; #<test-run: 1 test, 1 assertion, 0 failures in 471.979 sec>
 
+(defmacro are (test &rest tests)
+  "Evaluate a list of tests with (is)"
+  `(progn
+     (is ,test)
+     (unless (null ',tests)
+       (are ,@tests))))
+
+(deftest test-mult ()
+  (is (= 1 (multiply 1 1)))
+  (is (= 6 (multiply:multiply 2 3)))
+  (is (= 100 (multiply:multiply 10 10)))
+  (is (= 0 (multiply:multiply 3 0)))
+  (is (= 0 (multiply:multiply 0 3))))
+
+(deftest test-mult ()
+  (are (= 1 (multiply 1 1))
+       (= 6 (multiply:multiply 2 3))
+       (= 100 (multiply:multiply 10 10))
+       (= 0 (multiply:multiply 3 0))
+       (= 0 (multiply:multiply 0 3))))
