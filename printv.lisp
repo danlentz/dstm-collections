@@ -78,6 +78,8 @@
   (printv-expander forms))
 
 (define-symbol-macro ? (describe *))
+(define-symbol-macro ?? #'describe)
+(export '??)
 
 (define-symbol-macro ?+ (printv /))
 
