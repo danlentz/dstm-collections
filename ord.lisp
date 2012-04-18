@@ -1,25 +1,43 @@
 ;;;;; -*- mode: common-lisp;   common-lisp-style: modern;    coding: utf-8; -*-
 ;;;;;
 
+(defpackage :ord
+  (:documentation "")
+  (:shadowing-import-from :closer-mop :standard-generic-function :defgeneric :defmethod)
+  (:use :common-lisp :closer-mop)
+  (:export
+    :compare|>|
+    :compare|<|
+    :compare|<=|
+    :compare|=|
+    :compare|>=|
+    :compare
+    :make-ci-char
+    :make-ci-string
+    :slots-to-compare
+    :writing-readably
+    :of-type
+    :proper-list
+    :proper-list-p
+    :association-list
+    :association-list-p
+    ))
 
 (in-package :ord)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; lexical comparison
+;; standard formatting for lexical comparison
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 (defmacro writing-readably (&rest forms)
-  "Macro to wrap around some forms, causing their writing to suitable for
-reading back in."
+  "Macro to wrap around some forms, causing their writing to be more suitable for
+   lexical comparison."
   `(let ((*print-escape*  t)
           (*print-level*  nil)
           (*print-length* nil)
           (*print-array*  t)
           (*package*     (find-package :common-lisp)))     
      ,@forms))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; boxed comparison
@@ -147,20 +165,20 @@ reading back in."
 
 
 (defmethod ord:compare ((a standard-object) (b standard-object))
-  "ordinal comparison of arbitrary standard-objects is performed as follows:
-   1 - objects of different classes ordered by lexical comparison of class name
-   2 - objects of a class for which slots-to-compare returns null are ordered by lexical
+  "ordinal comparison of arbitrary standard-objects performed as follows:
+   -- objects of different classes ordered by lexical comparison of class name
+   -- objects of a class for which slots-to-compare returns null are ordered by lexical
        comparison of printed representation.  For standard print-unreadable-object output,
        this achieves equality on the objects being #'eq, otherwise returns a consistent
        but arbitrary ordinal comparison value for the lifetime of these specific instances.
        Customized print-unreadable-object representations also provides a simple means
        of adjustment to the resulting comparison.
-   3 - objects of identical class are compared based on the boundness and slot-value of
+   -- objects of identical class are compared based on the boundness and slot-value of
        the slots-names in list returned by slots-to-compare.  Slots unbound in both
        obects are considered equal.  Unbound slots are considered greater than bound slots of the
        same slot-name. Two bound slots-values with the same slot-name are compared recursively
        with ord:compare.
-   4 - when all preceding steps complete without ordinal determination, the objects are
+   -- when all preceding steps complete without ordinal determination, the objects are
        considered equal"
   (if (not (eq (class-of a) (class-of b)))
     (writing-readably 
