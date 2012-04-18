@@ -128,7 +128,7 @@
                 (:file "special")             
                 (:file "printv")
                 (:file "utility")
-                (:file "timing")
+                (:file "omega")
                 (:file "lock")
                 (:file "io")
                 (:file "mmap-stream")

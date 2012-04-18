@@ -1,13 +1,29 @@
 ;;;;; -*- mode: common-lisp;   common-lisp-style: modern;    coding: utf-8; -*-
 ;;;;;
 
-(in-package :ptc)
-
+(defpackage :omega
+  (:use :closer-common-lisp)
+  (:export
+    :timing-info
+    :real-time
+    :user-time
+    :system-time
+    :gc-time
+    :page-faults
+    :bytes-consed
+    :collect-timing
+    :pprint-bytes
+    :pprint-milliseconds
+    :with-profiling-enabled
+    :execution-time
+    :group
+    :partion-by))
+    
+(in-package :omega)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Performance Metrics
+;; Metric Specification
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 (defclass timing-info ()
   ((real-time
@@ -42,13 +58,6 @@
       :documentation "Number of bytes allocated.")))
 
 
-(defmethod print-object ((info timing-info) stream)
-  (print-unreadable-object (info stream :type t :identity t)
-    (format stream "~A/~A"
-      (pprint-milliseconds (real-time info))
-      (pprint-bytes (bytes-consed info)))))
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Reporting and Correlating
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -74,6 +83,7 @@
                                   (cons group groups)
                                   groups)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun span (list pfun &key (key #'identity))
   (let ((current (funcall key (first list))))
@@ -110,10 +120,15 @@
 ;; 3. concatenate the sublists
 ;; result: '((3 1) (3 3) (3 5) (1 1) (1 2) (1 7) (2 3))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Formatting and Presentation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod print-object ((info timing-info) stream)
+  (print-unreadable-object (info stream :type t :identity t)
+    (format stream "~A/~A"
+      (pprint-milliseconds (real-time info))
+      (pprint-bytes (bytes-consed info)))))
 
 
 (defun pprint-milliseconds (milliseconds &optional stream)
@@ -147,7 +162,7 @@
 ;; Instrumentation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
+#+sbcl
 (defmacro with-profiling-enabled (&body body)
   `(progn (require :sb-sprof)
      (sb-sprof:with-profiling ()
@@ -165,7 +180,7 @@
        (values ,res ,tm))))
 
 
-
+#+sbcl
 (defun collect-timing (thunk)
   "Executes THUNK and returns a timing-info object specifying how long
   execution took and how much memory was used. Implementation of
@@ -221,21 +236,17 @@
             :page-faults   (max (- new-page-faults old-page-faults) 0)
             :bytes-consed  (max (- new-bytes-consed old-bytes-consed) 0)))))))
 
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Example
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #|
-
 (describe (collect-timing (lambda ()
                             (reduce #'+
                               (loop
                                 for i from 1 to 1024000
                                 for j from 2048000 downto 1024000
                                 collect (sqrt (/ (* i j) (+ i j))))))))
-
 
 #<TIMING-INFO 1.55 seconds/247.90 MiB {10054A3D83}>
   [standard-object]
@@ -247,5 +258,4 @@ Slots with :INSTANCE allocation:
   GC-TIME       = 699.0
   PAGE-FAULTS   = 7
   BYTES-CONSED  = 259941136
-
 |#

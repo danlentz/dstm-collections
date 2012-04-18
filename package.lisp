@@ -61,19 +61,6 @@
 #+()    :ensure-kernel
 #+()    :*value-reader-macro-char*
 #+()    :*parallel-execution-enabled*
-    :timing-info
-    :real-time
-    :user-time
-    :system-time
-    :gc-time
-    :page-faults
-    :bytes-consed
-    :collect-timing
-    :pprint-bytes
-    :pprint-milliseconds
-    :with-profiling-enabled
-    :execution-time
-    :pprint-to-string
     :report-and-ignore-errors
     :class-proto
     :drop
