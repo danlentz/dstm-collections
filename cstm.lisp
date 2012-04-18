@@ -1,8 +1,34 @@
 ;;;;; -*- mode: common-lisp;   common-lisp-style: modern;    coding: utf-8; -*-
 ;;;;;
+;;;;; See EOF for attribution of original source code authors
+
+(defpackage :cstm
+  (:documentation "")
+  (:shadowing-import-from :closer-mop :standard-generic-function :defgeneric :defmethod)
+  (:use :common-lisp :contextl :closer-mop)
+  (:export
+    :*tries*
+    :*timeout*
+    :*current-transaction*
+    :stm-mode
+    :deferred-update-mode
+    :direct-update-mode
+    :transaction
+    :define-transactional-class
+    :transactional-class
+    :var
+    :value
+    :transactional-variable
+    :make-transactional-variable
+    :call-atomic
+    :atomic
+    :roll-back
+    :commit-transaction
+    :retry-transaction
+    :most-recent-transaction
+    :transaction-status))
 
 (in-package :cstm)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Global Layer
@@ -169,7 +195,6 @@
 ;;                  ))
 
 
-
 (defmacro raw-slot-value (object slot-name &body init)
   (let ((new-init (gensym)))
     `(handler-case
@@ -181,8 +206,13 @@
              (setf (slot-value ,object ,slot-name) ,new-init)))))))
 
 
-(when (not (find-class 'var nil))
-  (defclass var ()()))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Simple Transactional Variable
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defclass var ()())
+
+(define-layered-function value (var))
 
 
 (define-transactional-class transactional-variable (var)
@@ -195,7 +225,7 @@
       (if (slot-boundp var 'value) (value var) %unbound%))))
 
 
-(defun create-var (&optional (value nil vsp) (class 'transactional-variable))
+(defun make-transactional-variable (&optional (value nil vsp) (class 'transactional-variable))
   (if vsp
     (make-instance class :value value)
     (make-instance class)))
