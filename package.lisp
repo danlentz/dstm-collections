@@ -3,7 +3,8 @@
 
 (in-package :cl-user)
 
-(defpackage :dstm-collections (:nicknames :cxn :dclx :collex)
+(defpackage :persistent-transactional-collections
+  (:nicknames :ptc :dstm-collections :dclx)
   (:documentation "")
   (:use :common-lisp :contextl :named-readtables)
   (:export
@@ -16,8 +17,24 @@
     :*default-syntax-startup-enabled*
     :*print-collections-readably*
     :?
-    :?+
+    :?*
+    :?**
+    :?***
+    :??
+    :???
+    :ppmx
     :printv
+    :v
+    :v/
+    :v//
+    :v///
+    :v+
+    :v++
+    :v+++
+    :info
+    :info/
+    :info//
+    :info///
     :with-gensyms
     :make-gensym-list
     :make-keyword
@@ -40,7 +57,7 @@
     :compose
     :multiple-value-compose
     :ensure-list
-    :ppmx
+    :get-place
 #+()    :ensure-kernel
 #+()    :*value-reader-macro-char*
 #+()    :*parallel-execution-enabled*

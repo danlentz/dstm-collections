@@ -2,7 +2,7 @@
 ;;; Copyright (C) 2006-2010, Dan Corkill <corkill@GBBopen.org>
 ;;; Licensed under Apache License 2.0 
 
-(in-package :dclx)
+(in-package :ptc)
 
 
 (defmacro ppmx (form)
@@ -11,7 +11,7 @@
            (exp (macroexpand exp1))
            (*print-circle* nil))
      (format *trace-output* "~%;; Form: ~W"  (quote ,form))
-;;     (pprint (quote ,form) *trace-output*)
+     #+() (pprint (quote ,form) *trace-output*)
      (cond ((equal exp exp1)
              (format *trace-output* "~%;;~%;; Macro expansion:~%")
              (pprint exp *trace-output*))
@@ -23,6 +23,11 @@
      (values)))
 
 
+(setf (symbol-function :break) #'(lambda (&optional (why "break") &rest values)
+                                   (break "~A: ~{~S~^, ~}" why values)
+                                   (values-list values)))
+
+
 (defun printv-minor-separator ()
   (format *trace-output* "~&;; ~60,,,'-<-~>~%")
   (force-output *trace-output*))
@@ -30,7 +35,7 @@
 (defun printv-major-separator ()
   (format *trace-output* "~&;;~%")
   (princ
-    (concatenate 'string ";; "
+    (concatenate 'string ";;"
       (make-string (- *print-right-margin* 5) :initial-element #\=)) *trace-output*)
   (force-output *trace-output*))
 
@@ -73,15 +78,37 @@
 
 (defmacro printv (&rest forms)
   (printv-expander forms))
-#+()
-(defmacro :printv (&rest forms)
+
+(defmacro v (&rest forms)
   (printv-expander forms))
 
-(define-symbol-macro ? (describe *))
-(define-symbol-macro ?? #'describe)
-(export '??)
+(setf (symbol-function :printv) #'printv-expander)
 
-(define-symbol-macro ?+ (printv /))
+(define-symbol-macro v/   (printv /))
+(define-symbol-macro v//  (printv //))
+(define-symbol-macro v/// (printv ///))
+
+(define-symbol-macro v+   (printv +))
+(define-symbol-macro v++  (printv ++))
+(define-symbol-macro v+++ (printv +++))
+
+(define-symbol-macro ?    (prog1 *   (describe *)))
+(define-symbol-macro ?*   (prog1 *   (describe *)))
+(define-symbol-macro ?**  (prog1 **  (describe **)))
+(define-symbol-macro ?*** (prog1 *** (describe ***)))
+
+(defun ?? (string-designator &optional package external-only)
+  (apply #'apropos string-designator package external-only nil))
+
+(defun ??? (string-designator &optional package external-only)
+  (apply #'apropos-list string-designator package external-only nil))
+
+(defun info (&rest args)
+  (mapc #'describe args))
+
+(define-symbol-macro info/   (info (multiple-value-list /)))
+(define-symbol-macro info//  (info (multiple-value-list //)))
+(define-symbol-macro info/// (info (multiple-value-list ///)))
 
 
 #||

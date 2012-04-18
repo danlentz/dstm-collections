@@ -1,7 +1,7 @@
 ;;;;; -*- mode: common-lisp;   common-lisp-style: modern;    coding: utf-8; -*-
 ;;;;;
 
-(in-package :dclx)
+(in-package :ptc)
 
 (defmacro report-and-ignore-errors (&body body)
   `(handler-case (progn ,@body)
@@ -128,7 +128,7 @@
   of the body."
   `(anaphoric when ,test ,@body))
 
-(defmacro axtypecase (keyform &body cases)
+(defmacro atypecase (keyform &body cases)
   "Like TYPECASE, except binds the result of the keyform to IT (via LET) for
   the scope of the cases."
   `(anaphoric typecase ,keyform ,@cases))
@@ -264,11 +264,6 @@ the last."
 		(declare (dynamic-extent arguments))
 		(multiple-value-call f (apply g arguments)))))
     more-functions :initial-value function))
-
-#+()
-(defun :break (name &rest values)
-  (break "~S = ~{~S~^, ~}" name values)
-  (values-list values))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
