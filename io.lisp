@@ -2,8 +2,7 @@
 ;;;;;
 
 (defpackage :io
-  (:nicknames :io-stream)
-  (:use :common-lisp)
+  (:use :closer-common-lisp)
   (:export
     :string-to-octets
     :octets-to-string

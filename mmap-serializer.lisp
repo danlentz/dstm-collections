@@ -27,8 +27,8 @@
 ;;; serialize/deserialize API provided.
 ;;;
 
-(in-package :mmap)
 
+(in-package :mmap)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Interface to various serializer backends

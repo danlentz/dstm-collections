@@ -2,7 +2,7 @@
 ;;;;;
 
 (defpackage :debug
-  (:use :common-lisp)
+  (:use :closer-common-lisp)
   (:export
     :ppmx
     :printv

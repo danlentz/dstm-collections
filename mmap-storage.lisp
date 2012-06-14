@@ -31,6 +31,7 @@
           (mmapped-file-name (mapped-file-of-mmptr mmptr)) count foreign-type)
         (log:info "free-space now starts at ~D" (get-free-space-start mf))))))
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; MMPTR Arithmatic
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -131,7 +132,7 @@
 
 
 (defgeneric ref (thing place &key &allow-other-keys)
-  (:method (thing (place mmapped-data-storage-file) &key)
+  (:method (thing (place mmapped-indexed-data-file) &key)
     (let* ((bytes (serialize thing))
             (len (length bytes))
             (mmptr (mmalloc place :uint8 len))
@@ -147,10 +148,10 @@
     (if (eq (mmptr-type thing) 'typed-pointer)
       (ref (mem-ref (mmptr->ptr thing) 'typed-pointer) place)
       thing))
-  (:method ((offset integer) (place mmapped-data-storage-file) &key (type 'typed-pointer))
+  (:method ((offset integer) (place mmapped-indexed-data-file) &key (type 'typed-pointer))
     (with-mmptr (mmptr offset 1 type)
       (ref mmptr nil)))
-  (:method ((thing typed-pointer) (place mmapped-data-storage-file) &key)
+  (:method ((thing typed-pointer) (place mmapped-indexed-data-file) &key)
     (let* ((new-mmptr (mmalloc place 'typed-pointer))
             (new-typed-pointer-ptr (mmptr->ptr new-mmptr))
             (new-typed-pointer (make-typed-pointer place
@@ -160,12 +161,13 @@
                                  :pointer new-typed-pointer-ptr)))
       new-mmptr)))
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Footer Operations
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defgeneric find-footer (designator)
-  (:method ((mf mmapped-data-storage-file))
+  (:method ((mf mmapped-indexed-data-file))
     (let* ((header        (header mf))
             (offset       (footer-offset header))
             (has-footer-p (not (zerop offset)))
@@ -230,7 +232,7 @@
         (root-offset new-footer)            root-offset))))
 
 
-(defgeneric update-data-storage-file (designator root-offset action)
+(defgeneric update-indexed-data-file (designator root-offset action)
   (:documentation "two-phase commit updating footer at eof and then header with location of
    the new footer")
   (:method ((mf mmapped-file) root-offset action)
@@ -238,12 +240,12 @@
       (set-header-value mf 'footer-offset (make-footer mf root-offset action))
       (sync mf)))
   (:method ((mm mmapper) root-offset action)
-    (update-data-storage-file (mm-mf mm) root-offset action))
+    (update-indexed-data-file (mm-mf mm) root-offset action))
   (:method ((mmptr mmptr) root-offset action)
-    (update-data-storage-file (mmptr-mapper mmptr) root-offset action))
+    (update-indexed-data-file (mmptr-mapper mmptr) root-offset action))
   (:method (thing root-offset action)
     (with-mmptr (mmptr thing)
-      (update-data-storage-file mmptr root-offset action))))
+      (update-indexed-data-file mmptr root-offset action))))
 
 
 ;; todo: add specializations for other lisps' pointer types or figure out if cffi provides
@@ -294,6 +296,8 @@
   
 
 
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -315,7 +319,7 @@
    :offset (pointer-offset-for-mapper mapper ptr)
    :type   (or type :uint8))) ;; (cffi:pointer-element-type ptr))))
 
-;; -------------------------------------------------------
+
 
 (defun check-mmptr (mmptr &key (nelems 1))
   ;; ensure that an mmptr has a valid underlying mapper
@@ -328,7 +332,7 @@
                 (* nelems
                    (the fixnum (pointer-element-size mmptr)))))
 
-;; -------------------------------------------------------
+
 
 ;; user API
 (defmethod fetch ((mmptr mmptr)
@@ -345,7 +349,7 @@
            :type       type
            :byte-order byte-order)))
 
-;; -----------------------------------------------------------
+
 
 ;; user API
 (defmethod store (val (mmptr mmptr)
@@ -362,7 +366,7 @@
            :type       type
            :byte-order byte-order)))
   
-;; -----------------------------------------------------------------------
+
 
 (defun do-mmptr-from-intermediate-pointer (mmptr fn)
   ;; call fn on an fli:pointer derived (unchecked) from mmptr
@@ -387,7 +391,7 @@
 (defmethod foreign-array-dimensions ((mmptr mmptr))
   (foreign-array-dimensions (mmptr-type mmptr)))
 
-;; -----------------------------------------------------------------------
+
 
 (defun chk-vector-range-limits (mmptr start &optional end)
   ;; ensure that a vector range is covered by a valid underlying
@@ -440,7 +444,7 @@
           (store-vector arr ptr :start1 start1 :end1 end1 :start2 0
                         :byte-order byte-order) )))))
 
-;; -----------------------------------------------------------------------
+
 
 ;; user API
 (defmethod fetch-array ((mmptr mmptr)
@@ -462,7 +466,7 @@
     (store-array arr (mmptr->ptr mmptr)
                  :byte-order byte-order)))
 
-;; -----------------------------------------------------------------------
+
 ;; ASCII 8-bit Strings
 
 (defmethod fetch-ascii-string ((mmptr mmptr) &key length null-terminated-p)
@@ -490,7 +494,7 @@
                           :length nel
                           :null-terminated-p null-terminated-p))))
 
-;; -----------------------------------------------------------------------
+
 
 (defmethod foreign-slot-names ((mmptr mmptr))
   (foreign-slot-names (mmptr-type mmptr)))
@@ -509,7 +513,7 @@
   (mmptr-from-intermediate-pointer (p mmptr)
     (apply #'foreign-slot-pointer p slot-name args)))
 
-;; -----------------------------------------------------------------------
+
 
 (defun nbytes-forward-to-page-end (mmptr)
   (declare (optimize (speed  3)
@@ -530,36 +534,36 @@
         +page-size+
       off)))
 
-;; ------------------------------
+
 
 (defmethod copy-from-region-to-fli-pointer ((mmptr-from mmptr) from-position pto nb)
   ;; mapped pointer to native pointer
   ;; okay to destructively modify pto because it was copied from original args
   (declare (type integer nb from-position))
   (declare (optimize (speed  3)
-                      (safety 0)
-                      (float  0)))
+             (safety 0)
+             (float  0)))
   (with-locked-mmptr (mmptr-from)
     (let ((pfrom (copy-pointer mmptr-from
-                               :type :uint8
-                               :index (* from-position
-                                         (the fixnum (fli:size-of (pointer-element-type mmptr-from)))))))
+                   :type :uint8
+                   :index (* from-position
+                            (the fixnum (fli:size-of (pointer-element-type mmptr-from)))))))
       (labels ((iter ()
                  (when (plusp nb)
                    (let ((nbx (min nb
-                                   (the fixnum (nbytes-forward-to-page-end pfrom)))))
+                                (the fixnum (nbytes-forward-to-page-end pfrom)))))
                      (declare (type fixnum nbx))
                      (check-mmptr pfrom :nelems nbx)
                      (fli:replace-foreign-array pto (unchecked-mmptr->ptr pfrom)
-                                                :start1 0  :end1 nbx
-                                                :start2 0  :end2 nbx)
+                       :start1 0  :end1 nbx
+                       :start2 0  :end2 nbx)
                      (incf-pointer pfrom nbx)
                      (incf-pointer pto nbx)
                      (decf nb nbx)
                      (iter)) )))
         (iter)) )))
     
-;; ------------------------------------------------------
+
 
 (defmethod copy-from-region-to-mmptr ((pfrom fli::pointer) from-position pto nb)
   ;; native pointer to mapped pointer
@@ -588,7 +592,7 @@
                      (iter)) )))
         (iter)) )))
 
-;; ------------------------------------------------------
+
 ;; Lock pairs -- must be locked in consistent order to avoid deadlocks
 
 (defun do-with-locked-mmptrs (mmptr1 mmptr2 fn)
@@ -681,11 +685,3 @@
     (copy-from-region-to-mmptr from from-position pto nb)))
 
 |#
-;; MMAPPED-STORAGE.LISP -- Routines for accessing memory mapped storage
-;;
-;; Copyright (C) 2008-2010 by SpectroDynamics, LLC. All rights reserved.
-;;
-;; DM/SD 09/10
-;; --------------------------------------------------
-;; (in-package :COM.SD.MMAPPED-FILES)
-;; --------------------------------------------------

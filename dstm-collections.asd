@@ -135,6 +135,7 @@
                 (:file "mmap-types")
                 (:file "mmap-serializer")
                 (:file "mmap-access")
+                (:file "mmap-files")
                 (:file "mmap-storage")
                 (:file "ord")
                 (:file "cstm")

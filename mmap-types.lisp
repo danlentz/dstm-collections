@@ -10,7 +10,7 @@
 (defcstruct* unique-id
   (bytes :uint8 :count 16))
 
-(defcstruct* standard-data-storage-file-header
+(defcstruct* standard-indexed-data-file-header
   (cookie              :uint)
   (unique-id           :uint8 :count 16)
   (version-major       :uint)
@@ -26,7 +26,7 @@
   :upgrade
   :clear)
 
-(defcstruct* standard-data-storage-file-footer
+(defcstruct* standard-indexed-data-file-footer
   (cookie                 :uint)
   (serial                 :uint)
   (action                 action)

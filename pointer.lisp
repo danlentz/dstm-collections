@@ -2,7 +2,7 @@
 ;;;;;
 
 (defpackage :pointer
-  (:use :common-lisp :io)
+  (:use :closer-common-lisp :io)
   (:export :deref))
 
 (in-package :pointer)

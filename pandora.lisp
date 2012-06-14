@@ -2,7 +2,7 @@
 ;;;;;
 
 (defpackage :pandora
-  (:use :common-lisp :cl-syntax #+lisp-unit :lisp-unit)
+  (:use :closer-common-lisp :cl-syntax #+lisp-unit :lisp-unit)
   (:export
     :this
     :self

@@ -5,7 +5,7 @@
 ;; TODO: lift dependencies to encompassing asdf system once stabilized
 
 (unless (every #'find-package
-          #1='(:cffi-objects :cffi-grovel :osicat :closer-mop :contextl :alexandria :puri
+          #1='(:cffi-objects :osicat :closer-mop :contextl :alexandria :puri
                 :hu.dwim.serializer :flexi-streams :rucksack :cl-store))
   (warn "Manually quick-loading required systems: ~{~A ~}"
     (loop for sys in #1# when (not (find-package sys)) collect sys))

@@ -17,6 +17,22 @@
              :little-endian)
       (cffi:foreign-free v))))
 
+(defconstant +n-pages+  #+:DARWIN 256 #-:DARWIN 256
+  "max nbr of mappers that can be active for each mmapped file")
+
+(defconstant +growby-small+ #.(ash 1 20))  ;; 1 MB
+
+(defconstant +growby-large+ #.(ash 1 24))  ;; 16 MB
+
+(defvar +page-size+ (osicat-posix:getpagesize))
+
+(defvar +invalid-base-pointer+ (make-pointer +page-size+)
+  "used in lieu of NULL-POINTE* for invalidated mapper objects,
+  to avoid difficulties with various operations on pointers that
+  have a zero address FOREIGN-ARRAY-POINTER which returns NIL when
+  the base address of an array is a null pointer, and similarly for
+  FOREIGN-SLOT-POINTER")
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Unique-ID
@@ -69,32 +85,32 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; DATA-STORAGE-FILES
+;; INDEXED-DATA-FILES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar *data-storage-file-pathname-cache-directory*
+(defvar *indexed-data-file-pathname-cache-directory*
   (ensure-directories-exist 
-    (merge-pathnames #p".cache/data-storage-file-pathnames/" (user-homedir-pathname))))
+    (merge-pathnames #p".cache/indexed-data-file-pathnames/" (user-homedir-pathname))))
 
-(defvar *data-storage-files* (make-hash-table :test #'equalp
+(defvar *indexed-data-files* (make-hash-table :test #'equalp
                                #+sbcl :weakness #+lispworks :weak-type
                                #+(or sbcl lispworks) :value))
 
-(defgeneric register-data-storage-file (thing unique-id)
+(defgeneric register-indexed-data-file (thing unique-id)
   (:method ((thing pathname) (unique-id vector))
-    (setf (gethash unique-id *data-storage-files*) thing)
+    (setf (gethash unique-id *indexed-data-files*) thing)
     (let ((fn (merge-pathnames (byte-vector-to-hex-string unique-id)
-                           *data-storage-file-pathname-cache-directory*)))
+                           *indexed-data-file-pathname-cache-directory*)))
       (setf (pointer:deref fn) (prin1-to-string thing))
       (log:info "registered ~S and cached pathname to ~S"
         (read-from-string (pointer:deref fn)) fn) 
       )))
 
-(defun find-data-storage-file (unique-id)
+(defun find-indexed-data-file (unique-id)
   (let ((found (or
-                 (gethash unique-id *data-storage-files*)
+                 (gethash unique-id *indexed-data-files*)
                  (let ((fn (merge-pathnames (byte-vector-to-hex-string unique-id)
-                             *data-storage-file-pathname-cache-directory*)))    
+                             *indexed-data-file-pathname-cache-directory*)))    
                    (when (probe-file fn)
                      (read-from-string (pointer:deref fn)))))))
     (cond
@@ -106,17 +122,17 @@
           (byte-vector-to-hex-string unique-id) found))
       (t found))))
     
-(defvar +data-storage-file-version-major+ 1)
-(defvar +data-storage-file-version-minor+ 0)
+(defvar +indexed-data-file-version-major+ 1)
+(defvar +indexed-data-file-version-minor+ 0)
 
 (defgeneric header-type-for (storage-designator)
-  (:method (default) 'standard-data-storage-file-header))
+  (:method (default) 'standard-indexed-data-file-header))
 
 (defun header-size-of (storage-designator)
   (cffi:foreign-type-size (header-type-for storage-designator)))
 
 (defgeneric footer-type-for (storage-designator)
-  (:method (default) 'standard-data-storage-file-footer))
+  (:method (default) 'standard-indexed-data-file-footer))
 
 (defun footer-size-of (storage-designator)
   (cffi:foreign-type-size (footer-type-for storage-designator)))
@@ -132,14 +148,14 @@
   ((version-major-found :initarg :major :initarg :version-major-found :reader version-major-found)
     (version-major-found :initarg :minor :initarg :version-minor-found :reader version-minor-found)
     (version-major-expected :initarg :version-major-expected :reader version-major-expected))
-  (:default-initargs :version-major-expected +data-storage-file-version-major+)
+  (:default-initargs :version-major-expected +indexed-data-file-version-major+)
   (:report (lambda (c stream)
              (format stream "Expected version ~D.x Found version ~D.~D"
                (version-major-expected c) (version-major-found c) (version-minor-found c)))))
 
 (defgeneric check-version (object &optional expected-major)
-  (:method ((object standard-data-storage-file-header)
-             &optional (expected-major +data-storage-file-version-major+))
+  (:method ((object standard-indexed-data-file-header)
+             &optional (expected-major +indexed-data-file-version-major+))
     (let ((found-major (version-major object)))
       (eql found-major expected-major))))
 
@@ -163,9 +179,9 @@
   (:default-initargs :expected +footer-cookie+))
 
 (defgeneric check-cookie (object)
-  (:method ((object standard-data-storage-file-header))
+  (:method ((object standard-indexed-data-file-header))
     (eql (cookie object) +header-cookie+))
-  (:method ((object standard-data-storage-file-footer))
+  (:method ((object standard-indexed-data-file-footer))
     (eql (cookie object) +footer-cookie+)))
 
 

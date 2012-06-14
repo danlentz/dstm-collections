@@ -1,7 +1,7 @@
 ;;;;; -*- mode: common-lisp;   common-lisp-style: modern;    coding: utf-8; -*-
 ;;;;;
 
-(in-package :ptc)
+(in-package :collex)
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (defvar *default-syntax*                 'standard-syntax))

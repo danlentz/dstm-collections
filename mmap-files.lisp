@@ -1,35 +1,29 @@
 ;;;;; -*- mode: common-lisp;   common-lisp-style: modern;    coding: utf-8; -*-
 ;;;;;
 
-;; (:ql '(:osicat :cffi-objects :cffi-grovel :contextl))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; Significant parts of this file are derived from a prior work, authored by    
+;;; Dr. David McClain, which implemented a LispWorks-only memory-mapped file
+;;; interface as part of the "MMapper" project.  Although this current source
+;;; code has been reworked for full cross platform operations, and the focus of
+;;; which has -- and continues to -- diverge significantly from the original
+;;; work, I'd like to thank Dr. McClain for providing a really nice example from 
+;;; which to learn general techniques as well as detailed architectural specifics
+;;; of practical memory-map based development in Common-Lisp, and to subsequently
+;;; build upon in realization of some ideas of my own.
+;;;
+;;; Portions of this file are Copyright (C) 2008-2010 by SpectroDynamics, LLC.
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :mmap)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defconstant +n-pages+  #+:DARWIN 256 #-:DARWIN 256
-  "max nbr of mappers that can be active for each mmapped file")
-
-(defconstant +growby-small+ #.(ash 1 20))  ;; 1 MB
-
-(defconstant +growby-large+ #.(ash 1 24))  ;; 16 MB
-
-(defvar +page-size+ (osicat-posix:getpagesize))
-
-(defvar +invalid-base-pointer+ (make-pointer +page-size+)
-  "used in lieu of NULL-POINTE* for invalidated mapper objects,
-  to avoid difficulties with various operations on pointers that
-  have a zero address FOREIGN-ARRAY-POINTER which returns NIL when
-  the base address of an array is a null pointer, and similarly for
-  FOREIGN-SLOT-POINTER")
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; MMapper
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 (defclass mmapper ()
   ((base    :accessor mm-base    :initarg :base  :initform +invalid-base-pointer+)
@@ -213,7 +207,7 @@
   (:documentation "augmented class describing an open mmapped file"))
 
 
-(defclass mmapped-data-storage-file (mmapped-file)
+(defclass mmapped-indexed-data-file (mmapped-file)
   ((header-ptr
      :accessor mmapped-file-header-ptr
      :initform nil))
@@ -297,7 +291,7 @@
 ;; MMapped File User API
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun make-mmapped-file (file-name &key (class 'mmapped-data-storage-file) file-handle
+(defun make-mmapped-file (file-name &key (class 'mmapped-indexed-data-file) file-handle
                            (growby +page-size+) (max-mappers +N-PAGES+)
                            (byte-order *machine-endianness*)) 
   (let* ((fd (or file-handle (osicat-posix:open (osicat:native-namestring file-name)
@@ -439,7 +433,7 @@
 ;; File Header Operations
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod find-header ((mmapped-file mmapped-data-storage-file))
+(defmethod find-header ((mmapped-file mmapped-indexed-data-file))
   (let ((header (mem-ref (mmapped-file-header-ptr mmapped-file) (header-type-for mmapped-file))))
     (prog1 header
       (unless (check-cookie header)
@@ -483,7 +477,7 @@
   (set-free-space-start mf-designator (+ (get-free-space-start mf-designator) delta)))
 
 
-(defmethod initialize-instance :after ((mf mmapped-data-storage-file) &key &allow-other-keys)
+(defmethod initialize-instance :after ((mf mmapped-indexed-data-file) &key &allow-other-keys)
   (if (zerop (fd-file-size (mmapped-file-fd mf)))
     (progn
       (log:info "initializing new data file ~A: ~s" (mmapped-file-name mf) mf)
@@ -494,11 +488,11 @@
       (log:sexp (get-free-space-start mf))
       (setf (header-value mf 'cookie)  +header-cookie+)
       (log:sexp (header-value mf 'cookie))
-      (setf (header-value mf 'version-major) +data-storage-file-version-major+)
-      (setf (header-value mf 'version-minor) +data-storage-file-version-minor+)
+      (setf (header-value mf 'version-major) +indexed-data-file-version-major+)
+      (setf (header-value mf 'version-minor) +indexed-data-file-version-minor+)
       (log:sexp (header-value mf 'version-major) (header-value mf 'version-minor)))
     (let* ((head-ptr (get-mmap-ptr mf 0 +page-size+))
-            (header (mem-ref head-ptr standard-data-storage-file-header)))
+            (header (mem-ref head-ptr standard-indexed-data-file-header)))
       (cond
         ((not (check-cookie header))  (error (make-condition 'header-cookie-invalid
                                                :found    (cookie header)
@@ -576,7 +570,7 @@
 (defgeneric mmptr (place-designator &rest args &key &allow-other-keys))
 
 (defmethod mmptr ((s stream) &rest args &key (offset 0) (count 0) (type :uint8)
-                          (class 'mmapped-data-storage-file))
+                          (class 'mmapped-indexed-data-file))
   "mmptr on a stream"
   (declare (ignorable class))
   (let ((mf (apply #'make-mmapped-file (pathname s) 
@@ -585,7 +579,7 @@
     (create-mmptr mf offset count type)))
 
 (defmethod mmptr ((fd integer) &rest args &key (offset 0) (count 0) (type :uint8)
-                          (class 'mmapped-data-storage-file))
+                          (class 'mmapped-indexed-data-file))
   "mmptr on an existing file descriptor"
   (declare (ignorable class))
   (let ((mf (apply #'make-mmapped-file nil 
@@ -598,14 +592,14 @@
   (create-mmptr mf offset len))
 
 (defmethod mmptr ((fname string) &rest args &key (offset 0) (len 0)
-                          (class 'mmapped-data-storage-file))
+                          (class 'mmapped-indexed-data-file))
   "mmptr on a named file namestring"
   (declare (ignorable class))
   (let ((mf (apply #'make-mmapped-file fname args)))
     (create-mmptr mf offset count type)))
 
 (defmethod mmptr ((fname pathname) &rest args &key (offset 0) (count 0) (type :uint8)
-                          (class 'mmapped-data-storage-file))
+                          (class 'mmapped-indexed-data-file))
   "mmptr on a named file pathname"
   (declare (ignorable class))
   (let ((mf (apply #'make-mmapped-file fname args)))
@@ -633,14 +627,3 @@
 (defmacro with-mmptr ((mmptr mf &optional (offset 0) (type :uint8) (count 1)) &body body)
   `(do-with-mmapper ,mf (lambda (,mmptr) ,@body) :offset ,offset :count ,count :type ,type))
 
-
-;; mmapped-files.lisp -- Memory-mapped File I/O Higher-level Primitives
-;;
-;; Copyright (C) 2008-2010 by SpectroDynamics, LLC. All rights reserved.
-;;
-;; DM/MCFA  11/08
-;; --------------------------------------------------
-
-;; --------------------------------------------------
-;; (in-package :COM.SD.MMAPPED-FILES)
-;; --------------------------------------------------
