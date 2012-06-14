@@ -115,39 +115,43 @@
   style transaction models, independently configurable on a per-thread basis."
 
   :defsystem-depends-on (:cldoc)
-;;  :weakly-depends-on    (:cl-store :unicly :local-time :drakma :lisp-unit
-;;                          :swank-client :swank-crew 
-;;                          :filtered-functions :modf :lparallel :demacs :dns-sd :cl-zipper)
-  :depends-on          (:closer-mop :contextl :cl-syntax :manardb :inferior-shell
-                         :hu.dwim.serializer :local-time :drakma :puri :lisp-unit
-                          :cldoc  #+() :cl-store #+() :unicly 
-                          :filtered-functions :modf :lparallel :demacs :dns-sd :cl-zipper)
+
+  :depends-on          (:closer-mop :contextl :filtered-functions :lisp-unit
+                         :cl-syntax :alexandria :cldoc :log4cl :unicly
+                         :cffi-objects :manardb :osicat :drakma
+                         :hu.dwim.serializer :rucksack :cl-store)
     
   :components ((:dstm-collections-system-source-file "dstm-collections.asd")
                 (:dstm-collections-static-file       "readme.org")
-                (:dstm-collections-package-file      "package")                
-                (:file "special")             
+                (:file "collex-package")                
+                (:file "collex-special")             
+                (:file "collex-utility")
                 (:file "debug")
-                (:file "utility")
                 (:file "omega")
                 (:file "pandora")
-                ;; (:file "lock")
                 (:file "io")
-                ;; (:load-only-file "mmap-stream")
                 (:file "pointer")
+                (:file "mmap-package")
+                (:file "mmap-types")
+                (:file "mmap-serializer")
+                (:file "mmap-access")
+                (:file "mmap-storage")
                 (:file "ord")
                 (:file "cstm")
-;;                (:file "node")
-;;                (:file "mmap-node")
-;;                (:file "tree")
-;;                (:file "rbtree")
-;;                (:file "wbtree")                
-                ;; (:file "cursor")
+                ;; (:file "tree-package")
+                ;; (:file "tree-node")
+                ;; (:file "tree-node-vector")
+                ;; (:file "tree-node-mmap")
+                ;; (:file "tree-node-manardb")
+                ;; (:file "tree-common")
+                ;; (:file "tree-red-black")
+                ;; (:file "tree-weight-balanced")                
+                ;; (:file "tree-cursor")
                 ;; (:file "set")  
                 ;; (:file "map")
                 ;; (:file "seq")
-                ;; (:file "printer")
-                ;; (:file "reader")
+                ;; (:file "collex-printer")
+                ;; (:file "collex-reader")
 #+cldoc         (:cldoc          :dstm-collections-documentation
                                  :target-system :dstm-collections
                                  :pathname "doc/html/")))

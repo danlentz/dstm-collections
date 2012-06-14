@@ -4,7 +4,7 @@
 (in-package :cl-user)
 
 (defpackage :persistent-transactional-collections
-  (:nicknames :ptc :dstm-collections :dclx :collex)
+  (:nicknames :collex)
   (:documentation "")
   (:use :closer-common-lisp :contextl :named-readtables :cl-syntax :lisp-unit)
   (:export
@@ -24,11 +24,6 @@
     :once-only
     :nlet
     :nlet-tail
-    :symbolic
-    :scond
-    :scase
-    :swhen
-    :anaphoric
     :acase
     :atypecase
     :awhen
@@ -47,81 +42,7 @@
     :object->sexp))
 
 
-(defpackage :tree
-  (:documentation "")
-;;  (:shadowing-import-from :closer-mop :standard-generic-function :defgeneric :defmethod)
-  (:use :closer-common-lisp :ptc :contextl)
-  (:export
-    :balanced
-    :height-balanced
-    :weight-balanced
-    :merge-direction
-    :leaf
-    :empty
-    :empty?
-    :node
-    :kv
-    :lr
-    :kvlr
-    :kvlrx
-    :kvlrs
-    :kvlrh
-    :node/k
-    :node/v
-    :node/l
-    :node/r
-    :node/x
-    :node/s
-    :node/h
-    :node/kv
-    :node/lr
-    :node/kvlr
-    :node/kvlrx
-    :node/kvlrs
-    :node/kvlrh
-    :node/constituents
-    :node/values
-    :node/call
-    :node/size
-    :node/weight
-    :node/height
-    :node/create
-    :node/join
-    :node/singleton
-    :node/least
-    :node/greatest
-    :node/remove-least
-    :node/remove-greatest
-    :node/concat2
-    :node/inorder-fold
-    :node/iter
-    :node/at-index
-    :node/find
-    :node/add
-    :node/remove
-    :node/concat3
-    :node/concat
-    :node/split-lesser
-    :node/split-greater
-    :node/split
-    :node/union
-    :node/union-merge
-    :node/intersection
-    :node/difference
-    :node/subset?
-    :node/from
-    :node/member?
-    :node/cons-enum
-    :node/contains?
-    :node/rank
-    :node/for-all
-    :+delta+
-    :+gamma+
-    :node/empty?
-    :layer
-    :allocation))
-
-
+#+()
 (defpackage :set
   (:shadowing-import-from :closer-mop :standard-generic-function :defgeneric :defmethod)
   (:use :common-lisp :closer-mop :contextl :collex :tree :named-readtables)
