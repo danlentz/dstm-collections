@@ -1,10 +1,10 @@
 ;;;;; -*- mode: common-lisp;   common-lisp-style: sbcl;    coding: utf-8; -*-
 ;;;;;
 
-(defpackage :dstm-collections-system
+(defpackage :collex-system
   (:use :common-lisp :asdf))
 
-(in-package :dstm-collections-system)
+(in-package :collex-system)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -32,18 +32,18 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defclass dstm-collections-component
+(defclass collex-component
   (asdf:component)
   ((changelog    :initform nil :accessor changelog :initarg :changelog)
     (history     :initform nil :accessor history   :initarg :history)))
 
-(defclass dstm-collections-static-file
-  (dstm-collections-component asdf:static-file)
+(defclass collex-static-file
+  (collex-component asdf:static-file)
   ((text         :initform nil :accessor text      :initarg :text)
     (forms       :initform nil :accessor forms     :initarg :forms)))
 
-(defclass dstm-collections-source-file
-  (dstm-collections-component asdf:cl-source-file)
+(defclass collex-source-file
+  (collex-component asdf:cl-source-file)
   ((readtable-name :initform nil :accessor readtable-name :initarg :readtable-name)
     (text          :initform nil :accessor text           :initarg :text)
     (forms         :initform nil :accessor forms          :initarg :forms)    
@@ -52,32 +52,32 @@
     (space-opt     :initform 0   :accessor space-opt      :initarg :space-opt)
     (time-opt      :initform 0   :accessor time-opt       :initarg :time-opt)))
 
-(defclass dstm-collections-package-file
-  (dstm-collections-source-file) ())
+(defclass collex-package-file
+  (collex-source-file) ())
 
-(defclass dstm-collections-system-source-file
-  (dstm-collections-static-file) ())
+(defclass collex-system-source-file
+  (collex-static-file) ())
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod asdf:perform :before (operation (file dstm-collections-component))
+(defmethod asdf:perform :before (operation (file collex-component))
   (log:info "ASDF: Operation ~A on ~A" operation file)
   (push (cons file operation) (history file)))
 
-(defmethod asdf:perform :after  (operation (file dstm-collections-component))
+(defmethod asdf:perform :after  (operation (file collex-component))
   (log:info "~A" (with-output-to-string (out)
                    (describe file out)
                    (terpri out) 
                    (describe operation out))))
 
 (defmethod asdf:perform :around ((operation asdf:load-op)
-                                      (file dstm-collections-source-file)) 
+                                      (file collex-source-file)) 
   "Establish new dynamic bindings for file-local variables."
   (progv *file-local-variables*
     (mapcar #'symbol-value *file-local-variables*) (call-next-method)))
 
 (defmethod asdf:perform :around ((operation asdf:compile-op)
-                                  (file dstm-collections-source-file))
+                                  (file collex-source-file))
   "Establish new dynamic bindings for file-local variables."
   ;; (proclaim (optimize (debug (debug-opt file)) (speed (speed-opt file))
   ;;            (space (space-opt file)) (time (time-opt file))))
@@ -89,14 +89,14 @@
 ;; Project System Definition
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(asdf:defsystem :dstm-collections :default-component-class dstm-collections-source-file
+(asdf:defsystem :collex :default-component-class collex-source-file
   
   :description "Transactional Set, Map, and Seq Functional Collections Library"
   :serial       t  
   :version     "1.1.6"
   :license     "LLGPL"
   
-  :author      "Dan Lentz. Source code available at <http://github.com/danlentz/dstm-collections/>"
+  :author      "Dan Lentz. Source code available at <http://github.com/danlentz/collex/>"
   :maintainer  "Dan Lentz. Please direct comments and questions to <danlentz@gmail.com>"
 
   :author      "Context Oriented Software Transactional Memory based on source originally by:
@@ -121,8 +121,8 @@
                          :cffi-objects :manardb :osicat :drakma
                          :hu.dwim.serializer :rucksack :cl-store)
     
-  :components ((:dstm-collections-system-source-file "dstm-collections.asd")
-                (:dstm-collections-static-file       "readme.org")
+  :components ((:collex-system-source-file "collex.asd")
+                (:collex-static-file       "readme.org")
                 (:file "collex-package")                
                 (:file "collex-special")             
                 (:file "collex-utility")
@@ -153,25 +153,25 @@
                 ;; (:file "seq")
                 ;; (:file "collex-printer")
                 ;; (:file "collex-reader")
-#+cldoc         (:cldoc          :dstm-collections-documentation
-                                 :target-system :dstm-collections
+#+cldoc         (:cldoc          :collex-documentation
+                                 :target-system :collex
                                  :pathname "doc/html/")))
 
 
-(defmethod asdf:perform :after ((op asdf:load-op) (sys (eql (asdf:find-system :dstm-collections))))
-  (pushnew :dstm *features*)
-  (let ((dclx-package  (find-package :dstm-collections)))
+(defmethod asdf:perform :after ((op asdf:load-op) (sys (eql (asdf:find-system :collex))))
+  (pushnew :collex *features*)
+#+()  (let ((dclx-package  (find-package :collex)))
    #+()(when (symbol-value (intern (symbol-name :*default-syntax-startup-enabled*) dclx-package))
       (funcall (intern (symbol-name :enable-syntax) dclx-package)))
  #+()   (when (symbol-value (intern (symbol-name :*default-kernel-startup-enabled*) dclx-package))
       (funcall (intern (symbol-name :ensure-kernel) dclx-package)))))
 
 
-(defmethod asdf:perform ((o asdf:test-op) (c (eql (asdf:find-system :dstm-collections))))
-  (asdf:load-system :dstm-collections-test)
+(defmethod asdf:perform ((o asdf:test-op) (c (eql (asdf:find-system :collex))))
+  (asdf:load-system :collex-test)
   (funcall (intern (symbol-name :funcall-test-with-feedback-message)
              (find-package :hu.dwim.stefil))
-    (read-from-string "'dstm-collections-test::dstm-collections")))
+    (read-from-string "'collex-test::collex")))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
