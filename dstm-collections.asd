@@ -65,10 +65,10 @@
   (push (cons file operation) (history file)))
 
 (defmethod asdf:perform :after  (operation (file dstm-collections-component))
-  (log:info (with-output-to-string (out)
-              (describe file out)
-              (terpri out) 
-              (describe operation out))))
+  (log:info "~A" (with-output-to-string (out)
+                   (describe file out)
+                   (terpri out) 
+                   (describe operation out))))
 
 (defmethod asdf:perform :around ((operation asdf:load-op)
                                       (file dstm-collections-source-file)) 
@@ -115,27 +115,33 @@
   style transaction models, independently configurable on a per-thread basis."
 
   :defsystem-depends-on (:cldoc)
-  :weakly-depends-on    (:cl-store :unicly :local-time :drakma)
-  :depends-on           (:closer-mop :contextl :named-readtables :manardb #-sbcl :babel)
+;;  :weakly-depends-on    (:cl-store :unicly :local-time :drakma :lisp-unit
+;;                          :swank-client :swank-crew 
+;;                          :filtered-functions :modf :lparallel :demacs :dns-sd :cl-zipper)
+  :depends-on          (:closer-mop :contextl :cl-syntax :manardb :inferior-shell
+                         :hu.dwim.serializer :local-time :drakma :puri :lisp-unit
+                          :cldoc  #+() :cl-store #+() :unicly 
+                          :filtered-functions :modf :lparallel :demacs :dns-sd :cl-zipper)
     
   :components ((:dstm-collections-system-source-file "dstm-collections.asd")
                 (:dstm-collections-static-file       "readme.org")
                 (:dstm-collections-package-file      "package")                
                 (:file "special")             
-                (:file "printv")
+                (:file "debug")
                 (:file "utility")
                 (:file "omega")
-                (:file "lock")
+                (:file "pandora")
+                ;; (:file "lock")
                 (:file "io")
-                (:load-only-file "mmap-stream")
+                ;; (:load-only-file "mmap-stream")
                 (:file "pointer")
                 (:file "ord")
                 (:file "cstm")
-                (:file "node")
-                (:file "mmap-node")
-                (:file "tree")
-                (:file "rbtree")
-                (:file "wbtree")                
+;;                (:file "node")
+;;                (:file "mmap-node")
+;;                (:file "tree")
+;;                (:file "rbtree")
+;;                (:file "wbtree")                
                 ;; (:file "cursor")
                 ;; (:file "set")  
                 ;; (:file "map")
@@ -150,7 +156,7 @@
 (defmethod asdf:perform :after ((op asdf:load-op) (sys (eql (asdf:find-system :dstm-collections))))
   (pushnew :dstm *features*)
   (let ((dclx-package  (find-package :dstm-collections)))
-    (when (symbol-value (intern (symbol-name :*default-syntax-startup-enabled*) dclx-package))
+   #+()(when (symbol-value (intern (symbol-name :*default-syntax-startup-enabled*) dclx-package))
       (funcall (intern (symbol-name :enable-syntax) dclx-package)))
  #+()   (when (symbol-value (intern (symbol-name :*default-kernel-startup-enabled*) dclx-package))
       (funcall (intern (symbol-name :ensure-kernel) dclx-package)))))
@@ -161,4 +167,24 @@
   (funcall (intern (symbol-name :funcall-test-with-feedback-message)
              (find-package :hu.dwim.stefil))
     (read-from-string "'dstm-collections-test::dstm-collections")))
- 
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ASDF Support Utils
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun asdf::find-package-module (package-designator)
+  (let ((pathname (cadadr (swank-backend:find-source-location
+                            (find-package package-designator)))))
+    (when pathname (maphash (lambda (key value)
+                              (when (find (pathname pathname)
+                                      (asdf:module-components (cdr value))
+                                      :key 'asdf:component-pathname
+                                      :test #'equalp)
+                                (return-from asdf::find-package-module key)))
+                     asdf::*defined-systems*))))
+
+(defun asdf::find-package-system (package-designator)
+  (asdf:component-system (asdf::find-package-module package-designator)))
+
+(unexport '(asdf::find-package-module asdf::find-package-system) :asdf)

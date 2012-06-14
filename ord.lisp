@@ -35,7 +35,7 @@
           (*print-level*  nil)
           (*print-length* nil)
           (*print-array*  t)
-          (*package*     (find-package :common-lisp)))     
+          (*package*     (find-package :keyword)))     
      ,@forms))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

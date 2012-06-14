@@ -7,7 +7,7 @@
 ;; Tree Layer, dependent on only the exported node-instance-access core api  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deflayer tree:layer ()
+(deflayer common ()
   ()
   (:documentation ""))
 

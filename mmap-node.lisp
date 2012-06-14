@@ -4,11 +4,15 @@
 (in-package :tree)
 
 
+(deflayer storage ())
+
+(deflayer memory  (storage))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Manardb MMAP/MOP Persistence Layer
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deflayer manardb ()
+(deflayer manardb (storage)
   ((base-directory
      :initarg  :base-directory
      :reader   base-directory

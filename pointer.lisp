@@ -2,13 +2,10 @@
 ;;;;;
 
 (defpackage :pointer
-  (:use :common-lisp :io-stream)
+  (:use :common-lisp :io)
   (:export :deref))
 
 (in-package :pointer)
-
-;; temoporary
-(or (every #'find-package #1='(:cl-store :unicly :puri :manardb)) (ql:quickload #1#))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -30,6 +27,14 @@
   "if thing is not known to be a reference, return it."
   (declare (ignore args))
   (values thing type))
+
+
+(defmethod deref ((thing cons) &optional (type 'car) &rest args)
+  "if thing is a cons cell, dereference as normal"
+  (declare (ignore args))
+  (ecase type
+    (car (car thing))
+    (cdr (cdr thing))))
 
 
 (defmethod deref  ((thing function) &optional type &rest args)

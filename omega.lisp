@@ -17,7 +17,9 @@
     :with-profiling-enabled
     :execution-time
     :group
-    :partion-by))
+    :partion-by
+    :format-relative-time
+    :time-difference))
     
 (in-package :omega)
 
@@ -119,6 +121,12 @@
 ;; 3. concatenate the sublists
 ;; result: '((3 1) (3 3) (3 5) (1 1) (1 2) (1 7) (2 3))
 
+
+(defun plist-to-alist (plist)
+  (loop
+    for (key value) on plist by #'cddr
+    collect (cons key value)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Format and Presentation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -156,6 +164,87 @@
     (let ((*print-pretty* t)
           (*print-right-margin* right-margin))
       (write struct :stream stream))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Format Relative Time --  http://paste.lisp.org/display/127561
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun time-difference (a b &optional (count-weeks-p t))
+  (unless (local-time:timestamp<= a b)
+    (cerror "Swap the timestamps." "Expected ~A to be before ~A" a b)(rotatef a b))
+  (let ((result ())
+         (carry 0))
+    (flet ((collect (delta base unit)
+             (decf delta carry)
+             (cond
+               ((minusp delta) (setf carry 1) (incf delta base))
+               (t              (setf carry 0)))
+             (push delta result)
+             (push unit result)))
+      (multiple-value-bind (nsec1 sec1 min1 hour1 day1 month1 year1)
+        (local-time:decode-timestamp a :timezone local-time:+utc-zone+)
+        (multiple-value-bind (nsec2 sec2 min2 hour2 day2 month2 year2)
+          (local-time:decode-timestamp b :timezone local-time:+utc-zone+)
+          (collect (- nsec2 nsec1) 1000000000 :nanosecond)
+          (collect (- sec2 sec1) 60 :second)
+          (collect (- min2 min1) 60 :minute)
+          (collect (- hour2 hour1) 24 :hour)
+          ;; If the end-day is larger than start-day then keep the
+          ;; month, and days are the difference between end-day and
+          ;; start-day (the do-nothing-special case). If the end-day
+          ;; is smaller than start-day, days is the number of days
+          ;; left in start-month plus the number of days in end monht,
+          ;; and month is decresed by 1.
+          (let ((adjusted-day2 (- day2 carry)))
+            (setf carry 0)
+            (multiple-value-bind (days months)
+              (cond
+                ((<= day1 adjusted-day2) (values (- adjusted-day2 day1) (- month2 month1)))
+                (t (let ((sdays (- (local-time:days-in-month month1 year1) day1)))
+                     (values (+ sdays adjusted-day2)
+                       (- month2 month1 1)))))
+              (if count-weeks-p
+                (multiple-value-bind (weeks days) (floor days 7)
+                  (collect days nil :day)
+                  (collect weeks nil :week))
+                (collect days nil :day))
+              (collect months 12 :month)))
+          (collect (- year2 year1) 0 :year))))
+    result))
+
+
+(defun format-relative-time (time &key (base (local-time:now)) (min-unit :minute) (resolution 1)
+                              (include-empty nil) (past-format "~@(~A~) ago")
+                              (future-format "In ~A") (stream nil))
+  (check-type min-unit (member :nanosecond :second :minute :hour :day :week :month :year))
+  (when (local-time:timestamp= time base)
+    (return-from format-relative-time "Now"))
+  (multiple-value-bind (pastp relative-time) (if (local-time:timestamp< time base)
+                                               (values t   (time-difference time base))
+                                               (values nil (time-difference base time)))
+    (setf relative-time (reverse (plist-to-alist relative-time)))
+    (setf relative-time (member min-unit relative-time :key #'car))
+    (unless include-empty
+      (setf relative-time (remove 0 relative-time :key #'cdr)))
+    (when (numberp resolution) (setf relative-time (last relative-time resolution)))
+    (let* ((fragments (mapcar (lambda (cons)
+                                (format nil "~D ~(~A~)~P" (cdr cons) (car cons)(cdr cons)))
+                        relative-time))
+            (time-string (if (null fragments)
+                           (format nil "less than ~(~A~)" min-unit)
+                           (format nil "~{~A~#[~; and ~:;, ~]~}" (reverse fragments)))))
+      (format stream (if pastp past-format future-format) time-string))))
+
+
+;; (format-relative-time (local-time:today)) => "19 hours ago"
+
+(assert (equal "In 7 months" (format-relative-time (local-time:universal-to-timestamp
+                                       (+ (get-universal-time) 20480000)))))
+
+(assert (equal "3 years ago" (format-relative-time (local-time:universal-to-timestamp
+                                                     (- (get-universal-time) 99990000)))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Measurement and Instrumentation

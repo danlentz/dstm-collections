@@ -4,9 +4,9 @@
 (in-package :cl-user)
 
 (defpackage :persistent-transactional-collections
-  (:nicknames :ptc :dstm-collections :dclx)
+  (:nicknames :ptc :dstm-collections :dclx :collex)
   (:documentation "")
-  (:use :common-lisp :contextl :named-readtables)
+  (:use :closer-common-lisp :contextl :named-readtables :cl-syntax :lisp-unit)
   (:export
     :standard-syntax
     :*default-syntax*
@@ -16,25 +16,6 @@
     :*seq-reader-macro-char*
     :*default-syntax-startup-enabled*
     :*print-collections-readably*
-    :?
-    :?*
-    :?**
-    :?***
-    :??
-    :???
-    :ppmx
-    :printv
-    :v
-    :v/
-    :v//
-    :v///
-    :v+
-    :v++
-    :v+++
-    :info
-    :info/
-    :info//
-    :info///
     :with-gensyms
     :make-gensym-list
     :make-keyword
@@ -42,6 +23,7 @@
     :keywordicate
     :once-only
     :nlet
+    :nlet-tail
     :symbolic
     :scond
     :scase
@@ -58,19 +40,17 @@
     :multiple-value-compose
     :ensure-list
     :get-place
-#+()    :ensure-kernel
-#+()    :*value-reader-macro-char*
-#+()    :*parallel-execution-enabled*
-    :report-and-ignore-errors
-    :class-proto
+    :proto
     :drop
-    :using))
+    :using
+    :defmacro!
+    :object->sexp))
 
 
 (defpackage :tree
   (:documentation "")
-  (:shadowing-import-from :closer-mop :standard-generic-function :defgeneric :defmethod)
-  (:use :common-lisp :ptc :contextl :closer-mop)
+;;  (:shadowing-import-from :closer-mop :standard-generic-function :defgeneric :defmethod)
+  (:use :closer-common-lisp :ptc :contextl)
   (:export
     :balanced
     :height-balanced
@@ -171,7 +151,7 @@
     :cstm/wb
     :dstm/wb
     :dstm/rb))   
-
+#|
 
 (defpackage :map
   (:shadowing-import-from :closer-mop :standard-generic-function :defgeneric :defmethod)
@@ -273,3 +253,4 @@
 ;;            dclx::map*
 ;;            ;dclx::seq
 ;;            dclx::seq*) :dclx)
+|#

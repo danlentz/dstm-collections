@@ -35,6 +35,19 @@
        (apply this params))))
 
 
+(defmacro fbind ((name form) &body body)
+  (let ((gname (gensym (string name))))
+    `(let ((,gname ,form))
+       (declare (function ,gname))
+       (flet ((,name (&rest args) (apply ,gname args)))
+         ,@body))))
+
+
+;; (fbind (foo (lambda (x) (print (list 'foo x))))
+;;   (foo 1)
+;;   (foo 2))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; the structure of cons-enum
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

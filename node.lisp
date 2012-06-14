@@ -1,7 +1,14 @@
 ;;;;; -*- mode: common-lisp;   common-lisp-style: modern;    coding: utf-8; -*-
 ;;;;;
 
+
+(defpackage :tree
+  (:documentation "")
+  (:use :closer-common-lisp :contextl :ptc :debug :pandora))
+
 (in-package :tree)
+
+(deflayer allocation)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Node Instance Access defines the low-level interface to storage allocation
@@ -15,6 +22,99 @@
 
 (defun unbound ()
   %unbound%)
+
+;; (defvar %slots% (loop for i from 0 for k in '(:k :v :l :r :x) collect (cons k i)))
+
+(deflayer memory (allocation))
+
+
+(defclass root-object ()
+  ()
+  (:metaclass funcallable-standard-class))
+
+
+(defstruct (tuple
+             (:type vector) 
+             (:conc-name tuple-) 
+             (:constructor allocate-tuple))
+  (k (unbound))
+  (v (unbound))
+  (l (unbound))
+  (r (unbound))
+  (x (unbound)))
+
+(defun wrap-tuple (tuple &optional parent root &aux properties k v l r x)
+  (plambda (&optional arg &rest rest) (tuple properties root parent k v l r x)
+    (declare (ignorable rest))
+    (when (not root) (setq root this))
+    (etypecase arg
+      (null   tuple)
+      (vector (wrap-tuple arg this root))
+      (keyword (ecase arg
+                 (:k    (tuple-k tuple))
+                 (:v    (tuple-v tuple))
+                 (:x    (tuple-x tuple))
+                 (:l    (wrap-tuple (tuple-l tuple) this root))
+                 (:r    (wrap-tuple (tuple-r tuple) this root))
+                 (:this this)
+                 (:self self)
+                 (:top  root)
+                 (:up   parent))))))
+
+    (if (null args) tuple
+      (wrap-tuple args this))))
+
+
+      (let* ((parent this)
+              (tuple args))
+        this))))
+
+;;  (let* (tuple properties parent k v l r x) 
+
+(defparameter t0 (wrap-tuple (allocate-tuple :k 0 :v 0 :l nil :r nil :x nil)))
+(defparameter t1 (wrap-tuple (allocate-tuple :k 1 :v 1 :l nil :r nil :x nil)))
+(defparameter t2 (wrap-tuple (allocate-tuple :k 2 :v 2 :l nil :r nil :x nil)))
+(defparameter x  (wrap-tuple (allocate-tuple)))
+
+(assert (equalp
+          (funcall x)
+          (funcall (funcall (funcall x (funcall t0)) :top))))
+
+(assert (equalp
+          (funcall x)
+          (funcall (funcall (funcall x (funcall t0)) :up))))
+
+(assert (equalp
+          (funcall x)
+          (funcall (funcall (funcall (funcall (funcall x (funcall t0)) (funcall t1)) :up) :up))))
+
+
+
+
+#(%UNBOUND% %UNBOUND% %UNBOUND% %UNBOUND% %UNBOUND%)
+
+(%UNBOUND% %UNBOUND% %UNBOUND% %UNBOUND% %UNBOUND%)
+((%UNBOUND%) (%UNBOUND%) (%UNBOUND%) (%UNBOUND%) (%UNBOUND%))
+
+
+
+(defun tuple (&rest elements)
+  (let* (k v l r x 
+          (object (make-instance 'tuple))
+          (slots %slots%)
+          (init (or elements (make-list (length %slots%) :initial-element %unbound%)))
+          (vector (make-array (length init) :initial-contents init)))
+    (set-funcallable-instance-function object
+      (pandora:plambda (args) (k v l r x object slots vector)
+        (let ((selection (or (assoc args slots) (rassoc args slots))))
+          (case (car selection)
+            
+            ((:k :v :x) (svref vector (cdr selection)))
+            ((:l :r)  (apply 'tuple (coerce vector 'list))) 
+            (t (if (null args) pandora::this (coerce vector 'list)))))))
+    object))
+          
+    
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -46,6 +146,7 @@
   (if (typep thing type)
     (values thing t)
     (call-next-method)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; "THE NODE 'CLASS'"

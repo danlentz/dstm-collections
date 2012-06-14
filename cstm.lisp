@@ -1,4 +1,4 @@
-;;;;; -*- mode: common-lisp;   common-lisp-style: modern;    coding: utf-8; -*-
+;;;; -*- mode: common-lisp;   common-lisp-style: modern;    coding: utf-8; -*-
 ;;;;;
 ;;;;; See EOF for attribution of original source code authors
 
@@ -210,25 +210,25 @@
 ;; Simple Transactional Variable
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defclass var ()())
+;; (defclass var ()())
 
-(define-layered-function value (var))
-
-
-(define-transactional-class transactional-variable (var)
-  ((value :initarg :value :accessor value :transactional t)))
+;; (define-layered-function value (var))
 
 
-(defmethod print-object ((var transactional-variable) stream)
-  (print-unreadable-object (var stream :type t :identity t)
-    (format stream "value: ~S"
-      (if (slot-boundp var 'value) (value var) %unbound%))))
+;; (define-transactional-class transactional-variable (var)
+;;   ((value :initarg :value :accessor value :transactional t)))
 
 
-(defun make-transactional-variable (&optional (value nil vsp) (class 'transactional-variable))
-  (if vsp
-    (make-instance class :value value)
-    (make-instance class)))
+;; (defmethod print-object ((var transactional-variable) stream)
+;;   (print-unreadable-object (var stream :type t :identity t)
+;;     (format stream "value: ~S"
+;;       (if (slot-boundp var 'value) (value var) %unbound%))))
+
+
+;; (defun make-transactional-variable (&optional (value nil vsp) (class 'transactional-variable))
+;;   (if vsp
+;;     (make-instance class :value value)
+;;     (make-instance class)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

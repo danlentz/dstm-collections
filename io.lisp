@@ -21,6 +21,7 @@
     :read-file-to-byte-vector
     :write-byte-vector-to-file
     :copy-file
+    :file-equal
     :copy-stream
     :copy-binary-stream
     :relative-pathname
@@ -199,6 +200,18 @@
                         :if-exists if-to-exists)
         (copy-binary-stream input output)))))
 
+
+(defun file-equal (file1 file2)
+  "Returns a true value iff FILE1 and FILE2 have the same contents
+ (viewed as binary files)."
+  (with-open-file (stream1 file1 :element-type '(unsigned-byte 8))
+    (with-open-file (stream2 file2 :element-type '(unsigned-byte 8))
+      (and (= (file-length stream1) (file-length stream2))
+        (loop :for byte1 := (read-byte stream1 nil nil)
+          :for byte2 := (read-byte stream2 nil nil)
+          :while (and byte1 byte2)
+          :always (= byte1 byte2))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Miscellaneous Utilities
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -236,17 +249,17 @@
 (assert (equal "hi" (with-temporary-file (x)
                       (format x "hi")
                       (force-output x)
-                      (cat -filename-))))
+                      (read-file-to-string -filename-))))
 
 (assert (equal "hi" (with-temporary-file (x fn)
                       (format x "hi")
                       (force-output x)
-                      (cat fn))))
+                      (read-file-to-string fn))))
 
 (assert (equal "hi" (with-temporary-file ()
                       (format -file- "hi")
                       (force-output -file-)
-                      (cat  -filename-))))
+                      (read-file-to-string -filename-))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic Regular Expression Utilities

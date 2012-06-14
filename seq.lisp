@@ -73,18 +73,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(defun seq::first-node (seq)
-  (let ((seq (value seq)))
-    (cond ((null seq) nil)
-      ((null (tree:rb-tree-l seq)) seq)
-      (t     (first-node (tree:rb-tree-l seq))))))
+(defun seq::first-node (seq &aux (actual-seq (value seq)))
+  (cond ((null actual-seq) nil)
+    ((null (tree:rb-tree-l actual-seq)) actual-seq)
+    (t     (seq::first-node (tree:rb-tree-l actual-seq)))))
 
 
-(defun seq::last-node (seq)
-  (let ((seq (value seq)))  
-    (cond ((null seq) nil)
-      ((null (tree:rb-tree-r seq)) seq)
-      (t     (last-node (tree:rb-tree-r seq))))))
+(defun seq::last-node (seq &aux (actual-seq (value seq)))
+  (cond ((null actual-seq) nil)
+    ((null (tree:rb-tree-r actual-seq)) actual-seq)
+    (t     (seq::last-node (tree:rb-tree-r actual-seq)))))
 
 
 (defun seq:empty ()
@@ -97,35 +95,75 @@
   (seq:make* (seq:empty)))
 
 
-(defun seq:emptyp (seq)
-  "return true if seq contains no elements, otherwise false"
-  (null (value seq)))
+(defun seq:emptyp (seq &aux (actual-seq (value seq)))
+  "return true if SEQ contains no elements, otherwise false"
+  (null actual-seq))
+
+;; (seq:emptyp (seq:empty))
+;; T
+
+;; (seq:emptyp (seq:empty*))
+;; T
   
+;; (seq:emptyp [7 8 9])
+;; NIL
 
-(defun seq:length (seq)
-  "return the number of elements in seq, similar to (cl:length list)"
-  (let ((seq (value seq)))
-    (set:cardinal seq)))
-
-
-(defun seq:first (seq)
-  "return the first element in seq, similar to (cl:first list)"
-  (let ((seq (value seq)))
-    (if (null seq)
-      nil
-      (seq-cell-val (set:min seq)))))
+;; (seq:emptyp #[7 8 9])
+;; NIL
 
 
-(defun seq:last (seq)
-  "return the last element in seq, similar to (cl:car (cl:last list))"
-  (let ((seq (value seq)))
-    (if (null seq)
-      nil
-      (seq-cell-val (set:max seq)))))
+(defun seq:length (seq &aux (actual-seq (value seq)))
+  "return the number of elements in SEQ, similar to (cl:length list)"
+  (set:cardinal actual-seq))
+
+;; (seq:length (seq:empty))
+;; 0
+
+;; (seq:length (seq:empty*))
+;; 0
+
+;; (seq:length [1 2 3 4 5])
+;; 5
+
+;; (seq:length #[1 2 3 4 5])
+;; 5
+
+(defun seq:first (seq &aux (actual-seq (value seq)))
+  "return the first element in SEQ, similar to (cl:first list)"
+  (when actual-seq (seq-cell-val (set:min actual-seq))))
+
+;; (seq:first [])
+;; NIL
+
+;; (seq:first #[])
+;; NIL
+
+;; (seq:first [1 2 3 4 5])
+;; 1
+
+;; (seq:first #[1 2 3 4 5])
+;; 1
+
+
+(defun seq:last (seq &aux (actual-seq (value seq)))
+  "return the last element in SEQ, similar to (cl:car (cl:last list))"
+  (when actual-seq (seq-cell-val (set:max actual-seq))))
+
+;; (seq:last [])
+;; NIL
+
+;; (seq:last #[])
+;; NIL
+
+;; (seq:last [1 2 3 4 5])
+;; 5
+
+;; (seq:last #[1 2 3 4 5])
+;; 5
 
 
 (defun seq::min-key (seq)
-  "return the key of the first element of seq"
+  "return the key of the first element of SEQ"
   (let ((seq (value seq)))
     (if (null seq)
       0
@@ -133,7 +171,7 @@
 
 
 (defun seq::max-key (seq)
-  "return the key of the last element of seq"
+  "return the key of the last element of SEQ"
   (let ((seq (value seq)))
     (if (null seq)
       0
@@ -141,7 +179,7 @@
 
 
 (defun seq:rest (seq)
-  "return a new seq containing all but the first element of s"
+  "return a new seq containing all but the first element of SEQ"
   (let ((seq (value seq)))
     (if (null seq)
       nil
@@ -309,7 +347,7 @@
                    (set:add new-cell (seq:dup (set:remove-min seq))))))))
 
 
-(defun seq::map-indices (f seq)
+(defun seq::map-indices (f seq &aux new-seq)
   "seq::map-indices is functionally identical to map:keymap, with the exception that a new seq is
    constructed and returned rather than a map.  seq:map-indices, however, is not exported as part
    of the public interface, as the keys of a seq are managed internally in order to
@@ -319,21 +357,19 @@
   (let ((seq (value seq)))
     (cond
       ((null seq) nil)
-      (t (let (new-seq)
-           (dolist (elem (set:elements seq))
-             (setf new-seq (set:add  (make-seq-cell
+      (t         (dolist (elem (set:elements seq))
+                   (setf new-seq (set:add  (make-seq-cell
                                        :key (funcall f (seq-cell-key elem))
                                        :val (seq-cell-val elem)) new-seq)))
-           new-seq)))))
+                 new-seq))))
 
 
 (defun seq::reindex (seq &key (offset 0) (increasing t) &aux (idx offset))
   (let ((seq (value seq)))
-    (map-indices
-      #'(lambda (key)
-          (declare (ignore key))
-          (prog1 idx
-            (if increasing (incf idx) (decf idx))))
+    (map-indices #'(lambda (key)
+                     (declare (ignore key))
+                     (prog1 idx
+                       (if increasing (incf idx) (decf idx))))
       seq)))
 
 

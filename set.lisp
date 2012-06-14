@@ -3,29 +3,41 @@
 
 (in-package :set)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; set collection classes
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-(defclass mutable-set/dstm (dstm:dstm-var)
+(cxcl:define-layered-class abstract-set (abstract-collection)
   ())
 
-(defclass mutable-set/cstm (cstm:transactional-variable)
-  ())
+(cxcl:define-layered-class set (abstract-set)
+  ((root     :initarg :root :layered nil :accessor root :accessor root-of :initform nil)
+    (context :initarg :context :special t :accessor context :accessor context-of))
+  (:metaclass layered-class)
+  (:default-initargs :context weight-balanced))
 
 
-;; TODO: create class set* programmatically  
+(cstm:define-transactional-class set* (named-collection set)
+  (;;(root   :initarg :root  :accessor root  :accessor root-of  :transactional t :initform nil)
+    (value :initarg :value :accessor value :accessor value-of :transactional t :initform nil))
+  (:default-initargs :context cstm/wb))
 
-(defclass set* (mutable-set/cstm)
-  ()
-  (:documentation "A transactional variant of the base functional data structure
-   set implementation which may be used in a manner similar to ordinary mutable
-   collection types, such as a list.  Currently, The superclass of set* determines 
-   which stm implementation that will be used by default throughout the rest of
-   this library"))
+  
+
+(defun make-set (&optional (context weight-balanced)  &rest args
+                  &aux (initargs (when context (list* :context context args))))
+  (with-dynamic-environment (context)    
+    (apply #'make-instance 'set initargs)))
 
 
+(defun make-set* (&optional (context cstm/wb)  &rest args
+                  &aux (initargs (when context (list* :context context args))))
+  (with-dynamic-environment (context)    
+    (apply #'make-instance 'set* initargs)))
+
+
+;; (defun make-set* ()
+;;   (with-dynamic-environment (cstm/wb)
+;;     (swank::inspect-in-emacs  (make-instance 'set*))))
+
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; set:type
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -35,10 +47,7 @@
   "set collection type-predicate"
   (or
     (null thing)
-    (cl:typep thing 'mutable-set/dstm)
-    (cl:typep thing 'mutable-set/cstm)
-    (tree:typep thing)))
-
+    (cl:typep thing 'set))))
 
 (deftype set:type ()
   "collection of arbitrary, unique, elements in order determined by defined ordinal
@@ -49,69 +58,104 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; set api
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    
+
+(defgeneric set:add (element collection)
+  (:documentation "")
+  (:method (element collection) (error ""))
+  
+  (:method (element (collection null))    ;; this should probably not be allowed
+    (with-active-layers (weight-balanced)
+      (make-instance 'set :root  (node/add nil element))))
+
+  (:method (element (collection set))
+    (with-dynamic-environment ((context-of collection))
+      (prog1 collection
+        (setf (root-of collection)
+          (node/add (root-of collection) element)))))
+
+  (:method (element (collection set*))
+    (with-dynamic-environment ((context-of collection))
+      (cstm:atomic (prog1 collection
+                     (setf (value collection)
+                       (node/add (value collection) element)))))))
 
 
-(defun set:add (x collection)
-  "return a set the same as node with element 'x' added if not already present. as
-   a second return value, return true if actually added"
-  (labels ((addx (node)
-             (cond ((null node) (values (singleton x) t))
-               (t (lvrh (l v r h) node
-                    (if (eql x v)
-                      node
-                      (let ((c (ord:compare x v)))
-                        (cond ((zerop c) (make-rb-tree
-                                           :l l
-                                           :v x
-                                           :r r
-                                           :h h))
-                          ;; to support maps (see below)
-                          ;; cause new map value to be  substituted for old value
-                          ((minusp c)
-                            (multiple-value-bind (new-left  needs-rebal)
-                              (addx l)
-                              (cond ((eq l new-left) node)
-                                (needs-rebal     (values  (bal new-left v r) t))
-                                (t               (create  new-left v r))
-                                )))
-                          (t
-                            (multiple-value-bind (new-right needs-rebal)
-                              (addx r)
-                              (cond ((eq r new-right) node)
-                                (needs-rebal      (values (bal l v new-right) t))
-                                (t                (create l v new-right))
-                                )))
-                          )))))
-               )))
-    (addx (value collection))))
+;; (swank:inspect-in-emacs
+;;   (add 1 (add 5 (add 4 (add 2 (add 3 (make-test-set*)))))))
+;; (swank:inspect-in-emacs
+;;   (add 1 (add 5 (add 4 (add 2 (add 3 nil))))))
+
+#|
+(defgeneric set:example (collection)
+  (:documentation "")
+  (:method (element collection) (error ""))
+  (:method (element (collection null))
+    (with-active-layers (weight-balanced) ....))
+  (:method (element (collection set))
+    (with-dynamic-environment ((context-of collection)) ....))
+  (:method (element (collection set*))
+   (with-dynamic-environment ((context-of collection))
+     (cstm:atomic))) ....)
+|#
 
 
-(defun set:add* (element collection)
-  "destructively set:add ELEMENT to a mutable MAP if it is not already present.
-   as a second return value, return true if actually added"
-  (check-type collection var)
-  (setf (value collection) (set:add element collection))
-  collection)
+(defgeneric set:least (collection)
+  (:documentation "return the smallest element present in the collection")
+  (:method (collection) (error ""))
+  (:method ((collection set))
+    (with-dynamic-environment ((context-of collection))
+      (node/least (root-of collection))))      
+  (:method ((collection set*))
+    (with-dynamic-environment ((context-of collection))
+      (cstm:atomic (node/least (value collection))))))
 
 
-(defun set:min (collection)
-  "return the smallest element present in the collection"
-  (let ((node (value collection)))
-    (cond ((null node) (tree::not-found))
-      ((null (rb-tree-l node)) (rb-tree-v node))
-      (t     (tree:min (rb-tree-l node))))))
+ ;; (set:least
+ ;;   (add 1 (add 5 (add 4 (add 2 (add 3 (make-test-set*)))))))
+ ;; (set:least
+ ;;   (add 1 (add 5 (add 4 (add 2 (add 3 nil))))))
 
 
-(defun set:max (collection)
-  "return the greatest element present in the collection"
-  (let ((node (value collection)))
-    (cond ((null node) (tree::not-found))
-      ((null (rb-tree-r node)) (rb-tree-v node))
-      (t (tree:max (rb-tree-r node))))))
+(defgeneric set:greatest (collection)
+  (:documentation "return the greatest element present in the collection")
+  (:method (collection) (error ""))
+  (:method ((collection set))
+    (with-dynamic-environment ((context-of collection))
+      (node/greatest (root-of collection))))      
+  (:method ((collection set*))
+    (with-dynamic-environment ((context-of collection))
+      (cstm:atomic (node/greatest (value collection))))))
+
+
+;; (set:greatest 
+;;    (add 1 (add 5 (add 4 (add 2 (add 3 (make-test-set*)))))))
+;; (set:greatest 
+;;    (add 1 (add 5 (add 4 (add 2 (add 3 nil))))))
+
+
+
+;;; ###  ###
+;;; --- 
+
+
+(defgeneric set:remove-least (collection)
+  (:documentation  "return a collection with the smallest element removed")
+  (:method (collection)        (error "unsupported collection class"))
+  (:method ((collection set))
+    (with-dynamic-environment ((context-of collection))
+      (prog1 collection
+        (setf (root-of collection)
+          (node/remove-least (root-of collection))))))      
+  (:method ((collection set*))
+    (with-dynamic-environment ((context-of collection))
+      (cstm:atomic (prog1 collection
+                     (setf (value collection)
+                       (node/remove-least (value collection))))))
 
 
 (defun set:remove-min (collection)
-  "return a collection with the smallest element removed -- useful for priority-queues"
+ 
   (let ((node (value collection))) 
     (cond ((null node)         (tree::invalid-argument "tree:remove-min"))
       ((null (rb-tree-l node)) (rb-tree-r node))
