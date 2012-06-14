@@ -1,0 +1,81 @@
+(define-global +closure->metadata+
+    (make-hash-table :test #'equal)) ;; I'm not sure EQ has what it takes wrt. "range" here.
+
+
+(defun closure-set-metadata (closure key value)
+  (let ((hash +closure->metadata+)
+        (signature (sb-kernel:get-lisp-obj-address closure)))
+    (sb-ext:with-locked-hash-table (hash)
+      (multiple-value-bind (key_value-hash found-p)
+          (gethash signature hash)
+        (if found-p
+            (setf (gethash key key_value-hash) value)
+            (progn
+              (setf (gethash key (setf (gethash signature hash)
+                                       (make-hash-table :test #'eq)))
+                    value)
+              (sb-ext:finalize closure
+                               (lambda ()
+                                 (remhash signature hash)))))))))
+
+
+(defun closure-get-metadata (closure key)
+  (let ((hash +closure->metadata+)
+        (signature (sb-kernel:get-lisp-obj-address closure)))
+    (sb-ext:with-locked-hash-table (hash)
+      (multiple-value-bind (key_value-hash found-p)
+          (gethash signature hash)
+        (if found-p
+            (gethash key key_value-hash)
+            (values nil nil))))))
+                    
+  
+
+
+
+> (let ((closure (lambda ())))
+    (closure-set-metadata closure :answer 42)
+    (closure-get-metadata closure :answer))
+42
+T
+
+> +closure->metadata+
+#<HASH-TABLE :TEST EQUAL :COUNT 1 {AED7561}>
+
+> (sb-ext:gc :full t)
+NIL
+
+> +closure->metadata+
+#<HASH-TABLE :TEST EQUAL :COUNT 0 {A8E91A9}>
+
+> 
+
+(defun closure-set-metadata (closure key value)
+  (let ((hash +closure->metadata+)
+        (signature (sb-kernel:get-lisp-obj-address closure)))
+    (sb-ext:with-locked-hash-table (hash)
+      (multiple-value-bind (key_value-hash found-p)
+          (gethash signature hash)
+        (if found-p
+            (sb-ext:with-locked-hash-table (key_value-hash)
+              (setf (gethash key key_value-hash) value))
+            (let ((new-hash (setf (gethash signature hash)
+                                  (make-hash-table :test #'eq))))
+              (sb-ext:with-locked-hash-table (new-hash)
+                (setf (gethash key new-hash) value))
+              (sb-ext:finalize closure
+                               (lambda ()
+                                 (remhash signature hash)))))))))
+
+
+(defun closure-get-metadata (closure key)
+  (let ((hash +closure->metadata+)
+        (signature (sb-kernel:get-lisp-obj-address closure)))
+    (sb-ext:with-locked-hash-table (hash)
+      (multiple-value-bind (key_value-hash found-p)
+          (gethash signature hash)
+        (if found-p
+            (sb-ext:with-locked-hash-table (key_value-hash)
+              (gethash key key_value-hash))
+            (values nil nil))))))
+                    
