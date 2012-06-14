@@ -81,9 +81,9 @@
   (:method ((thing vector))
     (destructuring-bind (backend vector) (deserialize-dwim thing)
       (ecase backend
-        (+dwim+     (deserialize-dwim     thing))
-        (+rucksack+ (deserialize-rucksack thing))
-        (+cl-store+ (deserialize-clstore  thing))))))
+        (+dwim+     (deserialize-dwim     vector))
+        (+rucksack+ (deserialize-rucksack vector))
+        (+cl-store+ (deserialize-clstore  vector))))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -95,7 +95,15 @@
   (defun set-hu-serializer-debug-logger (&optional (new-value s))
     (prog1 new-value
       (warn "manually setting serializer debug log; New value is ~A"
-        (setf hu.dwim.serializer::*DEBUG-LOG-ENABLED* new-value)))))
+        (setf hu.dwim.serializer::*DEBUG-LOG-ENABLED* new-value))))
+  (defun get-hu-serializer-debug-stream ()
+    s)
+  (defun get-hu-serializer-logs ()
+    (prog1 (get-output-stream-string s)
+      (with-output-to-string (new-s)
+        (setf s new-s)
+        (set-hu-serializer-debug-logger new-s)))))
+  
 
 
 #|

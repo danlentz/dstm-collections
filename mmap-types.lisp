@@ -37,7 +37,7 @@
 ;; Typed-Pointer Types
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defctype :box :uint8)
+(defctype box :uint8)
 
 (cffi:defcenum pointer-type
   :null

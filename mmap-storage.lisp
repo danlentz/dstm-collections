@@ -135,13 +135,13 @@
   (:method (thing (place mmapped-indexed-data-file) &key)
     (let* ((bytes (serialize thing))
             (len (length bytes))
-            (mmptr (mmalloc place :uint8 len))
+            (mmptr (mmalloc place :uint8 :count len))
             (ptr   (mmptr->ptr mmptr)))
       (prog1 mmptr
         (loop
-        for i from 0
-        for byte across bytes
-          (setf (mem-aref ptr :uint8 i) byte)))))
+          for i from 0
+          for byte across bytes
+          do (setf (mem-aref ptr :uint8 i) byte)))))
   (:method ((thing mmptr) place &key)
     (unless (or (null place) (eql place (mm-mf (mmptr-mapper thing))))
       (error "cross file references not yet implemented"))
@@ -153,12 +153,9 @@
       (ref mmptr nil)))
   (:method ((thing typed-pointer) (place mmapped-indexed-data-file) &key)
     (let* ((new-mmptr (mmalloc place 'typed-pointer))
-            (new-typed-pointer-ptr (mmptr->ptr new-mmptr))
-            (new-typed-pointer (make-typed-pointer place
-                                 (element-offset thing)
-                                 (element-type thing)
-                                 :count (element-count thing)
-                                 :pointer new-typed-pointer-ptr)))
+            (new-typed-pointer-ptr (mmptr->ptr new-mmptr)))
+      (make-typed-pointer place (element-offset thing) (element-type thing)
+        :count (element-count thing) :pointer new-typed-pointer-ptr)
       new-mmptr)))
 
 
@@ -196,7 +193,7 @@
 
 
 (defgeneric get-serial (thing)
-  (:method (default)
+  (:method (thing)
     (let ((footer-offset (footer-offset (header thing))))
       (if (zerop footer-offset)
         0
@@ -214,7 +211,7 @@
                                     :offset previous-offset
                                     :type   :uint8
                                     :len    (footer-size-of mmapped-file-designator)))
-                                (footer-type-of mmapped-file-designator))))
+                                (footer-type-for mmapped-file-designator))))
           (serial           (or serial
                               (if previous-footer
                                 (serial previous-footer)
@@ -266,6 +263,7 @@
 
 (defmethod pointer:deref ((thing mmptr) &optional type &rest args
                            &aux primary (secondary (cffi:null-pointer)))
+  (declare (ignore args))
   (setf primary  (apply #'pointer:deref (mmptr->ptr thing) (mmptr-type thing)
                    (list :count (mmptr-count thing))))
   (when (and (eq type :unbox) (eq (mmptr-type thing) 'typed-pointer))
@@ -288,10 +286,11 @@
 (defgeneric unbox (location)
   (:method ((location mmptr))
     (multiple-value-bind (mmptr unboxed-value) (pointer:deref location :unbox)
+      (declare (ignorable mmptr))
       (if (cffi:null-pointer-p unboxed-value)
         (error (make-condition 'no-unboxed-value))
         unboxed-value)))
-  (:method ((location vector))
+  (:method ((vector vector))
     (deserialize vector)))
   
 

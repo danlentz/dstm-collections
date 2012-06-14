@@ -22,5 +22,50 @@
 
 (defpackage :mmap
   (:shadow :pointer-address :incf-pointer :decf-pointer)
-  (:use :closer-common-lisp :closer-mop :contextl :cffi-objects))
+  (:use :closer-common-lisp :closer-mop :contextl :cffi-objects)
+  (:export
+    :all-open-mmapped-files
+    :all-unmanaged-mmapped-files
+    :all-mmapped-files    
+    :remap
+    :sync
+    :mmapper
+    :mm-base
+    :mm-off
+    :mm-len
+    :mm-mf
+    :make-mmapped-file
+    :with-locked-mmf
+    :with-mmapped-file
+    :closed-mmapped-file
+    :mmapped-file
+    :mmapped-indexed-data-file
+    :mmapped-file-header-ptr    
+    :mmapped-file-fd
+    :mmapped-file-mappers
+    :mmapped-file-needs-fd-close
+    :mmapped-file-lock
+    :mmapped-file-cache
+    :mmapped-file-name
+    :mmapped-file-size
+    :mmapped-file-growby
+    :mmapped-file-byte-order
+    :ensure-mmapped-file-size
+    :close-mmapped-file
+    :mapping-failure
+    :get-page-stats
+    :mmapped-file-of
+    :sync-header
+    :header
+    :header-slot-pointer
+    :header-unique-id
+    :header-value
+    :set-header-value
+    :get-free-space-start
+    :set-free-space-start
+    :incf-free-space-start
+    :mmptr
+    :with-locked-mmptr
+    :check-limits
+    :with-mmptr))
 

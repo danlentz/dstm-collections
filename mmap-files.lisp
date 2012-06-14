@@ -190,7 +190,8 @@
       :accessor mmapped-file-mappers
       :initform (make-lru)
       :documentation "LRU queue of mappers for this file")
-    (needs-fd-close :accessor mmapped-file-needs-fd-close
+    (needs-fd-close
+      :accessor mmapped-file-needs-fd-close
       :initform nil
       :initarg :needs-fd-close
       :documentation "needs-fd-close -- true (non-nil) when this object was
@@ -247,6 +248,25 @@
 (defun floor-pagesize (off)
   (let ((pgszm1 (1- +page-size+)))
     (logandc2 off pgszm1)))
+
+(defun remap (mm offset len)
+  "remap a mapper to cover a different file offset and length"
+  (let* ((mf       (mm-mf mm))
+         (mappers  (mmapped-file-mappers mf)))
+    (when (mmapper-valid-p mm)
+      (osicat-posix:munmap (mm-base mm) (mm-len mm))
+      (remove-mapper mappers mm)
+      (invalidate-mmapper mm))
+    (let* ((new-offset (floor-pagesize offset))
+           (new-len    (- (ceiling-pagesize (+ offset len)) new-offset)))
+      ;; grow the file if needed
+      (ensure-mmapped-file-size mf (+ new-offset new-len))
+      ;; remap the mapper
+      (setf (mm-base  mm) (get-mmap-ptr mf new-offset new-len)
+            (mm-len   mm) new-len
+            (mm-off   mm) new-offset)
+      ;; add mapper back to index of active mappers
+      (add-mapper mappers mm))))
 
 (defun find-mapper (mf offset)
   "find a mapper for the offset into the file, or else return the
@@ -309,6 +329,16 @@
   "list of actively managed memory-mapped files (for debugging)")
 
 (defvar *mapped-fds-unmanaged* nil)
+
+(defun all-open-mmapped-files ()
+  *mapped-fds*)
+
+(defun all-unmanaged-mmapped-files ()
+  *mapped-fds-unmanaged*)
+
+(defun all-mmapped-files ()
+  (union *mapped-fds* *mapped-fds-unmanaged*))
+
 
 (defmethod initialize-instance :after ((mf mmapped-file)
                                         &key file-handle max-mappers &allow-other-keys)
@@ -397,25 +427,6 @@
          (lru (mmapped-file-mappers mf)))
     (reorder-lru lru mm)))
 
-(defun remap (mm offset len)
-  "remap a mapper to cover a different file offset and length"
-  (let* ((mf       (mm-mf mm))
-         (mappers  (mmapped-file-mappers mf)))
-    (when (mmapper-valid-p mm)
-      (osicat-posix:munmap (mm-base mm) (mm-len mm))
-      (remove-mapper mappers mm)
-      (invalidate-mmapper mm))
-    (let* ((new-offset (floor-pagesize offset))
-           (new-len    (- (ceiling-pagesize (+ offset len)) new-offset)))
-      ;; grow the file if needed
-      (ensure-mmapped-file-size mf (+ new-offset new-len))
-      ;; remap the mapper
-      (setf (mm-base  mm) (get-mmap-ptr mf new-offset new-len)
-            (mm-len   mm) new-len
-            (mm-off   mm) new-offset)
-      ;; add mapper back to index of active mappers
-      (add-mapper mappers mm))))
-
 
 (defmethod get-page-stats ((mf mmapped-file))
   "list number of mappers for various mapping lengths"
@@ -428,10 +439,25 @@
           (push (cons len 1) stats))))
     stats))
 
+(defmethod describe-object :after ((thing mmapped-file) stream)
+  (format stream "~&~%Memory-mapped Page Statistics:~%~%~S~%" (get-page-stats thing)))
+
+(defgeneric mmapped-file-of (designator)
+  (:method ((mmf mmapped-file))
+    mmf)
+  (:method ((mm  mmapper))
+    (mm-mf mm)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; File Header Operations
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun sync-header (thing)
+  "flush header page to disk"
+  (let ((mf (mmapped-file-of thing)))
+    (with-locked-mmf (mf)
+      (osicat-posix:msync (mmapped-file-header-ptr mf) +page-size+ osicat-posix:ms-sync)
+      (osicat-posix:fsync (mmapped-file-fd mf)))))
 
 (defmethod find-header ((mmapped-file mmapped-indexed-data-file))
   (let ((header (mem-ref (mmapped-file-header-ptr mmapped-file) (header-type-for mmapped-file))))
@@ -444,22 +470,30 @@
 (defmethod find-header ((mmapper mmapper))
   (find-header (mm-mf mmapper)))
 
-(defmethod find-header ((mmptr mmptr))
-  (find-header (mmptr-mapper mmptr)))
-
 (defun header (mf-designator)
   (find-object (find-header mf-designator) (header-type-for mf-designator)))
+
+(defun header-slot-pointer (thing slot-name type)
+  (foreign-slot-pointer (find-header thing) type slot-name))
+
+(defun header-unique-id (thing)
+  (let ((ptr    (header-slot-pointer thing 'unique-id :uint8))
+         (bytes (make-array 16 :element-type '(unsigned-byte 8))))
+    (loop
+      for i from 0 to 15
+      do (setf (aref bytes i) (mem-aref ptr :uint8 i))
+      finally (return bytes))))
 
 (defun header-value (thing slot-name)
   (foreign-slot-value (mem-ref (find-header thing) (header-type-for thing))
     (header-type-for thing) slot-name))
 
 (defun set-header-value (thing slot-name value)
-  (setf
-    (foreign-slot-value
-      (mem-ref (find-header thing) (header-type-for thing))
-      (header-type-for thing) slot-name)
-    value))
+  (prog1 value
+    (setf (foreign-slot-value (mem-ref (find-header thing) (header-type-for thing))
+            (header-type-for thing) slot-name)
+      value)
+    (sync-header thing)))
 
 (defun (setf header-value) (value thing slot-name)
   (set-header-value thing slot-name value))
@@ -478,21 +512,27 @@
 
 
 (defmethod initialize-instance :after ((mf mmapped-indexed-data-file) &key &allow-other-keys)
-  (if (zerop (fd-file-size (mmapped-file-fd mf)))
-    (progn
-      (log:info "initializing new data file ~A: ~s" (mmapped-file-name mf) mf)
+  (if (zerop (fd-file-size (mmapped-file-fd mf))) 
+    ;; initialize new indexed data file    
+    (let ((bytes (create-unique-id-byte-vector)))
       (ensure-mmapped-file-size mf +growby-small+)
       (setf (mmapped-file-header-ptr mf) (get-mmap-ptr mf 0 +page-size+))
-      (log:sexp :header (mmapped-file-header-ptr mf) (header mf))
       (set-free-space-start mf (header-size-of (header-type-for mf)))
-      (log:sexp (get-free-space-start mf))
       (setf (header-value mf 'cookie)  +header-cookie+)
-      (log:sexp (header-value mf 'cookie))
       (setf (header-value mf 'version-major) +indexed-data-file-version-major+)
       (setf (header-value mf 'version-minor) +indexed-data-file-version-minor+)
-      (log:sexp (header-value mf 'version-major) (header-value mf 'version-minor)))
+      (let ((ptr (header-slot-pointer mf 'unique-id :uint8)))           
+        (loop for i from 0 to 15 do (setf (mem-aref ptr :uint8 i) (aref bytes i))))
+      (sync-header mf)
+      (register-indexed-data-file (mmapped-file-name mf) bytes)      
+      (log:info "initializing new data file ~A: ~s" (mmapped-file-name mf) mf)
+      (log:sexp :header (mmapped-file-header-ptr mf) (header mf))
+      (log:sexp (get-free-space-start mf))
+      (log:sexp (header-value mf 'cookie))
+      (log:sexp (header-value mf 'version-major) (header-value mf 'version-minor)))    
+    ;; reinstantiate existing indexed data file
     (let* ((head-ptr (get-mmap-ptr mf 0 +page-size+))
-            (header (mem-ref head-ptr standard-indexed-data-file-header)))
+            (header (mem-ref head-ptr 'standard-indexed-data-file-header)))
       (cond
         ((not (check-cookie header))  (error (make-condition 'header-cookie-invalid
                                                :found    (cookie header)
@@ -501,8 +541,9 @@
                                                :major (version-major header)
                                                :minor (version-minor header)
                                                :pathname (pathname (mmapped-file-name mf))))))
-      (log:info "found header for file ~A: ~S" (mmapped-file-name mf) header)
-      (setf (mmapped-file-header-ptr mf) head-ptr))))
+      (log:info "found valid header for file ~A: ~S" (mmapped-file-name mf) header)
+      (setf (mmapped-file-header-ptr mf) head-ptr)
+      (register-indexed-data-file (mmapped-file-name mf) (header-unique-id mf)))))
             
      
 
@@ -517,6 +558,14 @@
   offset  ;; the offset of this pointer (measured from 0 at start of file)
   type    ;; the c-type of this pointer
   count)  ;; the number of sequential elements of type 'type' allocated
+
+
+(defmethod find-header ((mmptr mmptr))
+  (find-header (mmptr-mapper mmptr)))
+
+(defmethod mmapped-file-of ((mmptr mmptr))
+  (mmapped-file-of (mmptr-mapper mmptr)))
+
 
 (defmacro with-locked-mmptr ((mmptr) &body body)
   `(with-locked-mmf ((mm-mf (mmptr-mapper ,mmptr)))
@@ -533,14 +582,14 @@
   "close the file associated with the pointer mmptr"
   (close-mmapped-file (mapped-file-of-mmptr mmptr)))
 
-(defun mmptr-byte-order (mmptr)
-  (mmapped-file-byte-order (mapped-file-of-mmptr mmptr)))
+;; (defun mmptr-byte-order (mmptr)
+;;   (mmapped-file-byte-order (mapped-file-of-mmptr mmptr)))
 
-(defmethod set-byte-order ((mmptr mmptr) byte-order)
-  (set-byte-order (mapped-file-of-mmptr mmptr) byte-order))
+;; (defmethod set-byte-order ((mmptr mmptr) byte-order)
+;;   (set-byte-order (mapped-file-of-mmptr mmptr) byte-order))
 
-(defmethod flip-byte-order ((mmptr mmptr))
-  (flip-byte-order (mapped-file-of-mmptr mmptr)))
+;; (defmethod flip-byte-order ((mmptr mmptr))
+;;   (flip-byte-order (mapped-file-of-mmptr mmptr)))
 
 (defun check-limits (mmptr offset len)
   "if the current pointer's mapper does not cover the indicated region
@@ -556,7 +605,7 @@
 (defun create-mmptr (mf offset count &optional (type :uint8))
   "construct a mem-mapped pointer to the indicated region of the file"
   (assert (>= offset 0))
-  (assert (>= len 0))
+  (assert (>= count 0))
   (make-mmptr :mapper (find-mapper mf offset)
     :offset offset
     :count  count
@@ -589,9 +638,9 @@
 
 (defmethod mmptr ((mf mmapped-file) &key (offset 0) (count 0) (type :uint8))
   "mmptr on an already existing memory-mapped file object"
-  (create-mmptr mf offset len))
+  (create-mmptr mf offset count type))
 
-(defmethod mmptr ((fname string) &rest args &key (offset 0) (len 0)
+(defmethod mmptr ((fname string) &rest args &key (offset 0) (count 0) (type :uint8)
                           (class 'mmapped-indexed-data-file))
   "mmptr on a named file namestring"
   (declare (ignorable class))
@@ -616,9 +665,18 @@
   (let ((mf (mm-mf (mmptr-mapper mmptr))))
     (create-mmptr mf offset count type)))
 
+(defmethod mmptr ((vector vector) &rest args &key (offset 0) (count 0) (type :uint8)
+                   (class 'mmapped-indexed-data-file))
+  "mmptr on a unique-id vector retrieves file from cache of
+  last seen locations"
+  (declare (ignorable offset count type class))
+  (let ((pathname (find-indexed-data-file vector)))
+    (apply #'mmptr pathname args)))
+
 (defun do-with-mmapper (mf fn &key (offset 0) (count +page-size+) (type :uint8))
   (let ((mmptr (mmptr mf :offset offset :count count :type type)))
     (funcall fn mmptr)))
+
 
 (defmacro with-mmapper ((mmptr mf) &body body)
   `(do-with-mmapper ,mf (lambda (,mmptr) ,@body)))
@@ -627,3 +685,9 @@
 (defmacro with-mmptr ((mmptr mf &optional (offset 0) (type :uint8) (count 1)) &body body)
   `(do-with-mmapper ,mf (lambda (,mmptr) ,@body) :offset ,offset :count ,count :type ,type))
 
+
+(defmethod find-header (default-thing)
+  (find-header (mmptr default-thing)))
+
+(defmethod mmapped-file-of (default-thing)
+  (mmapped-file-of (mmptr default-thing)))
