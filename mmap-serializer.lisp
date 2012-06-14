@@ -34,11 +34,6 @@
 ;; Interface to various serializer backends
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defconstant +dwim+           0)
-(defconstant +rucksack+       1)
-(defconstant +clstore+        2)
-(defconstant +userial+        3)
-
 
 (defun serialize-dwim (thing &rest args)
   (apply #'hu.dwim.serializer:serialize thing args))
@@ -64,26 +59,54 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Backend Registry
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(let ((count 0)
+       (serializers (make-hash-table))
+       (deserializers (make-hash-table))
+       (sentinels   nil))   
+  (defun register-serializer (keyword serialize-fn deserialize-fn &optional (id count))
+    (incf count)
+    (setf (gethash keyword serializers) serialize-fn)
+    (setf (gethash id deserializers)    deserialize-fn)
+    (collex::aconsf sentinels keyword id))
+  (defun get-serializer (key)
+    (gethash key serializers))
+  (defun get-deserializer (int)
+    (gethash int deserializers))
+  (defun get-keyword-for-id (int)
+    (alexandria:rassoc-value sentinels int))
+  (defun get-id-for-keyword (key)
+    (alexandria:assoc-value sentinels key)))
+
+(register-serializer :dwim     #'serialize-dwim     #'deserialize-dwim)
+(register-serializer :rucksack #'serialize-rucksack #'deserialize-rucksack)
+(register-serializer :clstore  #'serialize-clstore  #'deserialize-clstore)
+
+
+(defun serialize-using (backend-key thing)
+  (serialize-dwim
+    (cons
+      (get-id-for-keyword backend-key)
+      (funcall (get-serializer backend-key) thing))))
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Uniform API
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun serialize-using (backend thing)
-  (serialize-dwim (cons backend (ecase backend
-                                  (+dwim+     (serialize-dwim     thing))
-                                  (+rucksack+ (serialize-rucksack thing))
-                                  (+cl-store+ (serialize-clstore  thing))))))
-
 (defgeneric serialize (thing)
-  (:method ((thing t))
-    (serialize-using +dwim+ thing)))
-
+  (:method (thing)
+    (serialize-using :dwim thing))
+  (:method ((thing condition))
+    (serialize-using :clstore thing))
+  (:method ((thing package))
+    (serialize-using :clstore thing)))
+  
 (defgeneric deserialize (thing)
   (:method ((thing vector))
-    (destructuring-bind (backend vector) (deserialize-dwim thing)
-      (ecase backend
-        (+dwim+     (deserialize-dwim     vector))
-        (+rucksack+ (deserialize-rucksack vector))
-        (+cl-store+ (deserialize-clstore  vector))))))
+    (let* ((prelim (deserialize-dwim thing)))
+      (funcall (get-deserializer (car prelim)) (cdr prelim)))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -104,6 +127,97 @@
         (setf s new-s)
         (set-hu-serializer-debug-logger new-s)))))
   
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Test
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun test-serialization-roundtrip (value &key (test-fn #'equalp) (key-fn #'identity))
+  (let ((restored-value (deserialize (serialize value)))) 
+    (assert (funcall test-fn (funcall key-fn value) (funcall key-fn restored-value)))
+    (values value restored-value)))
+
+
+;;;
+;; (test-serialization-roundtrip (asdf:find-system :asdf)
+;;    :test-fn #'equalp :key-fn #'asdf:system-definition-pathname)
+;;
+;; #<ASDF:SYSTEM "asdf">
+;; #<ASDF:SYSTEM "asdf">
+;;
+
+
+;;;
+;; (test-serialization-roundtrip (find-class 'asdf:system))
+;;
+;;  #<STANDARD-CLASS ASDF:SYSTEM>
+;;  #<STANDARD-CLASS ASDF:SYSTEM>
+;;
+
+
+;;;
+;; (test-serialization-roundtrip (subseq *features* 0 10))
+;;
+;; (:COLLEX :RUNE-IS-CHARACTER :CSTM CL-IRREGSEXP::BIG-CHARACTERS-IN-STRINGS
+;;  :OSICAT-FD-STREAMS :CHUNGA :FLEXI-STREAMS :STARTED :UP-3548623994 :LOADED)
+;; (:COLLEX :RUNE-IS-CHARACTER :CSTM CL-IRREGSEXP::BIG-CHARACTERS-IN-STRINGS
+;;  :OSICAT-FD-STREAMS :CHUNGA :FLEXI-STREAMS :STARTED :UP-3548623994 :LOADED)
+;;
+
+
+;;;
+;; (test-serialization-roundtrip (find-package :cl)
+;;    :test-fn #'equalp :key-fn #'package-used-by-list)
+;;
+;; #<PACKAGE "COMMON-LISP">
+;; #<PACKAGE "COMMON-LISP">
+;;
+
+
+;;;
+;; (test-serialization-roundtrip (make-condition 'file-error :pathname (user-homedir-pathname))
+;;    :test-fn #'equalp :key-fn #'file-error-pathname)
+;;
+;; #<FILE-ERROR {1009F59C03}>
+;; #<FILE-ERROR {1009F5E093}>
+
+
+;;;
+;; (let (syms (pkgs (list-all-packages)))
+;;         (dolist (p pkgs)
+;;           (do-external-symbols (s p)
+;;             (push s syms)))
+;;         (time (mapc #'test-serialization-roundtrip syms))
+;;   (length syms))
+;;
+;; 26268
+;;
+;; Evaluation took:
+;;   0.858 seconds of real time
+;;   0.864487 seconds of total run time (0.851599 user, 0.012888 system)
+;;   [ Run times consist of 0.118 seconds GC time, and 0.747 seconds non-GC time. ]
+;;   100.70% CPU
+;;   2,396,516,087 processor cycles
+;;   219,560,640 bytes consed
+
+
+;;;
+;; (let ((pkgs (list-all-packages)))
+;;         (time (mapc #'test-serialization-roundtrip pkgs))
+;;         (length pkgs))
+;;
+;; 289
+;;
+;; Evaluation took:
+;;   4.132 seconds of real time
+;;   4.146531 seconds of total run time (4.127212 user, 0.019319 system)
+;;   [ Run times consist of 0.071 seconds GC time, and 4.076 seconds non-GC time. ]
+;;   100.36% CPU
+;;   11,541,191,949 processor cycles
+;;   135,036,608 bytes consed
+
+
+
 
 
 #|
